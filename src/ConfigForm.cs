@@ -3,35 +3,73 @@ using System.Text;
 using System.IO;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using DiscordRPC;
 
 namespace obDRPC {
     public partial class ConfigForm : Form {
         private string OptionsFolder;
         private Dictionary<string, RPCData> RichPresenceList = null;
         private TextBoxBase selectedTextBox = null;
+        private DiscordRpcClient Client;
         
-        public ConfigForm(Dictionary<string, RPCData> richPresenceList, string optionsFolder) {
+        public ConfigForm(Dictionary<string, RPCData> richPresenceList, DiscordRpcClient client, Placeholders placeholders, string optionsFolder) {
             InitializeComponent();
             RichPresenceList = richPresenceList;
             this.OptionsFolder = optionsFolder;
-            UpdateUI(null);
-            init();
+            this.Client = client;
+            UpdateUI("menu");
+            init(placeholders);
         }
 
         private void insertableTextSelect(object sender, EventArgs e) {
-            string type = ((TextBoxBase)sender).Tag.ToString().Split(';')[1];
+            string type = ((Control)sender).Tag.ToString().Split(';')[1];
             selectedTextBox = sender as TextBoxBase;
             UpdateUI(type);
         }
 
-        private void insertPlaceholderBtn(object sender, EventArgs e) {
+        private void insertPlaceholder(object sender, EventArgs e) {
             string placeholder = ((Control)sender).Tag.ToString().Split(';')[0];
             if (selectedTextBox != null) {
-                selectedTextBox.Text += placeholder;
+                selectedTextBox.Text = selectedTextBox.Text.Insert(selectedTextBox.SelectionStart, placeholder);
             }
         }
 
-        private void init() {
+        private void placeholderMouseEnter(object sender, EventArgs e) {
+            ((Control)sender).ForeColor = System.Drawing.Color.White;
+        }
+
+        private void placeholderMouseLeave(object sender, EventArgs e) {
+            ((Control)sender).ForeColor = System.Drawing.Color.LightGray;
+        }
+
+        private void init(Placeholders placeholders) {
+            int x = 0;
+            int y = 0;
+            int s = 0;
+            double perRow = 7;
+            foreach(Placeholder placeholder in placeholders.placeholderList) {
+                if(s >= perRow) {
+                    s = 0;
+                    x += this.Width / (int)Math.Ceiling(placeholders.placeholderList.Count / perRow);
+                    y = 0;
+                }
+
+                Label lb = new Label();
+                lb.Text = "{" + placeholder.VariableName + "} - " + placeholder.Description;
+                lb.AutoSize = true;
+                lb.Location = new System.Drawing.Point(x, y);
+                lb.ForeColor = System.Drawing.Color.LightGray;
+                lb.Font = new System.Drawing.Font("Segoe UI Semibold", 9);
+                lb.Tag = "{" + placeholder.VariableName + "};" + obDRPC.getContextName(placeholder.context);
+                lb.Cursor = Cursors.Hand;
+                lb.Click += insertPlaceholder;
+                lb.MouseEnter += placeholderMouseEnter;
+                lb.MouseLeave += placeholderMouseLeave;
+                this.Controls.Add(lb);
+                s++;
+                y += 25;
+            }
+
             foreach (Control control in this.Controls) {
                 if (control.GetType() == typeof(TextBox) || control.GetType() == typeof(RichTextBox)) {
                     if (control.Tag == null) {
@@ -42,7 +80,7 @@ namespace obDRPC {
                     string category = control.Tag.ToString().Split(';')[1];
 
                     if (prop == "appId") {
-                        control.Text = obDRPC.Client.ApplicationID;
+                        control.Text = Client.ApplicationID;
                     } else {
                         if (!RichPresenceList.ContainsKey(category)) {
                             RichPresenceList.Add(category, new RPCData());
@@ -94,12 +132,6 @@ namespace obDRPC {
                     }
                 }
             }
-
-            if (obDRPC.Client.CurrentUser != null) {
-                connectionLabel.Text = "Connected to " + obDRPC.Client.CurrentUser.Username + "#" + obDRPC.Client.CurrentUser.Discriminator;
-            } else {
-                connectionLabel.Text = "Not connected.";
-            }
         }
 
         private void UpdateUI(string selectedType) {
@@ -108,19 +140,31 @@ namespace obDRPC {
                     continue;
                 }
 
-                if (control.GetType() == typeof(Button)) {
-                    string btnType = control.Tag.ToString().Split(';')[1];
-                    if (selectedType == null) {
-                        control.Enabled = false;
-                        continue;
-                    }
+                if (control.GetType() == typeof(Label)) {
+                    if (control.Tag == null) continue;
 
-                    if (btnType.StartsWith("!")) {
-                        control.Enabled = selectedType != btnType.Substring(1);
+                    string lblType = control.Tag.ToString().Split(';')[1];
+
+                    if (lblType == "menu") {
+                        control.Enabled = true;
+                    } else if (lblType == "boarding" && selectedType != "boarding") {
+                        control.Enabled = false;
+                    } else if (selectedType == "menu" && lblType != "menu") {
+                        control.Enabled = false;
                     } else {
-                        control.Enabled = selectedType == btnType;
+                        control.Enabled = true;
                     }
                 }
+
+                if (control.GetType() == typeof(PictureBox)) {
+                    control.Visible = control.Tag.ToString() == selectedType;
+                }
+            }
+
+            if (Client.CurrentUser != null) {
+                connectionLabel.Text = "Connected to " + Client.CurrentUser.Username + "#" + Client.CurrentUser.Discriminator;
+            } else {
+                connectionLabel.Text = "Not connected.";
             }
         }
 
@@ -244,7 +288,6 @@ namespace obDRPC {
             }
             string configFile = OpenBveApi.Path.CombineFile(OptionsFolder, "options_drpc.cfg");
             File.WriteAllText(configFile, str.ToString());
-            obDRPC.RestartRPCClient();
             this.Close();
         }
     }

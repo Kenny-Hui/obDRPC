@@ -1,7 +1,3 @@
-using System.Collections.Generic;
-using DiscordRPC;
-using Button = DiscordRPC.Button;
-
 namespace obDRPC {
 	/// <summary>
 	/// Informations Default Displaying Plugin (for Testing)

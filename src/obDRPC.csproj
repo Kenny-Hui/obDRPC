@@ -64,7 +64,9 @@
     <Compile Include="ConfigForm.Designer.cs">
       <DependentUpon>ConfigForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Context.cs" />
     <Compile Include="obDRPC.cs" />
+    <Compile Include="Placeholders.cs" />
     <Compile Include="RPCData.cs" />
     <Compile Include="StationManager.cs" />
     <Compile Include="ButtonData.cs" />
@@ -92,7 +94,8 @@
     </PropertyGroup>
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>$(ILRepack) /out:OB_DRPC.dll obDRPC.dll DiscordRPC.dll Newtonsoft.Json.dll
+    <PostBuildEvent>taskkill /f /fi "imagename eq OpenBve.exe"
+$(ILRepack) /out:OB_DRPC.dll obDRPC.dll DiscordRPC.dll Newtonsoft.Json.dll
 copy OB_DRPC.dll "E:\OpenBVE\OpenBVE\OpenBVE-Nightly\Data\InputDevicePlugins"
 "E:\OpenBVE\OpenBVE\OpenBVE-Nightly\OpenBve.exe"</PostBuildEvent>
   </PropertyGroup>

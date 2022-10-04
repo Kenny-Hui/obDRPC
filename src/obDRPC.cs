@@ -29,18 +29,21 @@ namespace obDRPC {
 		/// </summary>
 		public InputControl[] Controls { get; private set; }
 
-		private static string ClientId = "";
-		private static string OptionsFolder;
-		private static string oBVersion = "Unknown";
-		private static bool IsInGame;
-		private static int EMNotch;
-		private static FileSystem FileSystem;
-		private static Dictionary<string, RPCData> RichPresenceList = new Dictionary<string, RPCData>();
-		private static Timestamps StartTimestamp;
-		private static ElapseData LastElapseData;
-		private static DateTime LastRPCUpdate;
-		internal static DiscordRpcClient Client;
-		internal static DoorStates doorState = DoorStates.None;
+		internal static Context CurrentContext;
+		private string ClientId;
+		private string OptionsFolder;
+		private string ProgramVersion;
+		private bool IsInGame;
+		private int SpeedLimit = 70;
+		private VehicleSpecs specs;
+		private FileSystem FileSystem;
+		private Dictionary<string, RPCData> RichPresenceList = new Dictionary<string, RPCData>();
+		private Timestamps StartTimestamp;
+		private ElapseData LastElapseData;
+		private DateTime LastRPCUpdate;
+		private Placeholders Placeholder = new Placeholders();
+		private DiscordRpcClient Client;
+		private DoorStates doorState = DoorStates.None;
 		private const int MAX_BTN_CHAR = 32;
 		private const int RPC_REFRESH_INTERVAL = 1000;
 
@@ -51,12 +54,14 @@ namespace obDRPC {
 		/// <returns>Check the plugin loading process is successfully</returns>
 		public bool Load(FileSystem fileSystem)
 		{
+			LastElapseData = null;
 			Controls = new InputControl[1];
 			FileSystem = fileSystem;
 			StartTimestamp = Timestamps.Now;
 			LastRPCUpdate = DateTime.UtcNow;
-			oBVersion = getEntryVersion();
+			ProgramVersion = getEntryVersion();
 			OptionsFolder = OpenBveApi.Path.CombineDirectory(FileSystem.SettingsFolder, "1.5.0");
+			CurrentContext = Context.Menu;
 			LoadConfig();
 
 			if (string.IsNullOrEmpty(ClientId)) {
@@ -88,7 +93,7 @@ namespace obDRPC {
 		/// </summary>
 		/// <param name="owner">The owner of the window</param>
 		public void Config(IWin32Window owner) {
-            using (var form = new ConfigForm(RichPresenceList, OptionsFolder)) {
+            using (var form = new ConfigForm(RichPresenceList, Client, Placeholder, OptionsFolder)) {
                 form.ShowDialog(owner);
             }
         }
@@ -110,10 +115,11 @@ namespace obDRPC {
 		{
 			if (!IsInGame) {
 				IsInGame = true;
+				CurrentContext = Context.InGame;
 				StartTimestamp = Timestamps.Now;
 			}
 
-			StationManager.Update(data);
+			StationManager.Update(data, doorState);
 
 			LastElapseData = data;
 
@@ -142,7 +148,7 @@ namespace obDRPC {
 		{
 		}
 
-		private static void UpdatePresence(RPCData data) {
+		private void UpdatePresence(RPCData data) {
 			if (data == null) {
 				return;
 			}
@@ -152,13 +158,13 @@ namespace obDRPC {
                 presence.Timestamps = StartTimestamp;
             }
 			
-			presence.Details = ParsePlaceholders(data.details);
-			presence.State = ParsePlaceholders(data.state);
+			presence.Details = ParsePlaceholders(data.details, 1024);
+			presence.State = ParsePlaceholders(data.state, 1024);
 			presence.Assets = new Assets();
-			if (!string.IsNullOrEmpty(data.assetsData.LargeImageText)) presence.Assets.LargeImageText = ParsePlaceholders(data.assetsData.LargeImageText);
-			if (!string.IsNullOrEmpty(data.assetsData.LargeImageKey)) presence.Assets.LargeImageKey = ParsePlaceholders(data.assetsData.LargeImageKey);
-			if (!string.IsNullOrEmpty(data.assetsData.SmallImageText)) presence.Assets.SmallImageText = ParsePlaceholders(data.assetsData.SmallImageText);
-			if (!string.IsNullOrEmpty(data.assetsData.SmallImageKey)) presence.Assets.SmallImageKey = ParsePlaceholders(data.assetsData.SmallImageKey);
+			if (!string.IsNullOrEmpty(data.assetsData.LargeImageText)) presence.Assets.LargeImageText = ParsePlaceholders(data.assetsData.LargeImageText, 1024);
+			if (!string.IsNullOrEmpty(data.assetsData.LargeImageKey)) presence.Assets.LargeImageKey = ParsePlaceholders(data.assetsData.LargeImageKey, 1024);
+			if (!string.IsNullOrEmpty(data.assetsData.SmallImageText)) presence.Assets.SmallImageText = ParsePlaceholders(data.assetsData.SmallImageText, 1024);
+			if (!string.IsNullOrEmpty(data.assetsData.SmallImageKey)) presence.Assets.SmallImageKey = ParsePlaceholders(data.assetsData.SmallImageKey, 1024);
 
 			List<Button> buttons = new List<Button>();
 			foreach (ButtonData btnData in data.buttons) {
@@ -177,45 +183,7 @@ namespace obDRPC {
 			Client.SetPresence(presence);
 		}
 
-		private static string ParsePlaceholders(string str, int maxChar = 32767) {
-			string modifiedStr = str == null ? "" : str;
-			if (LastElapseData != null) {
-				string speedKmh = Math.Abs(LastElapseData.Vehicle.Speed.KilometersPerHour).ToString("0");
-				string speedMph = Math.Abs(LastElapseData.Vehicle.Speed.MilesPerHour).ToString("0");
-				string reverser = LastElapseData.Handles.Reverser == -1 ? "B" : LastElapseData.Handles.Reverser == 0 ? "N" : "F";
-				string powerNotch = LastElapseData.Handles.PowerNotch > 0 ? "P" + LastElapseData.Handles.PowerNotch : "N";
-				string brakeNotch = LastElapseData.Handles.BrakeNotch == EMNotch ? "EMG" : LastElapseData.Handles.BrakeNotch > 0 ? "B" + LastElapseData.Handles.BrakeNotch : "N";
-				string nextStationName = StationManager.NextStation == null ? "" : StationManager.NextStation.Name;
-				string prevStationName = StationManager.PreviousStation == null ? "" : StationManager.PreviousStation.Name;
-				string nextStationDist = Math.Abs(StationManager.NextStnDist) < 1 ? StationManager.NextStnDist.ToString("F") : ((int)Math.Round(StationManager.NextStnDist)).ToString();
-
-				modifiedStr = modifiedStr
-					.Replace("{time}", DateTimeOffset.FromUnixTimeMilliseconds((long)LastElapseData.TotalTime.Milliseconds).ToString("HH:mm:ss"))
-					.Replace("{speedKmh}", speedKmh)
-					.Replace("{speedMph}", speedMph)
-					.Replace("{reverser}", reverser)
-					.Replace("{powerNotch}", powerNotch)
-					.Replace("{brakeNotch}", brakeNotch)
-					.Replace("{notch}", LastElapseData.Handles.BrakeNotch > 0 ? brakeNotch : powerNotch)
-					.Replace("{nextStnName}", nextStationName)
-					.Replace("{prevStnName}", prevStationName)
-					.Replace("{nextStnDist}", nextStationDist);
-
-				if (StationManager.Boarding) {
-					string doors = doorState == DoorStates.Left ? "<<< Doors" : doorState == DoorStates.Right ? "Doors >>>" : "<<< Doors >>>";
-					modifiedStr = modifiedStr
-						.Replace("{doors}", doors)
-						.Replace("{curStnName}", StationManager.CurrentStation.Name)
-						.Replace("{curStnDwell}", StationManager.CurrentStation.StopTime.ToString())
-						.Replace("{curStnDwellLeft}", ((int)StationManager.DwellLeft).ToString());
-				}
-			}
-
-			modifiedStr = modifiedStr.Replace("{programVersion}", oBVersion);
-			return modifiedStr.Substring(0, Math.Min(modifiedStr.Length, maxChar));
-		}
-
-		internal static void LoadConfig()
+		internal void LoadConfig()
 		{
 			if (!System.IO.Directory.Exists(OptionsFolder)) {
 				System.IO.Directory.CreateDirectory(OptionsFolder);
@@ -300,17 +268,21 @@ namespace obDRPC {
 			}
 		}
 
-		internal static string getEntryVersion() {
+		internal string getEntryVersion() {
 			return Assembly.GetEntryAssembly().GetName().Version.ToString();
 		}
 
-        internal static void SaveConfig() {
+        internal void SaveConfig() {
 
 		}
 
         public void SetVehicleSpecs(VehicleSpecs specs) {
-			EMNotch = specs.BrakeNotches + 1;
+			this.specs = specs;
         }
+
+		public string ParsePlaceholders(string input, int maxChar) {
+			return Placeholder.ParsePlaceholders(input, ProgramVersion, LastElapseData, specs, doorState, CurrentContext, maxChar);
+		}
 
         public void DoorChange(DoorStates oldState, DoorStates newState) {
 			doorState = newState;
@@ -319,22 +291,24 @@ namespace obDRPC {
         public void SetSignal(SignalData[] data) {
         }
 
-        public void SetBeacon(BeaconData data) {
-        }
-
-		public static void RestartRPCClient() {
-			//if (string.IsNullOrEmpty(ClientId)) {
-			//	return;
-			//}
-
-			//LoadConfig();
-
-			//Client = new DiscordRpcClient(ClientId);
-			//if (Client.Initialize() == false) {
-			//	return;
-			//}
-
-			//UpdatePresence(RichPresenceList.ContainsKey("menu") ? RichPresenceList["menu"] : null);
+		public void SetBeacon(BeaconData data) {
+			// OpenBVE Speed limit
+			if (data.Type == -16777214) {
+				SpeedLimit = data.Optional;
+			}
 		}
-    }
+
+		public static string getContextName(Context context) {
+			switch (context) {
+				case Context.Menu:
+					return "menu";
+				case Context.Boarding:
+					return "boarding";
+				case Context.InGame:
+					return "game";
+				default:
+					return "";
+			}
+		}
+	}
 }

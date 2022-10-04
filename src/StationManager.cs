@@ -14,26 +14,29 @@ namespace obDRPC {
 		public static double NextStnDist;
 		public static bool Boarding;
 		public static double DwellLeft;
-		public static void Update(ElapseData data) {
+		public static void Update(ElapseData data, DoorStates doorState) {
 			double trainPosition = data.Vehicle.Location;
-			bool trainLeftDoorOpened = obDRPC.doorState == DoorStates.Left || obDRPC.doorState == DoorStates.Both;
-			bool trainRightDoorOpened = obDRPC.doorState == DoorStates.Right || obDRPC.doorState == DoorStates.Both;
+			bool trainLeftDoorOpened = doorState == DoorStates.Left || doorState == DoorStates.Both;
+			bool trainRightDoorOpened = doorState == DoorStates.Right || doorState == DoorStates.Both;
 
 			for (int i = 0; i < data.Stations.Count; i++) {
 				Station stn = data.Stations[i];
+				if (stn.StopMode == StationStopMode.PlayerPass || stn.StopMode == StationStopMode.AllPass) continue;
 				if (stn.StopPosition + STOP_TOLERANCE <= trainPosition) continue;
 				NextStation = stn;
 				NextStnDist = NextStation.StopPosition - trainPosition;
 				PreviousStation = i == 0 ? data.Stations[0] : data.Stations[i - 1];
 
-				if (trainPosition > NextStation.DefaultTrackPosition && trainPosition < NextStation.StopPosition + STOP_TOLERANCE && obDRPC.doorState != DoorStates.None) {
+				if (trainPosition > NextStation.DefaultTrackPosition && trainPosition < NextStation.StopPosition + STOP_TOLERANCE && doorState != DoorStates.None) {
 					bool doorOpenedCorrectly = (trainLeftDoorOpened && stn.OpenLeftDoors) || (trainRightDoorOpened && stn.OpenRightDoors) || ((trainLeftDoorOpened && trainRightDoorOpened) && (stn.OpenLeftDoors && stn.OpenRightDoors));
 					// Assume we are boarding
 					if (doorOpenedCorrectly) {
+						obDRPC.CurrentContext = Context.Boarding;
 						CurrentStation = stn;
 						Boarding = true;
 						if (DepTime == 0) {
-							DepTime = data.TotalTime.Seconds + stn.StopTime;
+							//TODO: We can't grab the minimum boarding time to determine the actual boarding time
+							DepTime = stn.DepartureTime;
 						}
 						DwellLeft = DepTime - data.TotalTime.Seconds;
 					}
@@ -41,6 +44,7 @@ namespace obDRPC {
 					CurrentStation = null;
 					Boarding = false;
 					DepTime = 0;
+					obDRPC.CurrentContext = Context.InGame;
 				}
 				break;
 			}
