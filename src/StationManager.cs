@@ -35,8 +35,11 @@ namespace obDRPC {
 						CurrentStation = stn;
 						Boarding = true;
 						if (DepTime == 0) {
-							//TODO: We can't grab the minimum boarding time to determine the actual boarding time
-							DepTime = stn.DepartureTime;
+							if (stn.DepartureTime - data.TotalTime.Seconds > stn.StopTime) {
+								DepTime = stn.DepartureTime;
+							} else {
+								DepTime = data.TotalTime.Seconds + stn.StopTime;
+							}
 						}
 						DwellLeft = DepTime - data.TotalTime.Seconds;
 					}

@@ -13,6 +13,9 @@ This is an Input Plugin for OpenBVE that serves the purpose of displaying a Rich
 - A tutorial for your average users
 - Presets that can be toggled in-game with a keybind
 
+## Requirements
+- OpenBVE Nightly Build (2022-09-06 and onwards)
+
 ## Setup
 - Go to https://discord.com/developers/applications/ and create an application. (The name you chose will be displayed as "Playing [your name]")
 - Copy the numeric ID that's visible below "Application ID".
