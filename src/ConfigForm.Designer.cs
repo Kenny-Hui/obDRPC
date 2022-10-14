@@ -189,7 +189,6 @@
             this.appIdTextBox.MaxLength = 18;
             this.appIdTextBox.Name = "appIdTextBox";
             this.appIdTextBox.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.appIdTextBox.ShortcutsEnabled = false;
             this.appIdTextBox.Size = new System.Drawing.Size(161, 26);
             this.appIdTextBox.TabIndex = 34;
             this.appIdTextBox.Tag = "appId";

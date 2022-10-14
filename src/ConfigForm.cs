@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using System.IO;
 using System.Collections.Generic;
@@ -167,7 +168,11 @@ namespace obDRPC {
             if (Client?.CurrentUser != null) {
                 connectionLabel.Text = "Connected to " + Client.CurrentUser.Username + "#" + Client.CurrentUser.Discriminator;
             } else {
-                connectionLabel.Text = "Not connected.";
+                if (Client == null) {
+                    connectionLabel.Text = "Cannot login, please check your application ID.";
+                } else {
+                    connectionLabel.Text = "Not connected.";
+                }
             }
         }
 
@@ -182,6 +187,11 @@ namespace obDRPC {
         }
 
         private void SaveCfg_Click(object sender, EventArgs e) {
+            if (!appIdTextBox.Text.All(char.IsDigit)) {
+                MessageBox.Show("Application ID should be number only.");
+                return;
+            }
+
             Dictionary<string, ButtonData> btn1Data = new Dictionary<string, ButtonData>();
             Dictionary<string, ButtonData> btn2Data = new Dictionary<string, ButtonData>();
 

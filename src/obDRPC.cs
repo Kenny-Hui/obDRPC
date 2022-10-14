@@ -210,8 +210,8 @@ namespace obDRPC {
 					if (!currentLine.Contains("=")) continue;
 					string key = currentLine.Split('=')[0].Trim().ToLowerInvariant();
 					string value = currentLine.Split('=')[1].Trim();
-                    RPCData presence;
-                    if (RichPresenceList.ContainsKey(Section)) {
+					RPCData presence;
+					if (RichPresenceList.ContainsKey(Section)) {
 						presence = RichPresenceList[Section];
 					} else {
 						presence = new RPCData();
