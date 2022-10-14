@@ -71,63 +71,66 @@ namespace obDRPC {
             }
 
             foreach (Control control in this.Controls) {
+                string tagName = control.Tag == null ? "" : control.Tag.ToString();
+
+                if (tagName == "appId") {
+                    control.Text = Client?.ApplicationID;
+                    continue;
+                }
+
+                if (!tagName.Contains(";")) {
+                    continue;
+                }
+
+                string prop = tagName.Split(';')[0];
+                string category = tagName.Split(';')[1];
+
+                if (category.Length == 0) {
+                    continue;
+                }
+
+                if (!RichPresenceList.ContainsKey(category)) {
+                    RichPresenceList.Add(category, new RPCData());
+                }
+
                 if (control.GetType() == typeof(TextBox) || control.GetType() == typeof(RichTextBox)) {
-                    if (control.Tag == null) {
-                        continue;
+                    RPCData data = RichPresenceList[category];
+
+                    if (prop == "details") {
+                        control.Text = data.details;
                     }
 
-                    string prop = control.Tag.ToString().Split(';')[0];
-                    string category = control.Tag.ToString().Split(';')[1];
+                    if (prop == "state") {
+                        control.Text = data.state;
+                    }
 
-                    if (prop == "appId") {
-                        control.Text = Client.ApplicationID;
-                    } else {
-                        if (!RichPresenceList.ContainsKey(category)) {
-                            RichPresenceList.Add(category, new RPCData());
-                        }
+                    if (prop == "largeimgkey") {
+                        control.Text = data.assetsData?.LargeImageKey;
+                    }
 
-                        RPCData data = RichPresenceList[category];
-                        if (category.Length == 0) {
-                            continue;
-                        }
+                    if (prop == "largeimgtext") {
+                        control.Text = data.assetsData?.LargeImageText;
+                    }
 
-                        if (prop == "details") {
-                            control.Text = data.details;
-                        }
+                    if (prop == "smallimgkey") {
+                        control.Text = data.assetsData?.SmallImageKey;
+                    }
 
-                        if (prop == "state") {
-                            control.Text = data.state;
-                        }
+                    if (prop == "smallimgtext") {
+                        control.Text = data.assetsData?.SmallImageText;
+                    }
 
-                        if (prop == "largeimgkey") {
-                            control.Text = data.assetsData.LargeImageKey;
-                        }
+                    if (prop == "btn1text" && data.buttons?.Count >= 1) {
+                        control.Text = data.buttons?[0].Label + "|" + data.buttons?[0].Url;
+                    }
 
-                        if (prop == "largeimgtext") {
-                            control.Text = data.assetsData.LargeImageText;
-                        }
-
-                        if (prop == "smallimgkey") {
-                            control.Text = data.assetsData.SmallImageKey;
-                        }
-
-                        if (prop == "smallimgtext") {
-                            control.Text = data.assetsData.SmallImageText;
-                        }
-
-                        if (prop == "btn1text" && data.buttons.Count >= 1) {
-                            control.Text = data.buttons[0].Label + "|" + data.buttons[0].Url;
-                        }
-
-                        if (prop == "btn2text" && data.buttons.Count >= 2) {
-                            control.Text = data.buttons[1].Label + "|" + data.buttons[1].Url;
-                        }
+                    if (prop == "btn2text" && data.buttons?.Count >= 2) {
+                        control.Text = data.buttons?[1].Label + "|" + data.buttons?[1].Url;
                     }
                 }
 
                 if (control.GetType() == typeof(CheckBox)) {
-                    if (control.Tag != null && control.Tag.ToString().Contains("elapsed")) {
-                        string category = control.Tag.ToString().Split(';')[1];
+                    if (prop == "elapsed") {
                         ((CheckBox)control).Checked = RichPresenceList[category].hasTimestamp;
                     }
                 }
@@ -161,7 +164,7 @@ namespace obDRPC {
                 }
             }
 
-            if (Client.CurrentUser != null) {
+            if (Client?.CurrentUser != null) {
                 connectionLabel.Text = "Connected to " + Client.CurrentUser.Username + "#" + Client.CurrentUser.Discriminator;
             } else {
                 connectionLabel.Text = "Not connected.";
@@ -203,7 +206,7 @@ namespace obDRPC {
                 }
 
                 if (RichPresenceList[category].assetsData == null) {
-                    RichPresenceList[category].assetsData = new DiscordRPC.Assets();
+                    RichPresenceList[category].assetsData = new Assets();
                 }
 
                 if (control.GetType() == typeof(CheckBox)) {

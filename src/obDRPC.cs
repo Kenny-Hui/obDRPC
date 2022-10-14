@@ -64,17 +64,15 @@ namespace obDRPC {
 			CurrentContext = Context.Menu;
 			LoadConfig();
 
-			if (string.IsNullOrEmpty(ClientId)) {
-				return false;
+			if (!string.IsNullOrEmpty(ClientId)) {
+				Client = new DiscordRpcClient(ClientId);
+				if (!Client.Initialize()) {
+					FileSystem.AppendToLogFile("[DRPC] Failed to login to Discord, please make sure your Application ID is correct and you have a stable internet connection.");
+				}
+
+				UpdatePresence(RichPresenceList.ContainsKey("menu") ? RichPresenceList["menu"] : null);
 			}
 
-			Client = new DiscordRpcClient(ClientId);
-			if (Client.Initialize() == false) {
-				FileSystem.AppendToLogFile("[DRPC] Failed to login to Discord, please make sure your Application ID is correct and you have a stable internet connection.");
-				return false;
-			}
-
-            UpdatePresence(RichPresenceList.ContainsKey("menu") ? RichPresenceList["menu"] : null);
             return true;
 		}
 
@@ -85,7 +83,7 @@ namespace obDRPC {
 		{
 			IsInGame = false;
 			StartTimestamp = Timestamps.Now;
-			Client.Dispose();
+			Client?.Dispose();
 		}
 
 		/// <summary>
@@ -149,7 +147,7 @@ namespace obDRPC {
 		}
 
 		private void UpdatePresence(RPCData data) {
-			if (data == null) {
+			if (data == null || Client == null) {
 				return;
 			}
 			

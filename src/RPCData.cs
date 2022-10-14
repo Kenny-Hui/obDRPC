@@ -11,5 +11,9 @@ namespace obDRPC {
 		public string details;
 		public string state;
 		public bool hasTimestamp;
+
+		public RPCData() {
+			this.buttons = new List<ButtonData>();
+		}
 	}
 }

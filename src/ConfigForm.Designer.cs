@@ -192,7 +192,7 @@
             this.appIdTextBox.ShortcutsEnabled = false;
             this.appIdTextBox.Size = new System.Drawing.Size(161, 26);
             this.appIdTextBox.TabIndex = 34;
-            this.appIdTextBox.Tag = "appId;";
+            this.appIdTextBox.Tag = "appId";
             this.appIdTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.appIdTextBox_KeyPress);
             // 
             // label4
