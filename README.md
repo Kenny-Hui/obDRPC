@@ -8,7 +8,7 @@ This is an Input Plugin for OpenBVE that serves the purpose of displaying a Rich
 - ~Customizable content when in the menu/in-game/boarding~
 - ~Settings Window~
 - ~Allow pasting Application ID~
-- Auto generate a config file
+- ~Ability to generate a config file~
 - Ensure stability
 - A tutorial for your average users
 - Presets that can be toggled in-game with a keybind
