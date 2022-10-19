@@ -17,7 +17,7 @@ This is an Input Plugin for OpenBVE that serves the purpose of displaying a Rich
 - OpenBVE Nightly Build (2022-09-06 and onwards)
 
 ## Setup
-- Download the files provided in the Release section or ompile the project.  
+- Download the files provided in the **Release section** or compile the project.  
 Then copy the dll to **<Your OpenBVE Installation/Data/InputDevicePlugins>**
 
 - Launch OpenBVE, Go to Options -> Next Page -> Input Device Plugin, select **Discord RPC** and click "Enable this Input Device Plugin".
