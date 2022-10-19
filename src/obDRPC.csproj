@@ -96,7 +96,12 @@
   <PropertyGroup>
     <PostBuildEvent>taskkill /f /fi "imagename eq OpenBve.exe"
 $(ILRepack) /out:OB_DRPC.dll obDRPC.dll DiscordRPC.dll Newtonsoft.Json.dll
-copy OB_DRPC.dll "E:\OpenBVE\OpenBVE\OpenBVE-Nightly\Data\InputDevicePlugins"
-"E:\OpenBVE\OpenBVE\OpenBVE-Nightly\OpenBve.exe"</PostBuildEvent>
+if defined OBVE_PATH (
+copy OB_DRPC.dll "%25OBVE_PATH%25\Data\InputDevicePlugins"
+copy OB_DRPC.pdb "%25OBVE_PATH%25\Data\InputDevicePlugins"
+"%25OBVE_PATH%25\OpenBve.exe"
+) else (
+echo No OpenBVE Path found.
+)</PostBuildEvent>
   </PropertyGroup>
 </Project>
