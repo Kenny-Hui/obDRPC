@@ -10,22 +10,30 @@ This is an Input Plugin for OpenBVE that serves the purpose of displaying a Rich
 - ~Allow pasting Application ID~
 - ~Ability to generate a config file~
 - Ensure stability
-- A tutorial for your average users
+- ~A tutorial for your average users~
 - Presets that can be toggled in-game with a keybind
 
 ## Requirements
 - OpenBVE Nightly Build (2022-09-06 and onwards)
 
 ## Setup
-- Go to https://discord.com/developers/applications/ and create an application. (The name you chose will be displayed as "Playing [your name]")
-- Copy the numeric ID that's visible below "Application ID".
-- Download the files provided in the Release section/Compile the project, then copy the dll to **<Your OpenBVE Installation/Data/InputDevicePlugins>**
+- Download the files provided in the Release section or ompile the project.  
+Then copy the dll to **<Your OpenBVE Installation/Data/InputDevicePlugins>**
+
 - Launch OpenBVE, Go to Options -> Next Page -> Input Device Plugin, select **Discord RPC** and click "Enable this Input Device Plugin".
-- Click Config, fill out the details.
+![image](https://user-images.githubusercontent.com/28094366/196678453-816c33c5-3ce9-4b9b-9216-ea2a2a393f11.png)
+
+- Go to https://discord.com/developers/applications/ and create an application by clicking **New Application** button.  
+(The name you chose will be displayed as "Playing [your name]")
+- Copy the numeric ID that's visible below "Application ID".
+![image](https://user-images.githubusercontent.com/28094366/196678999-80779eb8-d469-4318-afa9-045cf89b212b.png)
+
+- Click Config, paste in the Application ID you copied earlier, then fill out the rest of the details.
 
 ## Building
 This project is compiled with Visual Studio 2022  
-Please change the reference of `OpenBveApi.dll` to the one that comes with OpenBVE, and change the path accordingly in the Post Build Script.
+Please change the reference of `OpenBveApi.dll` to the one that comes with OpenBVE  
+To automatically launch OpenBVE after building, add the environment variable **OBVE_PATH** with it's value set to the path of your OpenBVE Installation
 
 ## License
 [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
