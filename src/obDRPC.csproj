@@ -42,8 +42,8 @@
     <PackageReference Include="DiscordRichPresence">
       <Version>1.0.175</Version>
     </PackageReference>
-    <PackageReference Include="ILRepack">
-      <Version>2.0.18</Version>
+    <PackageReference Include="ILRepack.Lib.MSBuild.Task">
+      <Version>2.0.18.2</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.1</Version>
@@ -93,14 +93,19 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
   </Target>
-  <PropertyGroup>
-    <PostBuildEvent></PostBuildEvent>
-  </PropertyGroup>
+  <Target Name="ILRepack" AfterTargets="Build">
+    <ItemGroup>
+      <InputAssemblies Include="$(OutputPath)\obDRPC.dll" />
+      <InputAssemblies Include="$(OutputPath)\Newtonsoft.Json.dll" />
+      <InputAssemblies Include="$(OutputPath)\DiscordRPC.dll" />
+    </ItemGroup>
+    <ILRepack Parallel="true" Internalize="true" LibraryPath="$(OutputPath)" InputAssemblies="@(InputAssemblies)" TargetKind="Dll" OutputFile="$(OutputPath)\OB_DRPC.dll" />
+  </Target>
   <Target Name="AfterBuild" Condition="exists('$(OBVE_PATH)')">
     <ItemGroup>
-        <FinalResult Include="bin/debug/OB_DRPC.dll" />
-		<FinalResult Include="bin/debug/OB_DRPC.pdb" />
+      <FinalResult Include="bin/debug/OB_DRPC.dll" />
+      <FinalResult Include="bin/debug/OB_DRPC.pdb" />
     </ItemGroup>
-    <Copy SourceFiles="@(FinalResult)" DestinationFolder="$(OBVE_PATH)/Data/InputDevicePlugins" SkipUnchangedFiles="true"/>
-</Target>
+    <Copy SourceFiles="@(FinalResult)" DestinationFolder="$(OBVE_PATH)/Data/InputDevicePlugins" SkipUnchangedFiles="true" />
+  </Target>
 </Project>
