@@ -171,6 +171,7 @@ namespace obDRPC {
 				Button btn = new Button();
 				btn.Label = ParsePlaceholders(btnData.Label, MAX_BTN_CHAR);
 				btn.Url = ParsePlaceholders(btnData.Url, MAX_BTN_CHAR);
+
 				buttons.Add(btn);
 			}
 
@@ -235,7 +236,12 @@ namespace obDRPC {
 					if (key.StartsWith("button") && value.Contains("|")) {
 						string text = value.Split('|')[0];
 						string url = value.Split('|')[1];
-						buttons.Add(new ButtonData(text, url));
+						Uri uri;
+						if (Uri.TryCreate(url, UriKind.Absolute, out uri)) {
+							buttons.Add(new ButtonData(text, url));
+						} else {
+							FileSystem.AppendToLogFile($"[DRPC] Line {i}: Invalid Button URL!");
+						}
 					}
 
 					if (key == "largeimagekey") {
@@ -268,10 +274,6 @@ namespace obDRPC {
 
 		internal string getEntryVersion() {
 			return Assembly.GetEntryAssembly().GetName().Version.ToString();
-		}
-
-        internal void SaveConfig() {
-
 		}
 
         public void SetVehicleSpecs(VehicleSpecs specs) {
