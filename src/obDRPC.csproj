@@ -99,9 +99,9 @@
       <InputAssemblies Include="$(OutputPath)\Newtonsoft.Json.dll" />
       <InputAssemblies Include="$(OutputPath)\DiscordRPC.dll" />
     </ItemGroup>
-    <ILRepack Parallel="true" Internalize="true" LibraryPath="$(OutputPath)" InputAssemblies="@(InputAssemblies)" TargetKind="Dll" OutputFile="$(OutputPath)\OB_DRPC.dll" />
+    <ILRepack Parallel="true" Internalize="true" DebugInfo="true" LibraryPath="$(OutputPath)" InputAssemblies="@(InputAssemblies)" TargetKind="Dll" OutputFile="$(OutputPath)\OB_DRPC.dll" />
   </Target>
-  <Target Name="AfterBuild" Condition="exists('$(OBVE_PATH)')">
+  <Target Name="AfterBuilds" AfterTargets="ILRepack" Condition="exists('$(OBVE_PATH)')">
     <ItemGroup>
       <FinalResult Include="bin/debug/OB_DRPC.dll" />
       <FinalResult Include="bin/debug/OB_DRPC.pdb" />
