@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using DiscordRPC;
 using System.Windows.Forms;
@@ -7,6 +8,7 @@ using OpenBveApi.Interface;
 using OpenBveApi.Runtime;
 using Button = DiscordRPC.Button;
 using System.Reflection;
+using System.Xml;
 
 namespace obDRPC {
 	/// <summary>
@@ -37,7 +39,8 @@ namespace obDRPC {
 		private int SpeedLimit = 70;
 		private VehicleSpecs specs;
 		private FileSystem FileSystem;
-		private Dictionary<string, RPCData> RichPresenceList = new Dictionary<string, RPCData>();
+		private string selectedProfile;
+		private Dictionary<string, Profile> ProfileList = new Dictionary<string, Profile>();
 		private Timestamps StartTimestamp;
 		private ElapseData LastElapseData;
 		private DateTime LastRPCUpdate;
@@ -63,6 +66,7 @@ namespace obDRPC {
 			OptionsFolder = OpenBveApi.Path.CombineDirectory(FileSystem.SettingsFolder, "1.5.0");
 			CurrentContext = Context.Menu;
 			LoadConfig();
+			selectedProfile = ProfileList.Count == 0 ? null : ProfileList.Keys.First();
 
 			if (!string.IsNullOrEmpty(ClientId)) {
 				Client = new DiscordRpcClient(ClientId);
@@ -70,7 +74,7 @@ namespace obDRPC {
 					FileSystem.AppendToLogFile("[DRPC] Failed to login to Discord, please make sure your Application ID is correct and you have a stable internet connection.");
 				}
 
-				UpdatePresence(RichPresenceList.ContainsKey("menu") ? RichPresenceList["menu"] : null);
+                UpdatePresence(ProfileList[selectedProfile].PresenceList["menu"]);
 			}
 
             return true;
@@ -91,7 +95,7 @@ namespace obDRPC {
 		/// </summary>
 		/// <param name="owner">The owner of the window</param>
 		public void Config(IWin32Window owner) {
-            using (var form = new ConfigForm(RichPresenceList, Client, Placeholder, OptionsFolder)) {
+            using (var form = new ConfigForm(ProfileList, Client, Placeholder, OptionsFolder)) {
                 form.ShowDialog(owner);
             }
         }
@@ -118,14 +122,13 @@ namespace obDRPC {
 			}
 
 			StationManager.Update(data, doorState);
-
 			LastElapseData = data;
 
-			if ((DateTime.UtcNow - LastRPCUpdate).TotalMilliseconds >= RPC_REFRESH_INTERVAL) {
+			if (selectedProfile != null && (DateTime.UtcNow - LastRPCUpdate).TotalMilliseconds >= RPC_REFRESH_INTERVAL) {
 				if (StationManager.Boarding) {
-					UpdatePresence(RichPresenceList.ContainsKey("boarding") ? RichPresenceList["boarding"] : null);
+					UpdatePresence(ProfileList[selectedProfile].PresenceList["boarding"]);
 				} else {
-					UpdatePresence(RichPresenceList.ContainsKey("game") ? RichPresenceList["game"] : null);
+					UpdatePresence(ProfileList[selectedProfile].PresenceList["game"]);
 				}
 				LastRPCUpdate = DateTime.UtcNow;
 			}
@@ -184,89 +187,73 @@ namespace obDRPC {
 
 		internal void LoadConfig()
 		{
+			ProfileList.Clear();
 			if (!System.IO.Directory.Exists(OptionsFolder)) {
 				System.IO.Directory.CreateDirectory(OptionsFolder);
 			}
 
-			string configFile = OpenBveApi.Path.CombineFile(OptionsFolder, "options_drpc.cfg");
+			string configFile = OpenBveApi.Path.CombineFile(OptionsFolder, "options_drpc.xml");
 			if (System.IO.File.Exists(configFile)) {
-				string[] Lines = System.IO.File.ReadAllLines(configFile, new System.Text.UTF8Encoding());
-				string Section = "";
-				for (int i = 0; i < Lines.Length; i++) {
-					string currentLine = Lines[i].Trim();
-					if (currentLine.Length == 0 || currentLine.StartsWith(";")) {
-						continue;
-					}
+				Dictionary<string, RPCData> presenceList = new Dictionary<string, RPCData>();
+				XmlDocument xmlDoc = new XmlDocument();
+				xmlDoc.Load(configFile);
+				if (xmlDoc.GetElementsByTagName("appId") != null) {
+					ClientId = xmlDoc.GetElementsByTagName("appId")[0].InnerText;
+				}
 
-					if (currentLine.StartsWith("[") && currentLine.EndsWith("]")) {
-						Section = currentLine.Substring(1, currentLine.Length - 2);
-						continue;
-					}
+				if (xmlDoc.GetElementsByTagName("presenceList")[0] != null) {
+					foreach (XmlElement element in xmlDoc.GetElementsByTagName("presenceList")[0].ChildNodes) {
+						RPCData presence = new RPCData();
+						string id = element.GetAttribute("id");
+						if (id == null) continue;
 
-					if (Section == "appId") {
-						ClientId = currentLine;
-						continue;
-					}
+						presence.details = element.GetElementsByTagName("details")[0]?.InnerText;
+						presence.state = element.GetElementsByTagName("state")[0]?.InnerText;
 
-					if (!currentLine.Contains("=")) continue;
-					string key = currentLine.Split('=')[0].Trim().ToLowerInvariant();
-					string value = currentLine.Split('=')[1].Trim();
-					RPCData presence;
-					if (RichPresenceList.ContainsKey(Section)) {
-						presence = RichPresenceList[Section];
-					} else {
-						presence = new RPCData();
-					}
-
-					List<ButtonData> buttons = presence.buttons != null ? presence.buttons : new List<ButtonData>();
-					Assets assets = presence.assetsData != null ? presence.assetsData : new Assets();
-
-					if (key == "details") {
-						presence.details = value;
-					}
-
-					if (key == "state") {
-						presence.state = value;
-					}
-
-					if (key == "hastimestamp") {
-						presence.hasTimestamp = value == "true";
-					}
-
-					if (key.StartsWith("button") && value.Contains("|")) {
-						string text = value.Split('|')[0];
-						string url = value.Split('|')[1];
-						Uri uri;
-						if (Uri.TryCreate(url, UriKind.Absolute, out uri)) {
-							buttons.Add(new ButtonData(text, url));
-						} else {
-							FileSystem.AppendToLogFile($"[DRPC] Line {i}: Invalid Button URL!");
+						if (element.GetElementsByTagName("hasTimestamp")[0]?.InnerText != null) {
+							presence.hasTimestamp = XmlConvert.ToBoolean(element.GetElementsByTagName("hasTimestamp")[0].InnerText);
 						}
+
+						/* Assets */
+						if (element.GetElementsByTagName("largeImageKey")[0] != null) {
+							presence.AddLargeImageKey(element.GetElementsByTagName("largeImageKey")[0].InnerText);
+						}
+
+						if (element.GetElementsByTagName("largeImageText")[0] != null) {
+							presence.AddLargeImageText(element.GetElementsByTagName("largeImageText")[0].InnerText);
+						}
+
+						if (element.GetElementsByTagName("smallImageKey")[0] != null) {
+							presence.AddSmallImageKey(element.GetElementsByTagName("smallImageKey")[0].InnerText);
+						}
+
+						if (element.GetElementsByTagName("smallImageText")[0] != null) {
+							presence.AddSmallImageText(element.GetElementsByTagName("smallImageText")[0].InnerText);
+						}
+
+						/* Button */
+						foreach (XmlElement button in element.GetElementsByTagName("button")) {
+							string text = button.GetElementsByTagName("text")[0]?.InnerText;
+							string url = button.GetElementsByTagName("url")[0]?.InnerText;
+							if (text != null && url != null) {
+								presence.AddButton(text, url);
+							}
+						}
+
+						presenceList.Add(id, presence);
 					}
 
-					if (key == "largeimagekey") {
-						assets.LargeImageKey = value;
-					}
-
-					if (key == "largeimagetext") {
-						assets.LargeImageText = value;
-					}
-
-					if (key == "smallimagekey") {
-						assets.SmallImageKey = value;
-					}
-
-					if (key == "smallimagetext") {
-						assets.SmallImageText = value;
-					}
-
-					presence.buttons = buttons;
-					presence.assetsData = assets;
-
-					if (RichPresenceList.ContainsKey(Section)) {
-						RichPresenceList[Section] = presence;
-					} else {
-						RichPresenceList.Add(Section, presence);
+					/* Parse profile */
+					foreach(XmlElement profile in xmlDoc.GetElementsByTagName("profile")) {
+						string name = profile.GetAttribute("name");
+						if (name == null) continue;
+						string menu = profile.GetElementsByTagName("menu")[0]?.InnerText;
+						string game = profile.GetElementsByTagName("game")[0]?.InnerText;
+						string boarding = profile.GetElementsByTagName("boarding")[0]?.InnerText;
+						RPCData menuPresence = menu != null && presenceList.ContainsKey(menu) ? presenceList[menu] : null;
+						RPCData gamePresence = game != null && presenceList.ContainsKey(game) ? presenceList[game] : null;
+						RPCData boardingPresence = boarding != null && presenceList.ContainsKey(boarding) ? presenceList[boarding] : null;
+						ProfileList.Add(name, new Profile(menuPresence, gamePresence, boardingPresence));
 					}
 				}
 			}

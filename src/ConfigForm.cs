@@ -1,31 +1,35 @@
 ﻿using System;
 using System.Linq;
-using System.Text;
 using System.IO;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using DiscordRPC;
+using System.Xml;
 
 namespace obDRPC {
     public partial class ConfigForm : Form {
         private string OptionsFolder;
-        private Dictionary<string, RPCData> RichPresenceList = null;
+        private string selectedProfile;
+        private Dictionary<string, Profile> ProfileList = null;
         private TextBoxBase selectedTextBox = null;
         private DiscordRpcClient Client;
         
-        public ConfigForm(Dictionary<string, RPCData> richPresenceList, DiscordRpcClient client, Placeholders placeholders, string optionsFolder) {
+        public ConfigForm(Dictionary<string, Profile> profileList, DiscordRpcClient client, Placeholders placeholders, string optionsFolder) {
             InitializeComponent();
-            RichPresenceList = richPresenceList;
+            ProfileList = profileList;
             this.OptionsFolder = optionsFolder;
             this.Client = client;
-            UpdateUI("menu");
-            init(placeholders);
+            this.selectedProfile = ProfileList.First().Key;
+            SetupProfileButtons();
+            UpdateUIContext("menu");
+            ListPlaceholders(placeholders);
+            LoadProfile(selectedProfile);
         }
 
         private void insertableTextSelect(object sender, EventArgs e) {
             string type = ((Control)sender).Tag.ToString().Split(';')[1];
             selectedTextBox = sender as TextBoxBase;
-            UpdateUI(type);
+            UpdateUIContext(type);
         }
 
         private void insertPlaceholder(object sender, EventArgs e) {
@@ -43,13 +47,57 @@ namespace obDRPC {
             ((Control)sender).ForeColor = System.Drawing.Color.LightGray;
         }
 
-        private void init(Placeholders placeholders) {
+        private void SetupProfileButtons(Control caller = null) {
+            foreach (Control control in this.Controls) {
+                if (control?.Tag?.ToString() == "pfBtn") {
+                    this.Controls.Remove(control);
+                }
+            }
+
+            if (caller != null) {
+                this.Controls.Remove(caller);
+            }
+
+            int i = 0;
+            foreach (string key in ProfileList.Keys) {
+                System.Windows.Forms.Button btn = new System.Windows.Forms.Button() {
+                    Tag = "pfBtn",
+                    Text = key,
+                    UseVisualStyleBackColor = true,
+                    Location = new System.Drawing.Point(17 + (75 * i), 213)
+                };
+                btn.Click += (sender, e) => {
+                    LoadProfile(key);
+                };
+                this.Controls.Add(btn);
+                i++;
+            }
+
+            System.Windows.Forms.Button addBtn = new System.Windows.Forms.Button() {
+                Text = "+",
+                UseVisualStyleBackColor = true,
+                Location = new System.Drawing.Point(17 + (75 * i), 213),
+                Size = new System.Drawing.Size(23, 23)
+            };
+
+            addBtn.Click += (sender, e) => {
+                string profileName = ProfileDialog.Show(ProfileList);
+                if (profileName == null) return;
+
+                ProfileList.Add(profileName, new Profile());
+                SetupProfileButtons((Control)sender);
+                LoadProfile(profileName);
+            };
+            this.Controls.Add(addBtn);
+        }
+
+        private void ListPlaceholders(Placeholders placeholders) {
             int x = 0;
             int y = 0;
             int s = 0;
-            double perRow = 7;
-            foreach(Placeholder placeholder in placeholders.placeholderList) {
-                if(s >= perRow) {
+            double perRow = 6;
+            foreach (Placeholder placeholder in placeholders.placeholderList) {
+                if (s >= perRow) {
                     s = 0;
                     x += this.Width / (int)Math.Ceiling(placeholders.placeholderList.Count / perRow);
                     y = 0;
@@ -70,6 +118,11 @@ namespace obDRPC {
                 s++;
                 y += 25;
             }
+        }
+
+        private void LoadProfile(string profileName) {
+            Profile profile = ProfileList.ContainsKey(profileName) ? ProfileList[profileName] : null;
+            if (profile == null) return;
 
             foreach (Control control in this.Controls) {
                 string tagName = control.Tag == null ? "" : control.Tag.ToString();
@@ -90,12 +143,9 @@ namespace obDRPC {
                     continue;
                 }
 
-                if (!RichPresenceList.ContainsKey(category)) {
-                    RichPresenceList.Add(category, new RPCData());
-                }
-
                 if (control.GetType() == typeof(TextBox) || control.GetType() == typeof(RichTextBox)) {
-                    RPCData data = RichPresenceList[category];
+                    RPCData data = profile.PresenceList[category];
+                    if (data == null) continue;
 
                     if (prop == "details") {
                         control.Text = data.details;
@@ -121,24 +171,32 @@ namespace obDRPC {
                         control.Text = data.assetsData?.SmallImageText;
                     }
 
-                    if (prop == "btn1text" && data.buttons?.Count >= 1) {
-                        control.Text = data.buttons?[0].Label + "|" + data.buttons?[0].Url;
+                    if (prop == "btn1text") {
+                        if (data.buttons != null && data.buttons.Count >= 1) {
+                            control.Text = data.buttons[0].Label + "|" + data.buttons[0].Url;
+                        } else {
+                            control.Text = "";
+                        }
                     }
 
-                    if (prop == "btn2text" && data.buttons?.Count >= 2) {
-                        control.Text = data.buttons?[1].Label + "|" + data.buttons?[1].Url;
+                    if (prop == "btn2text") {
+                        if (data.buttons != null && data.buttons.Count >= 2) {
+                            control.Text = data.buttons[1].Label + "|" + data.buttons[0].Url;
+                        } else {
+                            control.Text = "";
+                        }
                     }
                 }
 
                 if (control.GetType() == typeof(CheckBox)) {
                     if (prop == "elapsed") {
-                        ((CheckBox)control).Checked = RichPresenceList[category].hasTimestamp;
+                        ((CheckBox)control).Checked = ProfileList.First().Value.PresenceList[category].hasTimestamp;
                     }
                 }
             }
         }
 
-        private void UpdateUI(string selectedType) {
+        private void UpdateUIContext(string selectedType) {
             foreach (Control control in this.Controls) {
                 if (control.Tag == null) {
                     continue;
@@ -211,43 +269,35 @@ namespace obDRPC {
                     continue;
                 }
 
-                if (!RichPresenceList.ContainsKey(category)) {
-                    RichPresenceList.Add(category, new RPCData());
-                }
-
-                if (RichPresenceList[category].assetsData == null) {
-                    RichPresenceList[category].assetsData = new Assets();
-                }
-
                 if (control.GetType() == typeof(CheckBox)) {
                     if (prop == "elapsed") {
-                        RichPresenceList[category].hasTimestamp = ((CheckBox)control).Checked;
+                        ProfileList.First().Value.PresenceList[category].hasTimestamp = ((CheckBox)control).Checked;
                     }
                 }
 
                 if (control.GetType() == typeof(TextBox) || control.GetType() == typeof(RichTextBox)) {
                     if (prop == "details") {
-                        RichPresenceList[category].details = control.Text;
+                        ProfileList.First().Value.PresenceList[category].details = control.Text;
                     }
 
                     if (prop == "state") {
-                        RichPresenceList[category].state = control.Text;
+                        ProfileList.First().Value.PresenceList[category].state = control.Text;
                     }
 
                     if (prop == "largeimgkey") {
-                        RichPresenceList[category].assetsData.LargeImageKey = control.Text;
+                        ProfileList.First().Value.PresenceList[category].AddLargeImageKey(control.Text);
                     }
 
                     if (prop == "largeimgtext") {
-                        RichPresenceList[category].assetsData.LargeImageText = control.Text;
+                        ProfileList.First().Value.PresenceList[category].AddLargeImageText(control.Text);
                     }
 
                     if (prop == "smallimgkey") {
-                        RichPresenceList[category].assetsData.SmallImageKey = control.Text;
+                        ProfileList.First().Value.PresenceList[category].AddSmallImageKey(control.Text);
                     }
 
                     if (prop == "smallimgtext") {
-                        RichPresenceList[category].assetsData.SmallImageText = control.Text;
+                        ProfileList.First().Value.PresenceList[category].AddSmallImageText(control.Text);
                     }
 
                     if (prop == "btn1text" && control.Text.Contains("|")) {
@@ -260,48 +310,97 @@ namespace obDRPC {
                 }
             }
 
-            StringBuilder str = new StringBuilder();
-            str.AppendLine("[appId]");
-            str.AppendLine(appIdTextBox.Text);
-            str.AppendLine("");
+            XmlDocument xmlDoc = new XmlDocument();
+            XmlElement dataElement = xmlDoc.CreateElement("data");
+            XmlElement appIdElement = xmlDoc.CreateElement("appId");
+            XmlElement presenceListElement = xmlDoc.CreateElement("presenceList");
+            appIdElement.InnerText = appIdTextBox.Text;
 
-            foreach (KeyValuePair<string, RPCData> item in RichPresenceList) {
-                string cate = item.Key;
-                RichPresenceList[cate].buttons.Clear();
+            Profile profile = ProfileList.First().Value;
+
+            foreach (KeyValuePair<string, RPCData> pair in profile.PresenceList) {
+                string context = pair.Key;
+                RPCData presence = pair.Value;
+                XmlElement presenceElement = xmlDoc.CreateElement("presenceElement");
+                presenceElement.SetAttribute("id", pair.Key);
+
+                presence.buttons.Clear();
+
                 foreach (var data in btn1Data) {
-                    RichPresenceList[data.Key].buttons.Add(data.Value);
+                    presence.buttons.Add(data.Value);
                 }
 
                 foreach (var data in btn2Data) {
-                    RichPresenceList[data.Key].buttons.Add(data.Value);
+                    presence.buttons.Add(data.Value);
                 }
 
-                str.AppendLine("[" + cate + "]");
-                if(RichPresenceList[cate].details.Length > 0) str.AppendLine("details=" + RichPresenceList[cate].details);
-                if (RichPresenceList[cate].state.Length > 0) str.AppendLine("state=" + RichPresenceList[cate].state);
-                str.AppendLine("hasTimestamp=" + RichPresenceList[cate].hasTimestamp.ToString().ToLowerInvariant());
-                if (RichPresenceList[cate].assetsData != null) {
-                    if (!string.IsNullOrEmpty(RichPresenceList[cate].assetsData.LargeImageKey)) str.AppendLine("LargeImageKey=" + RichPresenceList[cate].assetsData.LargeImageKey);
-                    if (!string.IsNullOrEmpty(RichPresenceList[cate].assetsData.LargeImageText)) str.AppendLine("LargeImageText=" + RichPresenceList[cate].assetsData.LargeImageText);
-                    if (!string.IsNullOrEmpty(RichPresenceList[cate].assetsData.SmallImageKey)) str.AppendLine("SmallImageKey=" + RichPresenceList[cate].assetsData.SmallImageKey);
-                    if (!string.IsNullOrEmpty(RichPresenceList[cate].assetsData.SmallImageText)) str.AppendLine("SmallImageText=" + RichPresenceList[cate].assetsData.SmallImageText);
+                if (presence.details.Length > 0) {
+                    XmlElement detailsElement = xmlDoc.CreateElement("details");
+                    detailsElement.InnerText = presence.details;
+                    presenceElement.AppendChild(detailsElement);
                 }
 
-                if (RichPresenceList[cate].buttons != null) {
-                    for (int i = 0; i < RichPresenceList[cate].buttons.Count; i++) {
-                        if (RichPresenceList[cate].buttons[i].Label.Length == 0 || RichPresenceList[cate].buttons[i].Url.Length == 0) continue;
-                        str.AppendLine("button" + (i + 1).ToString() + "=" + RichPresenceList[cate].buttons[i].Label + "|" + RichPresenceList[cate].buttons[i].Url);
+                if (presence.state.Length > 0) {
+                    XmlElement stateElement = xmlDoc.CreateElement("state");
+                    stateElement.InnerText = presence.state;
+                    presenceElement.AppendChild(stateElement);
+                }
+
+                XmlElement hasTimestampElement = xmlDoc.CreateElement("hasTimestamp");
+                hasTimestampElement.InnerText = presence.hasTimestamp.ToString().ToLowerInvariant();
+                presenceElement.AppendChild(hasTimestampElement);
+
+                if (!string.IsNullOrEmpty(presence.assetsData?.LargeImageKey)) {
+                    XmlElement largeImgKeyElement = xmlDoc.CreateElement("largeImageKey");
+                    largeImgKeyElement.InnerText = presence.assetsData.LargeImageKey;
+                    presenceElement.AppendChild(largeImgKeyElement);
+                }
+
+                if (!string.IsNullOrEmpty(presence.assetsData?.LargeImageText)) {
+                    XmlElement largeImgTextElement = xmlDoc.CreateElement("largeImageText");
+                    largeImgTextElement.InnerText = presence.assetsData.LargeImageText;
+                    presenceElement.AppendChild(largeImgTextElement);
+                }
+
+                if (!string.IsNullOrEmpty(presence.assetsData?.LargeImageKey)) {
+                    XmlElement smallImgKeyElement = xmlDoc.CreateElement("smallImageKey");
+                    smallImgKeyElement.InnerText = presence.assetsData.LargeImageKey;
+                    presenceElement.AppendChild(smallImgKeyElement);
+                }
+
+                if (!string.IsNullOrEmpty(presence.assetsData?.LargeImageText)) {
+                    XmlElement smallImgTextElement = xmlDoc.CreateElement("smallImageText");
+                    smallImgTextElement.InnerText = presence.assetsData.LargeImageText;
+                    presenceElement.AppendChild(smallImgTextElement);
+                }
+
+                if (presence.buttons != null) {
+                    for (int i = 0; i < presence.buttons.Count; i++) {
+                        if (presence.buttons[i].Label.Length == 0 || presence.buttons[i].Url.Length == 0) continue;
+                        XmlElement buttonElement = xmlDoc.CreateElement("button");
+                        XmlElement textElement = xmlDoc.CreateElement("text");
+                        XmlElement urlElement = xmlDoc.CreateElement("url");
+
+                        textElement.InnerText = presence.buttons[i].Label;
+                        urlElement.InnerText = presence.buttons[i].Url;
+                        buttonElement.AppendChild(textElement);
+                        buttonElement.AppendChild(urlElement);
+
+                        presenceElement.AppendChild(buttonElement);
                     }
                 }
-                str.AppendLine("");
             }
 
             if (!Directory.Exists(OptionsFolder)) {
                 Directory.CreateDirectory(OptionsFolder);
             }
-            string configFile = OpenBveApi.Path.CombineFile(OptionsFolder, "options_drpc.cfg");
-            File.WriteAllText(configFile, str.ToString());
+            xmlDoc.Save(OpenBveApi.Path.CombineFile(OptionsFolder, "options_drpc2.xml"));
             this.Close();
+        }
+
+        private void tabControl_TabIndexChanged(object sender, EventArgs e) {
+            selectedProfile = ((Control)sender).Text;
+            LoadProfile(selectedProfile);
         }
     }
 }
