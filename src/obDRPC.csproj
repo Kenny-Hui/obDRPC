@@ -69,7 +69,7 @@
     <Compile Include="obDRPC.cs" />
     <Compile Include="Placeholders.cs" />
     <Compile Include="Profile.cs" />
-    <Compile Include="ProfileDialog.cs" />
+    <Compile Include="Dialogs.cs" />
     <Compile Include="RPCData.cs" />
     <Compile Include="StationManager.cs" />
     <Compile Include="ButtonData.cs" />

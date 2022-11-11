@@ -87,6 +87,9 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.richTextBox20 = new System.Windows.Forms.RichTextBox();
             this.richTextBox21 = new System.Windows.Forms.RichTextBox();
+            this.label17 = new System.Windows.Forms.Label();
+            this.addProfileBtn = new System.Windows.Forms.Button();
+            this.removeProfileBtn = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -129,9 +132,9 @@
             this.labelAID.ForeColor = System.Drawing.SystemColors.Window;
             this.labelAID.Location = new System.Drawing.Point(11, 144);
             this.labelAID.Name = "labelAID";
-            this.labelAID.Size = new System.Drawing.Size(135, 25);
+            this.labelAID.Size = new System.Drawing.Size(140, 25);
             this.labelAID.TabIndex = 8;
-            this.labelAID.Text = "Application ID";
+            this.labelAID.Text = "Application ID:";
             // 
             // label3
             // 
@@ -186,7 +189,7 @@
             this.appIdTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.appIdTextBox.Font = new System.Drawing.Font("Segoe UI Semibold", 10.25F);
             this.appIdTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.appIdTextBox.Location = new System.Drawing.Point(16, 177);
+            this.appIdTextBox.Location = new System.Drawing.Point(155, 146);
             this.appIdTextBox.Margin = new System.Windows.Forms.Padding(7);
             this.appIdTextBox.MaxLength = 18;
             this.appIdTextBox.Name = "appIdTextBox";
@@ -933,12 +936,10 @@
             // 
             // checkBox2
             // 
-            this.checkBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
             this.checkBox2.AutoSize = true;
             this.checkBox2.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.checkBox2.ForeColor = System.Drawing.Color.White;
-            this.checkBox2.Location = new System.Drawing.Point(494, 257);
+            this.checkBox2.Location = new System.Drawing.Point(494, 256);
             this.checkBox2.Name = "checkBox2";
             this.checkBox2.Size = new System.Drawing.Size(143, 21);
             this.checkBox2.TabIndex = 85;
@@ -1041,12 +1042,45 @@
             this.richTextBox21.Text = "";
             this.richTextBox21.Enter += new System.EventHandler(this.insertableTextSelect);
             // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label17.ForeColor = System.Drawing.SystemColors.Window;
+            this.label17.Location = new System.Drawing.Point(11, 178);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(76, 25);
+            this.label17.TabIndex = 96;
+            this.label17.Text = "Profiles";
+            // 
+            // addProfileBtn
+            // 
+            this.addProfileBtn.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.addProfileBtn.Location = new System.Drawing.Point(93, 182);
+            this.addProfileBtn.Name = "addProfileBtn";
+            this.addProfileBtn.Size = new System.Drawing.Size(23, 23);
+            this.addProfileBtn.TabIndex = 97;
+            this.addProfileBtn.Text = "+";
+            this.addProfileBtn.UseVisualStyleBackColor = true;
+            // 
+            // removeProfileBtn
+            // 
+            this.removeProfileBtn.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.removeProfileBtn.Location = new System.Drawing.Point(122, 182);
+            this.removeProfileBtn.Name = "removeProfileBtn";
+            this.removeProfileBtn.Size = new System.Drawing.Size(23, 23);
+            this.removeProfileBtn.TabIndex = 98;
+            this.removeProfileBtn.Text = "-";
+            this.removeProfileBtn.UseVisualStyleBackColor = true;
+            // 
             // ConfigForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(54)))), ((int)(((byte)(57)))), ((int)(((byte)(63)))));
             this.ClientSize = new System.Drawing.Size(1136, 596);
+            this.Controls.Add(this.removeProfileBtn);
+            this.Controls.Add(this.addProfileBtn);
+            this.Controls.Add(this.label17);
             this.Controls.Add(this.richTextBox20);
             this.Controls.Add(this.richTextBox21);
             this.Controls.Add(this.connectionLabel);
@@ -1190,5 +1224,8 @@
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.RichTextBox richTextBox20;
         private System.Windows.Forms.RichTextBox richTextBox21;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Button addProfileBtn;
+        private System.Windows.Forms.Button removeProfileBtn;
     }
 }
