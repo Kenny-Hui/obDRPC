@@ -31,8 +31,8 @@ Then copy the dll to **<Your OpenBVE Installation/Data/InputDevicePlugins>**
 - Click Config, paste in the Application ID you copied earlier, then fill out the rest of the details.
 
 ## Building
-This project has successfully been compiled with Visual Studio 2022 and MonoDevelop
-Please change the reference of `OpenBveApi.dll` to the one that comes with your OpenBVE Installation
+This project has successfully been compiled with Visual Studio 2022 and MonoDevelop  
+Please change the reference of `OpenBveApi.dll` to the one that comes with your OpenBVE Installation  
 To automatically copy the merged dll to your OpenBVE Installation, set the build variable **OBVE_PATH** to your OpenBVE Installation
 
 ## License
