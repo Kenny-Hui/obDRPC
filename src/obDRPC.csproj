@@ -48,6 +48,9 @@
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.1</Version>
     </PackageReference>
+    <PackageReference Include="OpenTK">
+      <Version>3.3.3</Version>
+    </PackageReference>
     <Reference Include="OpenBveApi">
       <HintPath>..\..\..\OpenBVE\OpenBVE-Nightly\OpenBveApi.dll</HintPath>
       <Private>False</Private>

@@ -48,6 +48,8 @@ namespace obDRPC {
 		private Placeholders Placeholder = new Placeholders();
 		private DiscordRpcClient Client;
 		private DoorStates doorState = DoorStates.None;
+		private KeyboardState OldKeyboardState;
+		private Key[] KeyCombination;
 		private const int MAX_BTN_CHAR = 32;
 		private const int RPC_REFRESH_INTERVAL = 1000;
 
@@ -68,6 +70,10 @@ namespace obDRPC {
 			CurrentContext = Context.Menu;
 			LoadConfig();
 			selectedProfile = 0;
+			KeyCombination = new Key[3];
+			KeyCombination[0] = Key.ControlLeft;
+			KeyCombination[1] = Key.AltLeft;
+			KeyCombination[2] = Key.F;
 
 			if (!string.IsNullOrEmpty(ClientId)) {
 				Client = new DiscordRpcClient(ClientId);
@@ -140,6 +146,18 @@ namespace obDRPC {
 		/// </summary>
 		public void OnUpdateFrame()
 		{
+			KeyboardState keyboardState = Keyboard.GetState();
+			if (OldKeyboardState == null) {
+				OldKeyboardState = keyboardState;
+			}
+
+			bool keyChanged = KeyCombination.Any(key => OldKeyboardState[key] != keyboardState[key]);
+			bool correctKeyHeld = KeyCombination.All(key => keyboardState.IsKeyDown(key));
+
+			if (keyChanged && correctKeyHeld) {
+				selectedProfile = (selectedProfile + 1) % ProfileList.Count;
+			}
+			OldKeyboardState = keyboardState;
 		}
 
 		protected virtual void OnKeyDown(InputEventArgs e)
