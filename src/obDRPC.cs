@@ -70,10 +70,6 @@ namespace obDRPC {
 			CurrentContext = Context.Menu;
 			LoadConfig();
 			selectedProfile = 0;
-			KeyCombination = new Key[3];
-			KeyCombination[0] = Key.ControlLeft;
-			KeyCombination[1] = Key.AltLeft;
-			KeyCombination[2] = Key.F;
 
 			if (!string.IsNullOrEmpty(ClientId)) {
 				Client = new DiscordRpcClient(ClientId);
@@ -102,7 +98,7 @@ namespace obDRPC {
 		/// </summary>
 		/// <param name="owner">The owner of the window</param>
 		public void Config(IWin32Window owner) {
-            using (var form = new ConfigForm(ProfileList, Client, Placeholder, OptionsFolder)) {
+            using (var form = new ConfigForm(ProfileList, Client, KeyCombination, Placeholder, OptionsFolder)) {
                 form.ShowDialog(owner);
             }
         }
@@ -151,8 +147,8 @@ namespace obDRPC {
 				OldKeyboardState = keyboardState;
 			}
 
-			bool keyChanged = KeyCombination.Any(key => OldKeyboardState[key] != keyboardState[key]);
-			bool correctKeyHeld = KeyCombination.All(key => keyboardState.IsKeyDown(key));
+			bool keyChanged = KeyCombination == null ? false : KeyCombination.Any(key => OldKeyboardState[key] != keyboardState[key]);
+			bool correctKeyHeld = KeyCombination == null ? false : KeyCombination.All(key => keyboardState.IsKeyDown(key));
 
 			if (keyChanged && correctKeyHeld) {
 				selectedProfile = (selectedProfile + 1) % ProfileList.Count;
@@ -218,8 +214,23 @@ namespace obDRPC {
 				Dictionary<string, RPCData> presenceList = new Dictionary<string, RPCData>();
 				XmlDocument xmlDoc = new XmlDocument();
 				xmlDoc.Load(configFile);
-				if (xmlDoc.GetElementsByTagName("appId") != null) {
+				if (xmlDoc.GetElementsByTagName("appId").Count > 0) {
 					ClientId = xmlDoc.GetElementsByTagName("appId")[0].InnerText;
+				}
+
+				if (xmlDoc.GetElementsByTagName("profileSwitchKey").Count > 0) {
+					string value = xmlDoc.GetElementsByTagName("profileSwitchKey")[0].InnerText;
+					int totalKeys = value.Split('+').Length;
+					if (totalKeys > 0) {
+						KeyCombination = new Key[totalKeys];
+						for (int i = 0; i < totalKeys; i++) {
+							string keyStr = value.Split('+')[i].Trim();
+							Key key;
+							if (Enum.TryParse(keyStr, out key)) {
+								KeyCombination[i] = key;
+							}
+						}
+					}
 				}
 
 				if (xmlDoc.GetElementsByTagName("presenceList")[0] != null) {

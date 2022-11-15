@@ -6,26 +6,31 @@ using System.Windows.Forms;
 using DiscordRPC;
 using System.Xml;
 using System.Drawing;
+using OpenTK.Input;
 
 namespace obDRPC {
     public partial class ConfigForm : Form {
         private string defaultTitle;
         private string OptionsFolder;
         private int selectedProfile;
+        private bool capturingKeyboard = false;
+        private HashSet<Key> capturedKeys;
         private List<Profile> ProfileList = null;
         private TextBoxBase selectedTextBox = null;
+        private Key[] KeyCombination;
         private DiscordRpcClient Client;
         
-        public ConfigForm(List<Profile> profileList, DiscordRpcClient client, Placeholders placeholders, string optionsFolder) {
+        public ConfigForm(List<Profile> profileList, DiscordRpcClient client, Key[] keyCombination, Placeholders placeholders, string optionsFolder) {
             InitializeComponent();
             ProfileList = new List<Profile>(profileList);
             this.OptionsFolder = optionsFolder;
             this.Client = client;
             this.selectedProfile = 0;
             this.defaultTitle = this.Text;
+            this.KeyCombination = keyCombination;
             SetupProfileButtons();
             UpdateUIContext("menu");
-            ListPlaceholders(placeholders);
+            Init(placeholders);
             LoadProfile(selectedProfile);
             UpdateTitle();
         }
@@ -104,7 +109,8 @@ namespace obDRPC {
             }
         }
 
-        private void ListPlaceholders(Placeholders placeholders) {
+        private void Init(Placeholders placeholders) {
+            /* Placeholders */
             int x = 0;
             int y = 0;
             int s = 0;
@@ -131,6 +137,9 @@ namespace obDRPC {
                 s++;
                 y += 25;
             }
+
+            /* Setup Key Combination Text */
+            buttonPfShortcut.Text = string.Join(" + ", KeyCombination);
         }
 
         private void LoadProfile(int profileIndex) {
@@ -339,10 +348,13 @@ namespace obDRPC {
             XmlDocument xmlDoc = new XmlDocument();
             XmlElement rootElement = xmlDoc.CreateElement("data");
             XmlElement appIdElement = xmlDoc.CreateElement("appId");
+            XmlElement switchKeyElement = xmlDoc.CreateElement("profileSwitchKey");
             XmlElement presenceListElement = xmlDoc.CreateElement("presenceList");
             Dictionary<string, Dictionary<string, string>> presenceName = new Dictionary<string, Dictionary<string, string>>();
             appIdElement.InnerText = appIdTextBox.Text;
+            switchKeyElement.InnerText = string.Join("+", capturedKeys);
             rootElement.AppendChild(appIdElement);
+            rootElement.AppendChild(switchKeyElement);
 
             foreach (Profile entry in ProfileList) {
                 Profile profile = entry;
@@ -467,6 +479,36 @@ namespace obDRPC {
             ProfileList.RemoveAt(selectedProfile);
             LoadProfile(0);
             SetupProfileButtons();
+        }
+
+        private void buttonPfShortcut_Click(object sender, EventArgs e) {
+            capturingKeyboard = true;
+            capturedKeys = new HashSet<Key>();
+            ((Control)sender).Text = "Press any key...";
+        }
+
+        private void buttonPfShortcut_KeyDown(object sender, KeyEventArgs e) {
+            if (capturingKeyboard) {
+                KeyboardState state = Keyboard.GetState();
+                capturedKeys.Clear();
+                var values = Enum.GetValues(typeof(Key));
+                foreach(Key key in values) {
+                    if (state.IsKeyDown(key)) {
+                        capturedKeys.Add(key);
+                    }
+                }
+
+                buttonPfShortcut.Text = string.Join(" + ", capturedKeys);
+            }
+        }
+
+        private void buttonPfShortcut_KeyUp(object sender, KeyEventArgs e) {
+            if (capturingKeyboard) {
+                KeyboardState state = Keyboard.GetState();
+                if (!state.IsAnyKeyDown) {
+                    capturingKeyboard = false;
+                }
+            }
         }
     }
 }

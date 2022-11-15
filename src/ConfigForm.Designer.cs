@@ -90,6 +90,8 @@
             this.label17 = new System.Windows.Forms.Label();
             this.addProfileBtn = new System.Windows.Forms.Button();
             this.removeProfileBtn = new System.Windows.Forms.Button();
+            this.label18 = new System.Windows.Forms.Label();
+            this.buttonPfShortcut = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -1075,11 +1077,37 @@
             this.removeProfileBtn.UseVisualStyleBackColor = true;
             this.removeProfileBtn.Click += new System.EventHandler(this.removeProfileBtn_Click);
             // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label18.ForeColor = System.Drawing.SystemColors.Window;
+            this.label18.Location = new System.Drawing.Point(349, 146);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(213, 25);
+            this.label18.TabIndex = 99;
+            this.label18.Text = "Switch Profile Shortcut:";
+            // 
+            // buttonPfShortcut
+            // 
+            this.buttonPfShortcut.AutoSize = true;
+            this.buttonPfShortcut.Location = new System.Drawing.Point(568, 145);
+            this.buttonPfShortcut.Name = "buttonPfShortcut";
+            this.buttonPfShortcut.Size = new System.Drawing.Size(75, 28);
+            this.buttonPfShortcut.TabIndex = 100;
+            this.buttonPfShortcut.Text = "button1";
+            this.buttonPfShortcut.UseVisualStyleBackColor = true;
+            this.buttonPfShortcut.Click += new System.EventHandler(this.buttonPfShortcut_Click);
+            this.buttonPfShortcut.KeyDown += new System.Windows.Forms.KeyEventHandler(this.buttonPfShortcut_KeyDown);
+            this.buttonPfShortcut.KeyUp += new System.Windows.Forms.KeyEventHandler(this.buttonPfShortcut_KeyUp);
+            // 
             // ConfigForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(54)))), ((int)(((byte)(57)))), ((int)(((byte)(63)))));
             this.ClientSize = new System.Drawing.Size(1136, 596);
+            this.Controls.Add(this.buttonPfShortcut);
+            this.Controls.Add(this.label18);
             this.Controls.Add(this.removeProfileBtn);
             this.Controls.Add(this.addProfileBtn);
             this.Controls.Add(this.label17);
@@ -1229,5 +1257,7 @@
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Button addProfileBtn;
         private System.Windows.Forms.Button removeProfileBtn;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Button buttonPfShortcut;
     }
 }
