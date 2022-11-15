@@ -1062,6 +1062,7 @@
             this.addProfileBtn.TabIndex = 97;
             this.addProfileBtn.Text = "+";
             this.addProfileBtn.UseVisualStyleBackColor = true;
+            this.addProfileBtn.Click += new System.EventHandler(this.addProfileBtn_Click);
             // 
             // removeProfileBtn
             // 
@@ -1072,6 +1073,7 @@
             this.removeProfileBtn.TabIndex = 98;
             this.removeProfileBtn.Text = "-";
             this.removeProfileBtn.UseVisualStyleBackColor = true;
+            this.removeProfileBtn.Click += new System.EventHandler(this.removeProfileBtn_Click);
             // 
             // ConfigForm
             // 

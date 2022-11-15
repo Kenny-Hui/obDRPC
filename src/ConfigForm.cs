@@ -11,17 +11,17 @@ namespace obDRPC {
     public partial class ConfigForm : Form {
         private string defaultTitle;
         private string OptionsFolder;
-        private string selectedProfile;
-        private Dictionary<string, Profile> ProfileList = null;
+        private int selectedProfile;
+        private List<Profile> ProfileList = null;
         private TextBoxBase selectedTextBox = null;
         private DiscordRpcClient Client;
         
-        public ConfigForm(Dictionary<string, Profile> profileList, DiscordRpcClient client, Placeholders placeholders, string optionsFolder) {
+        public ConfigForm(List<Profile> profileList, DiscordRpcClient client, Placeholders placeholders, string optionsFolder) {
             InitializeComponent();
-            ProfileList = profileList;
+            ProfileList = new List<Profile>(profileList);
             this.OptionsFolder = optionsFolder;
             this.Client = client;
-            this.selectedProfile = ProfileList.Count > 0 ? ProfileList.First().Key : null;
+            this.selectedProfile = 0;
             this.defaultTitle = this.Text;
             SetupProfileButtons();
             UpdateUIContext("menu");
@@ -47,11 +47,11 @@ namespace obDRPC {
         }
 
         private void placeholderMouseEnter(object sender, EventArgs e) {
-            ((Control)sender).ForeColor = System.Drawing.Color.White;
+            ((Control)sender).ForeColor = Color.White;
         }
 
         private void placeholderMouseLeave(object sender, EventArgs e) {
-            ((Control)sender).ForeColor = System.Drawing.Color.LightGray;
+            ((Control)sender).ForeColor = Color.LightGray;
         }
 
         private void SetupProfileButtons() {
@@ -59,61 +59,48 @@ namespace obDRPC {
             tooltip.SetToolTip(addProfileBtn, "Add profile.");
             tooltip.SetToolTip(removeProfileBtn, "Remove selected profile.");
 
-            addProfileBtn.Click += (sender, e) => {
-                string profileName = Dialogs.ShowCreateDialog(ProfileList);
-                if (profileName == null) return;
-                selectedProfile = profileName;
-                ProfileList.Add(profileName, new Profile());
-                SaveProfile(selectedProfile);
-                LoadProfile(profileName);
-                SetupProfileButtons();
-            };
-
-            removeProfileBtn.Click += (sender, e) => {
-                if (selectedProfile != null) {
-                    ProfileList.Remove(selectedProfile);
-                    SetupProfileButtons();
-                    if(ProfileList.Count > 0) LoadProfile(ProfileList.First().Key);
-                }
-            };
-            this.Controls.Add(addProfileBtn);
-            this.Controls.Add(removeProfileBtn);
-
+            List<Control> toBeRemoved = new List<Control>();
             foreach (Control control in this.Controls) {
-                if (control?.Tag?.ToString() == "pfBtn") {
-                    this.Controls.Remove(control);
+                if (control.Tag != null && control.Tag.ToString().StartsWith("pfBtn")) {
+                    toBeRemoved.Add(control);
                 }
             }
 
-            int i = 0;
-            foreach (string key in ProfileList.Keys) {
+            /* I actually have no idea why this has to be put in a list, tried removing it directly on this.Controls and the loop would stop executing after a certain button for whatever reason. */
+            foreach (Control control in toBeRemoved) {
+                Controls.Remove(control);
+            }
+
+            for (int i = 0; i < ProfileList.Count; i++) {
+                Profile profile = ProfileList[i];
+                string profileName = profile.Name;
                 RadioButton btn = new RadioButton() {
-                    Tag = "pfBtn",
-                    Text = key,
+                    Tag = "pfBtn;" + i,
+                    Text = profileName,
                     UseVisualStyleBackColor = true,
                     Appearance = Appearance.Button
                 };
+                btn.Text = profile.Name;
                 btn.Location = new Point(17 + (btn.Width * i), 213);
                 // Mono more like mo...Noooooo
                 btn.BackColor = SystemColors.ButtonFace;
                 btn.Click += (sender, e) => {
+                    int index = int.Parse(btn.Tag.ToString().Split(';')[1]);
                     /* User clicked the same button again */
-                    if (((Control)sender).Text == selectedProfile) {
-                        string newName = Dialogs.ShowRenameDialog(selectedProfile, ProfileList);
+                    if (index == selectedProfile) {
+                        string newName = Dialogs.ShowRenameDialog(ProfileList[selectedProfile].Name, ProfileList);
                         if (newName == null) return;
                         Profile affectedProfile = ProfileList[selectedProfile];
-                        ProfileList[newName] = affectedProfile;
-                        ProfileList.Remove(selectedProfile);
-                        SaveProfile(newName);
-                        LoadProfile(newName);
+                        affectedProfile.Name = newName;
+                        ProfileList[selectedProfile].Name = newName;
+                        SaveProfile(selectedProfile);
                         SetupProfileButtons();
                     } else {
                         SaveProfile(selectedProfile);
-                        LoadProfile(key);
+                        LoadProfile(index);
                     }
                 };
                 this.Controls.Add(btn);
-                i++;
             }
         }
 
@@ -146,10 +133,10 @@ namespace obDRPC {
             }
         }
 
-        private void LoadProfile(string profileName) {
-            Profile profile = profileName != null && ProfileList.ContainsKey(profileName) ? ProfileList[profileName] : null;
+        private void LoadProfile(int profileIndex) {
+            Profile profile = profileIndex < ProfileList.Count ? ProfileList[profileIndex] : null;
             if (profile == null) return;
-            selectedProfile = profileName;
+            selectedProfile = profileIndex;
             UpdateTitle();
 
             foreach (Control control in this.Controls) {
@@ -272,8 +259,8 @@ namespace obDRPC {
             }
         }
 
-        private void SaveProfile(string selectedProfile) {
-            Profile profile = ProfileList.ContainsKey(selectedProfile) ? ProfileList[selectedProfile] : null;
+        private void SaveProfile(int selectedProfile) {
+            Profile profile = selectedProfile <= ProfileList.Count - 1 ? ProfileList[selectedProfile] : null;
             if (profile == null) return;
 
             Dictionary<string, ButtonData> btn1Data = new Dictionary<string, ButtonData>();
@@ -357,16 +344,15 @@ namespace obDRPC {
             appIdElement.InnerText = appIdTextBox.Text;
             rootElement.AppendChild(appIdElement);
 
-            foreach (KeyValuePair<string, Profile> entry in ProfileList) {
-                string profileName = entry.Key;
-                Profile profile = entry.Value;
+            foreach (Profile entry in ProfileList) {
+                Profile profile = entry;
                 foreach (KeyValuePair<string, RPCData> pair in profile.PresenceList) {
                     string context = pair.Key;
-                    string presenceID = context + profileName;
+                    string presenceID = context + profile.Name;
                     RPCData presence = pair.Value;
-                    Dictionary<string, string> contextName = presenceName.ContainsKey(profileName) ? presenceName[profileName] : new Dictionary<string, string>();
+                    Dictionary<string, string> contextName = presenceName.ContainsKey(profile.Name) ? presenceName[profile.Name] : new Dictionary<string, string>();
                     contextName.Add(context, presenceID);
-                    presenceName[profileName] = contextName;
+                    presenceName[profile.Name] = contextName;
 
                     XmlElement presenceElement = xmlDoc.CreateElement("presence");
                     presenceElement.SetAttribute("id", presenceID);
@@ -459,11 +445,28 @@ namespace obDRPC {
         }
 
         private void UpdateTitle() {
-            if (selectedProfile != null) {
-                this.Text = $"{defaultTitle} (Selected profile: {selectedProfile})";
+            string name = ProfileList.Count > selectedProfile ? ProfileList[selectedProfile].Name : null;
+            if (name != null) {
+                this.Text = $"{defaultTitle} - Selected profile: {name}";
             } else {
                 this.Text = defaultTitle;
             }
+        }
+
+        private void addProfileBtn_Click(object sender, EventArgs e) {
+            string profileName = Dialogs.ShowCreateDialog(ProfileList);
+            if (profileName == null) return;
+            ProfileList.Add(new Profile(profileName));
+            int newProfileIndex = ProfileList.Count - 1;
+            SaveProfile(selectedProfile);
+            LoadProfile(newProfileIndex);
+            SetupProfileButtons();
+        }
+
+        private void removeProfileBtn_Click(object sender, EventArgs e) {
+            ProfileList.RemoveAt(selectedProfile);
+            LoadProfile(0);
+            SetupProfileButtons();
         }
     }
 }

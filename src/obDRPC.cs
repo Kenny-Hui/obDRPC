@@ -9,6 +9,7 @@ using OpenBveApi.Runtime;
 using Button = DiscordRPC.Button;
 using System.Reflection;
 using System.Xml;
+using OpenTK.Input;
 
 namespace obDRPC {
 	/// <summary>
@@ -39,8 +40,8 @@ namespace obDRPC {
 		private int SpeedLimit = 70;
 		private VehicleSpecs specs;
 		private FileSystem FileSystem;
-		private string selectedProfile;
-		private Dictionary<string, Profile> ProfileList = new Dictionary<string, Profile>();
+		private int selectedProfile;
+		private List<Profile> ProfileList = new List<Profile>();
 		private Timestamps StartTimestamp;
 		private ElapseData LastElapseData;
 		private DateTime LastRPCUpdate;
@@ -66,7 +67,7 @@ namespace obDRPC {
 			OptionsFolder = OpenBveApi.Path.CombineDirectory(FileSystem.SettingsFolder, "1.5.0");
 			CurrentContext = Context.Menu;
 			LoadConfig();
-			selectedProfile = ProfileList.Count == 0 ? null : ProfileList.Keys.First();
+			selectedProfile = 0;
 
 			if (!string.IsNullOrEmpty(ClientId)) {
 				Client = new DiscordRpcClient(ClientId);
@@ -124,7 +125,7 @@ namespace obDRPC {
 			StationManager.Update(data, doorState);
 			LastElapseData = data;
 
-			if (selectedProfile != null && (DateTime.UtcNow - LastRPCUpdate).TotalMilliseconds >= RPC_REFRESH_INTERVAL) {
+			if (ProfileList.Count > 0 && (DateTime.UtcNow - LastRPCUpdate).TotalMilliseconds >= RPC_REFRESH_INTERVAL) {
 				if (StationManager.Boarding) {
 					UpdatePresence(ProfileList[selectedProfile].PresenceList["boarding"]);
 				} else {
@@ -171,11 +172,13 @@ namespace obDRPC {
 			foreach (ButtonData btnData in data.buttons) {
 				if (string.IsNullOrEmpty(btnData.Label) || string.IsNullOrEmpty(btnData.Url)) continue;
 
-				Button btn = new Button();
-				btn.Label = ParsePlaceholders(btnData.Label, MAX_BTN_CHAR);
-				btn.Url = ParsePlaceholders(btnData.Url, MAX_BTN_CHAR);
+                Button btn = new Button
+                {
+                    Label = ParsePlaceholders(btnData.Label, MAX_BTN_CHAR),
+                    Url = ParsePlaceholders(btnData.Url, MAX_BTN_CHAR)
+                };
 
-				buttons.Add(btn);
+                buttons.Add(btn);
 			}
 
 			if (buttons.Count > 0) {
@@ -253,7 +256,7 @@ namespace obDRPC {
 						RPCData menuPresence = menu != null && presenceList.ContainsKey(menu) ? presenceList[menu] : null;
 						RPCData gamePresence = game != null && presenceList.ContainsKey(game) ? presenceList[game] : null;
 						RPCData boardingPresence = boarding != null && presenceList.ContainsKey(boarding) ? presenceList[boarding] : null;
-						ProfileList.Add(name, new Profile(menuPresence, gamePresence, boardingPresence));
+						ProfileList.Add(new Profile(name, menuPresence, gamePresence, boardingPresence));
 					}
 				}
 			}

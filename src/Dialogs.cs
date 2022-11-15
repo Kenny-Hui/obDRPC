@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace obDRPC {
     internal class Dialogs {
-        public static string ShowCreateDialog(Dictionary<string, Profile> profileList) {
+        public static string ShowCreateDialog(List<Profile> profileList) {
             Form prompt = new Form()
             {
                 Width = 350,
@@ -44,7 +45,7 @@ namespace obDRPC {
             }
         }
 
-        public static string ShowRenameDialog(string profileName, Dictionary<string, Profile> profileList) {
+        public static string ShowRenameDialog(string profileName, List<Profile> profileList) {
             Form prompt = new Form()
             {
                 Width = 350,
@@ -88,13 +89,15 @@ namespace obDRPC {
             }
         }
 
-        private static string validate(string res, Dictionary<string, Profile> profileList) {
+        private static string validate(string res, List<Profile> profileList) {
             if (string.IsNullOrEmpty(res)) {
                 MessageBox.Show("Profile name should not be empty!");
                 return null;
             }
 
-            if (profileList.ContainsKey(res)) {
+            bool hasExisting = profileList.Where(e => e.Name == res) != null;
+
+            if (!hasExisting) {
                 MessageBox.Show("Profile name already exists!");
                 return null;
             } else {
