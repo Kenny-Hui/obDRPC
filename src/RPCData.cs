@@ -1,11 +1,11 @@
-using System.Collections.Generic;
 using DiscordRPC;
+using System.Collections.Generic;
 
 namespace obDRPC {
-	/// <summary>
-	/// Informations Default Displaying Plugin (for Testing)
-	/// </summary>
-	public class RPCData {
+    /// <summary>
+    /// Informations Default Displaying Plugin (for Testing)
+    /// </summary>
+    public class RPCData {
 		public Assets assetsData;
 		public List<ButtonData> buttons { get; }
 		public string details;

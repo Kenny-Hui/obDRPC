@@ -68,6 +68,7 @@
     <Compile Include="ConfigForm.Designer.cs">
       <DependentUpon>ConfigForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ConfigManager.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="obDRPC.cs" />
     <Compile Include="Placeholders.cs" />

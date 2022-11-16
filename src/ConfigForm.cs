@@ -1,33 +1,36 @@
-﻿using System;
-using System.Linq;
-using System.IO;
-using System.Collections.Generic;
-using System.Windows.Forms;
-using DiscordRPC;
-using System.Xml;
-using System.Drawing;
+﻿using DiscordRPC;
 using OpenTK.Input;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace obDRPC {
     public partial class ConfigForm : Form {
         private string defaultTitle;
-        private string OptionsFolder;
         private int selectedProfile;
-        private bool capturingKeyboard = false;
-        private HashSet<Key> capturedKeys;
+        private bool CapturingKeyboard = false;
+        private HashSet<Key> ProfileKeysCombination;
         private List<Profile> ProfileList = null;
         private TextBoxBase selectedTextBox = null;
-        private Key[] KeyCombination;
         private DiscordRpcClient Client;
-        
-        public ConfigForm(List<Profile> profileList, DiscordRpcClient client, Key[] keyCombination, Placeholders placeholders, string optionsFolder) {
+
+        public ConfigForm(DiscordRpcClient client, HashSet<Key> keyCombination, Placeholders placeholders) {
             InitializeComponent();
-            ProfileList = new List<Profile>(profileList);
-            this.OptionsFolder = optionsFolder;
+            ProfileList = new List<Profile>(ConfigManager.ProfileList);
             this.Client = client;
             this.selectedProfile = 0;
             this.defaultTitle = this.Text;
-            this.KeyCombination = keyCombination;
+
+            if (keyCombination == null) {
+                this.ProfileKeysCombination = new HashSet<Key>();
+                ProfileKeysCombination.Add(Key.ControlLeft);
+                ProfileKeysCombination.Add(Key.PageDown);
+            } else {
+                this.ProfileKeysCombination = new HashSet<Key>(keyCombination);
+            }
+
             SetupProfileButtons();
             UpdateUIContext("menu");
             Init(placeholders);
@@ -85,7 +88,6 @@ namespace obDRPC {
                     UseVisualStyleBackColor = true,
                     Appearance = Appearance.Button
                 };
-                btn.Text = profile.Name;
                 btn.Location = new Point(17 + (btn.Width * i), 213);
                 // Mono more like mo...Noooooo
                 btn.BackColor = SystemColors.ButtonFace;
@@ -139,7 +141,7 @@ namespace obDRPC {
             }
 
             /* Setup Key Combination Text */
-            buttonPfShortcut.Text = string.Join(" + ", KeyCombination);
+            buttonPfShortcut.Text = string.Join(" + ", ProfileKeysCombination);
         }
 
         private void LoadProfile(int profileIndex) {
@@ -335,6 +337,8 @@ namespace obDRPC {
                     }
                 }
             }
+
+            ProfileList[selectedProfile] = profile;
         }
 
         private void SaveCfg_Click(object sender, EventArgs e) {
@@ -344,115 +348,8 @@ namespace obDRPC {
             }
 
             SaveProfile(selectedProfile);
-
-            XmlDocument xmlDoc = new XmlDocument();
-            XmlElement rootElement = xmlDoc.CreateElement("data");
-            XmlElement appIdElement = xmlDoc.CreateElement("appId");
-            XmlElement switchKeyElement = xmlDoc.CreateElement("profileSwitchKey");
-            XmlElement presenceListElement = xmlDoc.CreateElement("presenceList");
-            Dictionary<string, Dictionary<string, string>> presenceName = new Dictionary<string, Dictionary<string, string>>();
-            appIdElement.InnerText = appIdTextBox.Text;
-            switchKeyElement.InnerText = string.Join("+", capturedKeys);
-            rootElement.AppendChild(appIdElement);
-            rootElement.AppendChild(switchKeyElement);
-
-            foreach (Profile entry in ProfileList) {
-                Profile profile = entry;
-                foreach (KeyValuePair<string, RPCData> pair in profile.PresenceList) {
-                    string context = pair.Key;
-                    string presenceID = context + profile.Name;
-                    RPCData presence = pair.Value;
-                    Dictionary<string, string> contextName = presenceName.ContainsKey(profile.Name) ? presenceName[profile.Name] : new Dictionary<string, string>();
-                    contextName.Add(context, presenceID);
-                    presenceName[profile.Name] = contextName;
-
-                    XmlElement presenceElement = xmlDoc.CreateElement("presence");
-                    presenceElement.SetAttribute("id", presenceID);
-
-                    if (presence.details.Length > 0) {
-                        XmlElement detailsElement = xmlDoc.CreateElement("details");
-                        detailsElement.InnerText = presence.details;
-                        presenceElement.AppendChild(detailsElement);
-                    }
-
-                    if (presence.state.Length > 0) {
-                        XmlElement stateElement = xmlDoc.CreateElement("state");
-                        stateElement.InnerText = presence.state;
-                        presenceElement.AppendChild(stateElement);
-                    }
-
-                    XmlElement hasTimestampElement = xmlDoc.CreateElement("hasTimestamp");
-                    hasTimestampElement.InnerText = presence.hasTimestamp.ToString().ToLowerInvariant();
-                    presenceElement.AppendChild(hasTimestampElement);
-
-                    if (!string.IsNullOrEmpty(presence.assetsData?.LargeImageKey)) {
-                        XmlElement largeImgKeyElement = xmlDoc.CreateElement("largeImageKey");
-                        largeImgKeyElement.InnerText = presence.assetsData.LargeImageKey;
-                        presenceElement.AppendChild(largeImgKeyElement);
-                    }
-
-                    if (!string.IsNullOrEmpty(presence.assetsData?.LargeImageText)) {
-                        XmlElement largeImgTextElement = xmlDoc.CreateElement("largeImageText");
-                        largeImgTextElement.InnerText = presence.assetsData.LargeImageText;
-                        presenceElement.AppendChild(largeImgTextElement);
-                    }
-
-                    if (!string.IsNullOrEmpty(presence.assetsData?.LargeImageKey)) {
-                        XmlElement smallImgKeyElement = xmlDoc.CreateElement("smallImageKey");
-                        smallImgKeyElement.InnerText = presence.assetsData.LargeImageKey;
-                        presenceElement.AppendChild(smallImgKeyElement);
-                    }
-
-                    if (!string.IsNullOrEmpty(presence.assetsData?.LargeImageText)) {
-                        XmlElement smallImgTextElement = xmlDoc.CreateElement("smallImageText");
-                        smallImgTextElement.InnerText = presence.assetsData.LargeImageText;
-                        presenceElement.AppendChild(smallImgTextElement);
-                    }
-
-                    if (presence.buttons != null) {
-                        for (int i = 0; i < presence.buttons.Count; i++) {
-                            if (presence.buttons[i].Label.Length == 0 || presence.buttons[i].Url.Length == 0) continue;
-                            XmlElement buttonElement = xmlDoc.CreateElement("button");
-                            XmlElement textElement = xmlDoc.CreateElement("text");
-                            XmlElement urlElement = xmlDoc.CreateElement("url");
-
-                            textElement.InnerText = presence.buttons[i].Label;
-                            urlElement.InnerText = presence.buttons[i].Url;
-                            buttonElement.AppendChild(textElement);
-                            buttonElement.AppendChild(urlElement);
-
-                            presenceElement.AppendChild(buttonElement);
-                        }
-                    }
-                    presenceListElement.AppendChild(presenceElement);
-                }
-                rootElement.AppendChild(presenceListElement);
-            }
-
-            foreach (KeyValuePair<string, Dictionary<string, string>> nameEntry in presenceName) {
-                XmlElement profileElement = xmlDoc.CreateElement("profile");
-                string profileName = nameEntry.Key;
-
-                profileElement.SetAttribute("name", profileName);
-                foreach (KeyValuePair<string, string> contextEntry in nameEntry.Value) {
-                    string context = contextEntry.Key;
-                    string presenceID = contextEntry.Value;
-                    XmlElement contextElement = xmlDoc.CreateElement(context);
-                    contextElement.InnerText = presenceID;
-                    profileElement.AppendChild(contextElement);
-
-                    if (profileElement.ChildNodes.Count > 0) {
-                        rootElement.AppendChild(profileElement);
-                    }
-                }
-            }
-
-            if (!Directory.Exists(OptionsFolder)) {
-                Directory.CreateDirectory(OptionsFolder);
-            }
-            
-            xmlDoc.AppendChild(rootElement);
-            xmlDoc.Save(OpenBveApi.Path.CombineFile(OptionsFolder, "options_drpc2.xml"));
+            ConfigManager.UpdateProfileList(ProfileList);
+            ConfigManager.SaveConfigToDisk();
             this.Close();
         }
 
@@ -482,31 +379,31 @@ namespace obDRPC {
         }
 
         private void buttonPfShortcut_Click(object sender, EventArgs e) {
-            capturingKeyboard = true;
-            capturedKeys = new HashSet<Key>();
+            CapturingKeyboard = true;
+            ProfileKeysCombination = new HashSet<Key>();
             ((Control)sender).Text = "Press any key...";
         }
 
         private void buttonPfShortcut_KeyDown(object sender, KeyEventArgs e) {
-            if (capturingKeyboard) {
+            if (CapturingKeyboard) {
                 KeyboardState state = Keyboard.GetState();
-                capturedKeys.Clear();
+                ProfileKeysCombination.Clear();
                 var values = Enum.GetValues(typeof(Key));
                 foreach(Key key in values) {
                     if (state.IsKeyDown(key)) {
-                        capturedKeys.Add(key);
+                        ProfileKeysCombination.Add(key);
                     }
                 }
 
-                buttonPfShortcut.Text = string.Join(" + ", capturedKeys);
+                buttonPfShortcut.Text = string.Join(" + ", ProfileKeysCombination);
             }
         }
 
         private void buttonPfShortcut_KeyUp(object sender, KeyEventArgs e) {
-            if (capturingKeyboard) {
+            if (CapturingKeyboard) {
                 KeyboardState state = Keyboard.GetState();
                 if (!state.IsAnyKeyDown) {
-                    capturingKeyboard = false;
+                    CapturingKeyboard = false;
                 }
             }
         }

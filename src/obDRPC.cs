@@ -1,21 +1,20 @@
-using System;
-using System.Linq;
-using System.Collections.Generic;
 using DiscordRPC;
-using System.Windows.Forms;
 using OpenBveApi.FileSystem;
 using OpenBveApi.Interface;
 using OpenBveApi.Runtime;
-using Button = DiscordRPC.Button;
-using System.Reflection;
-using System.Xml;
 using OpenTK.Input;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Windows.Forms;
+using Button = DiscordRPC.Button;
 
 namespace obDRPC {
-	/// <summary>
-	/// Informations Default Displaying Plugin (for Testing)
-	/// </summary>
-	public class obDRPC : ITrainInputDevice
+    /// <summary>
+    /// Informations Default Displaying Plugin (for Testing)
+    /// </summary>
+    public class obDRPC : ITrainInputDevice
 	{
 		/// <summary>
 		/// Define KeyDown event
@@ -33,15 +32,12 @@ namespace obDRPC {
 		public InputControl[] Controls { get; private set; }
 
 		internal static Context CurrentContext;
-		private string ClientId;
-		private string OptionsFolder;
 		private string ProgramVersion;
 		private bool IsInGame;
 		private int SpeedLimit = 70;
 		private VehicleSpecs specs;
 		private FileSystem FileSystem;
 		private int selectedProfile;
-		private List<Profile> ProfileList = new List<Profile>();
 		private Timestamps StartTimestamp;
 		private ElapseData LastElapseData;
 		private DateTime LastRPCUpdate;
@@ -49,7 +45,6 @@ namespace obDRPC {
 		private DiscordRpcClient Client;
 		private DoorStates doorState = DoorStates.None;
 		private KeyboardState OldKeyboardState;
-		private Key[] KeyCombination;
 		private const int MAX_BTN_CHAR = 32;
 		private const int RPC_REFRESH_INTERVAL = 1000;
 
@@ -60,24 +55,23 @@ namespace obDRPC {
 		/// <returns>Check the plugin loading process is successfully</returns>
 		public bool Load(FileSystem fileSystem)
 		{
-			LastElapseData = null;
+			ConfigManager.Initialize(fileSystem);
 			Controls = new InputControl[1];
 			FileSystem = fileSystem;
 			StartTimestamp = Timestamps.Now;
 			LastRPCUpdate = DateTime.UtcNow;
 			ProgramVersion = getEntryVersion();
-			OptionsFolder = OpenBveApi.Path.CombineDirectory(FileSystem.SettingsFolder, "1.5.0");
 			CurrentContext = Context.Menu;
-			LoadConfig();
+			ConfigManager.LoadConfig();
 			selectedProfile = 0;
 
-			if (!string.IsNullOrEmpty(ClientId)) {
-				Client = new DiscordRpcClient(ClientId);
+			if (!string.IsNullOrEmpty(ConfigManager.appId)) {
+				Client = new DiscordRpcClient(ConfigManager.appId);
 				if (!Client.Initialize()) {
 					FileSystem.AppendToLogFile("[DRPC] Failed to login to Discord, please make sure your Application ID is correct and you have a stable internet connection.");
 				}
 
-                UpdatePresence(ProfileList[selectedProfile].PresenceList["menu"]);
+                UpdatePresence(ConfigManager.ProfileList[selectedProfile].PresenceList["menu"]);
 			}
 
             return true;
@@ -98,7 +92,7 @@ namespace obDRPC {
 		/// </summary>
 		/// <param name="owner">The owner of the window</param>
 		public void Config(IWin32Window owner) {
-            using (var form = new ConfigForm(ProfileList, Client, KeyCombination, Placeholder, OptionsFolder)) {
+            using (var form = new ConfigForm(Client, ConfigManager.KeyCombination, Placeholder)) {
                 form.ShowDialog(owner);
             }
         }
@@ -127,11 +121,11 @@ namespace obDRPC {
 			StationManager.Update(data, doorState);
 			LastElapseData = data;
 
-			if (ProfileList.Count > 0 && (DateTime.UtcNow - LastRPCUpdate).TotalMilliseconds >= RPC_REFRESH_INTERVAL) {
+			if (ConfigManager.ProfileList.Count > 0 && (DateTime.UtcNow - LastRPCUpdate).TotalMilliseconds >= RPC_REFRESH_INTERVAL) {
 				if (StationManager.Boarding) {
-					UpdatePresence(ProfileList[selectedProfile].PresenceList["boarding"]);
+					UpdatePresence(ConfigManager.ProfileList[selectedProfile].PresenceList["boarding"]);
 				} else {
-					UpdatePresence(ProfileList[selectedProfile].PresenceList["game"]);
+					UpdatePresence(ConfigManager.ProfileList[selectedProfile].PresenceList["game"]);
 				}
 				LastRPCUpdate = DateTime.UtcNow;
 			}
@@ -147,11 +141,11 @@ namespace obDRPC {
 				OldKeyboardState = keyboardState;
 			}
 
-			bool keyChanged = KeyCombination == null ? false : KeyCombination.Any(key => OldKeyboardState[key] != keyboardState[key]);
-			bool correctKeyHeld = KeyCombination == null ? false : KeyCombination.All(key => keyboardState.IsKeyDown(key));
+			bool keyChanged = ConfigManager.KeyCombination.Any(key => OldKeyboardState[key] != keyboardState[key]);
+			bool correctKeyHeld = ConfigManager.KeyCombination.Count > 0 ? ConfigManager.KeyCombination.All(key => keyboardState.IsKeyDown(key)) : false;
 
 			if (keyChanged && correctKeyHeld) {
-				selectedProfile = (selectedProfile + 1) % ProfileList.Count;
+				selectedProfile = (selectedProfile + 1) % ConfigManager.ProfileList.Count;
 			}
 			OldKeyboardState = keyboardState;
 		}
@@ -200,95 +194,6 @@ namespace obDRPC {
 			}
 
 			Client.SetPresence(presence);
-		}
-
-		internal void LoadConfig()
-		{
-			ProfileList.Clear();
-			if (!System.IO.Directory.Exists(OptionsFolder)) {
-				System.IO.Directory.CreateDirectory(OptionsFolder);
-			}
-
-			string configFile = OpenBveApi.Path.CombineFile(OptionsFolder, "options_drpc.xml");
-			if (System.IO.File.Exists(configFile)) {
-				Dictionary<string, RPCData> presenceList = new Dictionary<string, RPCData>();
-				XmlDocument xmlDoc = new XmlDocument();
-				xmlDoc.Load(configFile);
-				if (xmlDoc.GetElementsByTagName("appId").Count > 0) {
-					ClientId = xmlDoc.GetElementsByTagName("appId")[0].InnerText;
-				}
-
-				if (xmlDoc.GetElementsByTagName("profileSwitchKey").Count > 0) {
-					string value = xmlDoc.GetElementsByTagName("profileSwitchKey")[0].InnerText;
-					int totalKeys = value.Split('+').Length;
-					if (totalKeys > 0) {
-						KeyCombination = new Key[totalKeys];
-						for (int i = 0; i < totalKeys; i++) {
-							string keyStr = value.Split('+')[i].Trim();
-							Key key;
-							if (Enum.TryParse(keyStr, out key)) {
-								KeyCombination[i] = key;
-							}
-						}
-					}
-				}
-
-				if (xmlDoc.GetElementsByTagName("presenceList")[0] != null) {
-					foreach (XmlElement element in xmlDoc.GetElementsByTagName("presenceList")[0].ChildNodes) {
-						RPCData presence = new RPCData();
-						string id = element.GetAttribute("id");
-						if (id == null) continue;
-
-						presence.details = element.GetElementsByTagName("details")[0]?.InnerText;
-						presence.state = element.GetElementsByTagName("state")[0]?.InnerText;
-
-						if (element.GetElementsByTagName("hasTimestamp")[0]?.InnerText != null) {
-							presence.hasTimestamp = XmlConvert.ToBoolean(element.GetElementsByTagName("hasTimestamp")[0].InnerText);
-						}
-
-						/* Assets */
-						if (element.GetElementsByTagName("largeImageKey")[0] != null) {
-							presence.AddLargeImageKey(element.GetElementsByTagName("largeImageKey")[0].InnerText);
-						}
-
-						if (element.GetElementsByTagName("largeImageText")[0] != null) {
-							presence.AddLargeImageText(element.GetElementsByTagName("largeImageText")[0].InnerText);
-						}
-
-						if (element.GetElementsByTagName("smallImageKey")[0] != null) {
-							presence.AddSmallImageKey(element.GetElementsByTagName("smallImageKey")[0].InnerText);
-						}
-
-						if (element.GetElementsByTagName("smallImageText")[0] != null) {
-							presence.AddSmallImageText(element.GetElementsByTagName("smallImageText")[0].InnerText);
-						}
-
-						/* Button */
-						foreach (XmlElement button in element.GetElementsByTagName("button")) {
-							string text = button.GetElementsByTagName("text")[0]?.InnerText;
-							string url = button.GetElementsByTagName("url")[0]?.InnerText;
-							if (text != null && url != null) {
-								presence.AddButton(text, url);
-							}
-						}
-
-						presenceList.Add(id, presence);
-					}
-
-					/* Parse profile */
-					foreach(XmlElement profile in xmlDoc.GetElementsByTagName("profile")) {
-						string name = profile.GetAttribute("name");
-						if (name == null) continue;
-						string menu = profile.GetElementsByTagName("menu")[0]?.InnerText;
-						string game = profile.GetElementsByTagName("game")[0]?.InnerText;
-						string boarding = profile.GetElementsByTagName("boarding")[0]?.InnerText;
-						RPCData menuPresence = menu != null && presenceList.ContainsKey(menu) ? presenceList[menu] : null;
-						RPCData gamePresence = game != null && presenceList.ContainsKey(game) ? presenceList[game] : null;
-						RPCData boardingPresence = boarding != null && presenceList.ContainsKey(boarding) ? presenceList[boarding] : null;
-						ProfileList.Add(new Profile(name, menuPresence, gamePresence, boardingPresence));
-					}
-				}
-			}
 		}
 
 		internal string getEntryVersion() {
