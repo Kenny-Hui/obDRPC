@@ -216,7 +216,7 @@ namespace obDRPC {
                 }
 
                 xmlDoc.AppendChild(rootElement);
-                xmlDoc.Save(OpenBveApi.Path.CombineFile(OptionsFolder, "options_drpc2.xml"));
+                xmlDoc.Save(OpenBveApi.Path.CombineFile(OptionsFolder, "options_drpc.xml"));
             } catch (Exception) {
                 return false;
             }
