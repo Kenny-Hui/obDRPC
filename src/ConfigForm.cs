@@ -9,39 +9,38 @@ using System.Windows.Forms;
 namespace obDRPC {
     public partial class ConfigForm : Form {
         private string defaultTitle;
-        private int selectedProfile;
+        private int SelectedProfile;
         private bool CapturingKeyboard = false;
         private HashSet<Key> ProfileKeysCombination;
         private List<Profile> ProfileList = null;
         private TextBoxBase selectedTextBox = null;
         private DiscordRpcClient Client;
 
-        public ConfigForm(DiscordRpcClient client, HashSet<Key> keyCombination, Placeholders placeholders) {
+        public ConfigForm(DiscordRpcClient client, Placeholders placeholders) {
             InitializeComponent();
             ProfileList = new List<Profile>(ConfigManager.ProfileList);
             this.Client = client;
-            this.selectedProfile = 0;
+            this.SelectedProfile = 0;
             this.defaultTitle = this.Text;
 
-            if (keyCombination == null) {
+            if (ConfigManager.KeyCombination.Count == 0) {
                 this.ProfileKeysCombination = new HashSet<Key>();
                 ProfileKeysCombination.Add(Key.ControlLeft);
                 ProfileKeysCombination.Add(Key.PageDown);
             } else {
-                this.ProfileKeysCombination = new HashSet<Key>(keyCombination);
+                this.ProfileKeysCombination = new HashSet<Key>(ConfigManager.KeyCombination);
             }
 
             SetupProfileButtons();
             UpdateUIContext("menu");
             Init(placeholders);
-            LoadProfile(selectedProfile);
-            UpdateTitle();
+            LoadProfile(SelectedProfile);
+            UpdateTitle(SelectedProfile);
         }
 
         private void insertableTextSelect(object sender, EventArgs e) {
             // Mono seems to always auto-focus on the 1st text box if selecting the main form background
             // So it would always trigger this method and jump to "menu" when clicking the background, don't think we can do anything about that<?>
-            // Pure insanity
             string type = ((Control)sender).Tag.ToString().Split(';')[1];
             selectedTextBox = sender as TextBoxBase;
             UpdateUIContext(type);
@@ -94,16 +93,16 @@ namespace obDRPC {
                 btn.Click += (sender, e) => {
                     int index = int.Parse(btn.Tag.ToString().Split(';')[1]);
                     /* User clicked the same button again */
-                    if (index == selectedProfile) {
-                        string newName = Dialogs.ShowRenameDialog(ProfileList[selectedProfile].Name, ProfileList);
+                    if (index == SelectedProfile) {
+                        string newName = Dialogs.ShowRenameDialog(ProfileList[SelectedProfile].Name, ProfileList);
                         if (newName == null) return;
-                        Profile affectedProfile = ProfileList[selectedProfile];
+                        Profile affectedProfile = ProfileList[SelectedProfile];
                         affectedProfile.Name = newName;
-                        ProfileList[selectedProfile].Name = newName;
-                        SaveProfile(selectedProfile);
+                        ProfileList[SelectedProfile].Name = newName;
+                        SaveProfile(SelectedProfile);
                         SetupProfileButtons();
                     } else {
-                        SaveProfile(selectedProfile);
+                        SaveProfile(SelectedProfile);
                         LoadProfile(index);
                     }
                 };
@@ -142,13 +141,22 @@ namespace obDRPC {
 
             /* Setup Key Combination Text */
             buttonPfShortcut.Text = string.Join(" + ", ProfileKeysCombination);
+            if (Client?.CurrentUser != null) {
+                connectionLabel.Text = "Connected to " + Client.CurrentUser.Username + "#" + Client.CurrentUser.Discriminator;
+            } else {
+                if (Client == null) {
+                    connectionLabel.Text = "Cannot login, please check your application ID.";
+                } else {
+                    connectionLabel.Text = "Not connected.";
+                }
+            }
         }
 
         private void LoadProfile(int profileIndex) {
+            SelectedProfile = profileIndex;
+            UpdateTitle(profileIndex);
             Profile profile = profileIndex < ProfileList.Count ? ProfileList[profileIndex] : null;
             if (profile == null) return;
-            selectedProfile = profileIndex;
-            UpdateTitle();
 
             foreach (Control control in this.Controls) {
                 string tagName = control.Tag == null ? "" : control.Tag.ToString();
@@ -248,16 +256,6 @@ namespace obDRPC {
                     control.Visible = control.Tag.ToString() == selectedType;
                 }
             }
-
-            if (Client?.CurrentUser != null) {
-                connectionLabel.Text = "Connected to " + Client.CurrentUser.Username + "#" + Client.CurrentUser.Discriminator;
-            } else {
-                if (Client == null) {
-                    connectionLabel.Text = "Cannot login, please check your application ID.";
-                } else {
-                    connectionLabel.Text = "Not connected.";
-                }
-            }
         }
 
         private void button15_Click(object sender, EventArgs e) {
@@ -347,14 +345,21 @@ namespace obDRPC {
                 return;
             }
 
-            SaveProfile(selectedProfile);
+            if (ProfileList.Count == 0) {
+                MessageBox.Show("No profile created, please create a profile.");
+                return;
+            }
+
+            SaveProfile(SelectedProfile);
+            ConfigManager.UpdateApplicationId(appIdTextBox.Text);
+            ConfigManager.UpdateKeyCombination(ProfileKeysCombination);
             ConfigManager.UpdateProfileList(ProfileList);
             ConfigManager.SaveConfigToDisk();
             this.Close();
         }
 
-        private void UpdateTitle() {
-            string name = ProfileList.Count > selectedProfile ? ProfileList[selectedProfile].Name : null;
+        private void UpdateTitle(int profileIndex) {
+            string name = ProfileList.Count > SelectedProfile ? ProfileList[profileIndex].Name : null;
             if (name != null) {
                 this.Text = $"{defaultTitle} - Selected profile: {name}";
             } else {
@@ -367,13 +372,13 @@ namespace obDRPC {
             if (profileName == null) return;
             ProfileList.Add(new Profile(profileName));
             int newProfileIndex = ProfileList.Count - 1;
-            SaveProfile(selectedProfile);
+            SaveProfile(SelectedProfile);
             LoadProfile(newProfileIndex);
             SetupProfileButtons();
         }
 
         private void removeProfileBtn_Click(object sender, EventArgs e) {
-            ProfileList.RemoveAt(selectedProfile);
+            ProfileList.RemoveAt(SelectedProfile);
             LoadProfile(0);
             SetupProfileButtons();
         }
@@ -388,14 +393,19 @@ namespace obDRPC {
             if (CapturingKeyboard) {
                 KeyboardState state = Keyboard.GetState();
                 ProfileKeysCombination.Clear();
-                var values = Enum.GetValues(typeof(Key));
-                foreach(Key key in values) {
-                    if (state.IsKeyDown(key)) {
-                        ProfileKeysCombination.Add(key);
+                if (!state.IsKeyDown(Key.Escape)) {
+                    var values = Enum.GetValues(typeof(Key));
+                    foreach (Key key in values) {
+                        if (state.IsKeyDown(key)) {
+                            ProfileKeysCombination.Add(key);
+                        }
                     }
+
+                    buttonPfShortcut.Text = string.Join(" + ", ProfileKeysCombination);
+                } else {
+                    buttonPfShortcut.Text = "None";
                 }
 
-                buttonPfShortcut.Text = string.Join(" + ", ProfileKeysCombination);
             }
         }
 

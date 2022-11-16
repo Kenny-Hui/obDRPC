@@ -14,7 +14,7 @@ namespace obDRPC {
                 StartPosition = FormStartPosition.CenterScreen,
                 MaximizeBox = false,
                 MinimizeBox = false
-        };
+            };
             Label textLabel = new Label() {
                 Left = 15,
                 Top = 10,

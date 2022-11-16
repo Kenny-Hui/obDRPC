@@ -20,6 +20,7 @@ namespace obDRPC {
         }
 
         public static void LoadConfig() {
+            KeyCombination.Clear();
             ProfileList.Clear();
             if (!Directory.Exists(OptionsFolder)) {
                 Directory.CreateDirectory(OptionsFolder);
@@ -37,7 +38,6 @@ namespace obDRPC {
                 if (xmlDoc.GetElementsByTagName("profileSwitchKey").Count > 0) {
                     string value = xmlDoc.GetElementsByTagName("profileSwitchKey")[0].InnerText;
                     int totalKeys = value.Split('+').Length;
-                    KeyCombination.Clear();
                     if (totalKeys > 0) {
                         for (int i = 0; i < totalKeys; i++) {
                             string keyStr = value.Split('+')[i].Trim();
@@ -114,7 +114,7 @@ namespace obDRPC {
             XmlElement switchKeyElement = xmlDoc.CreateElement("profileSwitchKey");
             XmlElement presenceListElement = xmlDoc.CreateElement("presenceList");
             Dictionary<string, Dictionary<string, string>> presenceName = new Dictionary<string, Dictionary<string, string>>();
-            appIdElement.InnerText =  appId;
+            appIdElement.InnerText = appId;
             switchKeyElement.InnerText = string.Join("+", KeyCombination);
             rootElement.AppendChild(appIdElement);
             rootElement.AppendChild(switchKeyElement);
@@ -162,13 +162,13 @@ namespace obDRPC {
 
                     if (!string.IsNullOrEmpty(presence.assetsData?.LargeImageKey)) {
                         XmlElement smallImgKeyElement = xmlDoc.CreateElement("smallImageKey");
-                        smallImgKeyElement.InnerText = presence.assetsData.LargeImageKey;
+                        smallImgKeyElement.InnerText = presence.assetsData.SmallImageKey;
                         presenceElement.AppendChild(smallImgKeyElement);
                     }
 
                     if (!string.IsNullOrEmpty(presence.assetsData?.LargeImageText)) {
                         XmlElement smallImgTextElement = xmlDoc.CreateElement("smallImageText");
-                        smallImgTextElement.InnerText = presence.assetsData.LargeImageText;
+                        smallImgTextElement.InnerText = presence.assetsData.SmallImageText;
                         presenceElement.AppendChild(smallImgTextElement);
                     }
 
@@ -224,9 +224,20 @@ namespace obDRPC {
             return true;
         }
 
+        public static void UpdateApplicationId(string id) {
+            appId = id;
+        }
+
         public static void UpdateProfileList(List<Profile> profileList) {
             ProfileList.Clear();
             ProfileList.AddRange(profileList);
+        }
+
+        public static void UpdateKeyCombination(HashSet<Key> keyCombo) {
+            KeyCombination.Clear();
+            foreach(Key key in keyCombo) {
+                KeyCombination.Add(key);
+            }
         }
     }
 }

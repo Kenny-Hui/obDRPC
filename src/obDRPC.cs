@@ -92,7 +92,7 @@ namespace obDRPC {
 		/// </summary>
 		/// <param name="owner">The owner of the window</param>
 		public void Config(IWin32Window owner) {
-            using (var form = new ConfigForm(Client, ConfigManager.KeyCombination, Placeholder)) {
+            using (var form = new ConfigForm(Client, Placeholder)) {
                 form.ShowDialog(owner);
             }
         }
