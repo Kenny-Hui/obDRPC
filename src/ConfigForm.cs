@@ -156,7 +156,6 @@ namespace obDRPC {
             SelectedProfile = profileIndex;
             UpdateTitle(profileIndex);
             Profile profile = profileIndex < ProfileList.Count ? ProfileList[profileIndex] : null;
-            if (profile == null) return;
 
             foreach (Control control in this.Controls) {
                 string tagName = control.Tag == null ? "" : control.Tag.ToString();
@@ -178,6 +177,13 @@ namespace obDRPC {
                 }
 
                 if (control.GetType() == typeof(TextBox) || control.GetType() == typeof(RichTextBox)) {
+                    if (profile == null) {
+                        ((TextBoxBase)control).ReadOnly = true;
+                        continue;
+                    } else {
+                        ((TextBoxBase)control).ReadOnly = false;
+                    }
+
                     RPCData data = profile.PresenceList[category];
                     if (data == null) continue;
 
@@ -223,6 +229,13 @@ namespace obDRPC {
                 }
 
                 if (control.GetType() == typeof(CheckBox)) {
+                    if (profile == null) {
+                        control.Enabled = false;
+                        continue;
+                    } else {
+                        control.Enabled = true;
+                    }
+
                     if (prop == "elapsed") {
                         ((CheckBox)control).Checked = profile.PresenceList[category].hasTimestamp;
                     }
