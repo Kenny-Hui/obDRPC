@@ -48,6 +48,9 @@
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.1</Version>
     </PackageReference>
+    <PackageReference Include="OpenTK">
+      <Version>3.3.3</Version>
+    </PackageReference>
     <Reference Include="OpenBveApi">
       <HintPath>..\..\..\OpenBVE\OpenBVE-Nightly\OpenBveApi.dll</HintPath>
       <Private>False</Private>
@@ -56,6 +59,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConfigForm.cs">
@@ -64,9 +68,12 @@
     <Compile Include="ConfigForm.Designer.cs">
       <DependentUpon>ConfigForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ConfigManager.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="obDRPC.cs" />
     <Compile Include="Placeholders.cs" />
+    <Compile Include="Profile.cs" />
+    <Compile Include="Dialogs.cs" />
     <Compile Include="RPCData.cs" />
     <Compile Include="StationManager.cs" />
     <Compile Include="ButtonData.cs" />

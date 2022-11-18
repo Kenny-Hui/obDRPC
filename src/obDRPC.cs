@@ -1,18 +1,20 @@
-using System;
-using System.Collections.Generic;
 using DiscordRPC;
-using System.Windows.Forms;
 using OpenBveApi.FileSystem;
 using OpenBveApi.Interface;
 using OpenBveApi.Runtime;
-using Button = DiscordRPC.Button;
+using OpenTK.Input;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using System.Windows.Forms;
+using Button = DiscordRPC.Button;
 
 namespace obDRPC {
-	/// <summary>
-	/// Informations Default Displaying Plugin (for Testing)
-	/// </summary>
-	public class obDRPC : ITrainInputDevice
+    /// <summary>
+    /// Informations Default Displaying Plugin (for Testing)
+    /// </summary>
+    public class obDRPC : ITrainInputDevice
 	{
 		/// <summary>
 		/// Define KeyDown event
@@ -30,20 +32,19 @@ namespace obDRPC {
 		public InputControl[] Controls { get; private set; }
 
 		internal static Context CurrentContext;
-		private string ClientId;
-		private string OptionsFolder;
 		private string ProgramVersion;
 		private bool IsInGame;
 		private int SpeedLimit = 70;
 		private VehicleSpecs specs;
 		private FileSystem FileSystem;
-		private Dictionary<string, RPCData> RichPresenceList = new Dictionary<string, RPCData>();
+		private int selectedProfile;
 		private Timestamps StartTimestamp;
 		private ElapseData LastElapseData;
 		private DateTime LastRPCUpdate;
 		private Placeholders Placeholder = new Placeholders();
 		private DiscordRpcClient Client;
 		private DoorStates doorState = DoorStates.None;
+		private KeyboardState OldKeyboardState;
 		private const int MAX_BTN_CHAR = 32;
 		private const int RPC_REFRESH_INTERVAL = 1000;
 
@@ -54,23 +55,23 @@ namespace obDRPC {
 		/// <returns>Check the plugin loading process is successfully</returns>
 		public bool Load(FileSystem fileSystem)
 		{
-			LastElapseData = null;
+			ConfigManager.Initialize(fileSystem);
 			Controls = new InputControl[1];
 			FileSystem = fileSystem;
 			StartTimestamp = Timestamps.Now;
 			LastRPCUpdate = DateTime.UtcNow;
 			ProgramVersion = getEntryVersion();
-			OptionsFolder = OpenBveApi.Path.CombineDirectory(FileSystem.SettingsFolder, "1.5.0");
 			CurrentContext = Context.Menu;
-			LoadConfig();
+			ConfigManager.LoadConfig();
+			selectedProfile = 0;
 
-			if (!string.IsNullOrEmpty(ClientId)) {
-				Client = new DiscordRpcClient(ClientId);
+			if (!string.IsNullOrEmpty(ConfigManager.appId)) {
+				Client = new DiscordRpcClient(ConfigManager.appId);
 				if (!Client.Initialize()) {
 					FileSystem.AppendToLogFile("[DRPC] Failed to login to Discord, please make sure your Application ID is correct and you have a stable internet connection.");
 				}
 
-				UpdatePresence(RichPresenceList.ContainsKey("menu") ? RichPresenceList["menu"] : null);
+                UpdatePresence(ConfigManager.ProfileList[selectedProfile].PresenceList["menu"]);
 			}
 
             return true;
@@ -91,7 +92,7 @@ namespace obDRPC {
 		/// </summary>
 		/// <param name="owner">The owner of the window</param>
 		public void Config(IWin32Window owner) {
-            using (var form = new ConfigForm(RichPresenceList, Client, Placeholder, OptionsFolder)) {
+            using (var form = new ConfigForm(Client, Placeholder)) {
                 form.ShowDialog(owner);
             }
         }
@@ -118,14 +119,13 @@ namespace obDRPC {
 			}
 
 			StationManager.Update(data, doorState);
-
 			LastElapseData = data;
 
-			if ((DateTime.UtcNow - LastRPCUpdate).TotalMilliseconds >= RPC_REFRESH_INTERVAL) {
+			if (ConfigManager.ProfileList.Count > 0 && (DateTime.UtcNow - LastRPCUpdate).TotalMilliseconds >= RPC_REFRESH_INTERVAL) {
 				if (StationManager.Boarding) {
-					UpdatePresence(RichPresenceList.ContainsKey("boarding") ? RichPresenceList["boarding"] : null);
+					UpdatePresence(ConfigManager.ProfileList[selectedProfile].PresenceList["boarding"]);
 				} else {
-					UpdatePresence(RichPresenceList.ContainsKey("game") ? RichPresenceList["game"] : null);
+					UpdatePresence(ConfigManager.ProfileList[selectedProfile].PresenceList["game"]);
 				}
 				LastRPCUpdate = DateTime.UtcNow;
 			}
@@ -136,6 +136,18 @@ namespace obDRPC {
 		/// </summary>
 		public void OnUpdateFrame()
 		{
+			KeyboardState keyboardState = Keyboard.GetState();
+			if (OldKeyboardState == null) {
+				OldKeyboardState = keyboardState;
+			}
+
+			bool keyChanged = ConfigManager.KeyCombination.Any(key => OldKeyboardState[key] != keyboardState[key]);
+			bool correctKeyHeld = ConfigManager.KeyCombination.Count > 0 ? ConfigManager.KeyCombination.All(key => keyboardState.IsKeyDown(key)) : false;
+
+			if (keyChanged && correctKeyHeld) {
+				selectedProfile = (selectedProfile + 1) % ConfigManager.ProfileList.Count;
+			}
+			OldKeyboardState = keyboardState;
 		}
 
 		protected virtual void OnKeyDown(InputEventArgs e)
@@ -168,11 +180,13 @@ namespace obDRPC {
 			foreach (ButtonData btnData in data.buttons) {
 				if (string.IsNullOrEmpty(btnData.Label) || string.IsNullOrEmpty(btnData.Url)) continue;
 
-				Button btn = new Button();
-				btn.Label = ParsePlaceholders(btnData.Label, MAX_BTN_CHAR);
-				btn.Url = ParsePlaceholders(btnData.Url, MAX_BTN_CHAR);
+                Button btn = new Button
+                {
+                    Label = ParsePlaceholders(btnData.Label, MAX_BTN_CHAR),
+                    Url = ParsePlaceholders(btnData.Url, MAX_BTN_CHAR)
+                };
 
-				buttons.Add(btn);
+                buttons.Add(btn);
 			}
 
 			if (buttons.Count > 0) {
@@ -180,96 +194,6 @@ namespace obDRPC {
 			}
 
 			Client.SetPresence(presence);
-		}
-
-		internal void LoadConfig()
-		{
-			if (!System.IO.Directory.Exists(OptionsFolder)) {
-				System.IO.Directory.CreateDirectory(OptionsFolder);
-			}
-
-			string configFile = OpenBveApi.Path.CombineFile(OptionsFolder, "options_drpc.cfg");
-			if (System.IO.File.Exists(configFile)) {
-				string[] Lines = System.IO.File.ReadAllLines(configFile, new System.Text.UTF8Encoding());
-				string Section = "";
-				for (int i = 0; i < Lines.Length; i++) {
-					string currentLine = Lines[i].Trim();
-					if (currentLine.Length == 0 || currentLine.StartsWith(";")) {
-						continue;
-					}
-
-					if (currentLine.StartsWith("[") && currentLine.EndsWith("]")) {
-						Section = currentLine.Substring(1, currentLine.Length - 2);
-						continue;
-					}
-
-					if (Section == "appId") {
-						ClientId = currentLine;
-						continue;
-					}
-
-					if (!currentLine.Contains("=")) continue;
-					string key = currentLine.Split('=')[0].Trim().ToLowerInvariant();
-					string value = currentLine.Split('=')[1].Trim();
-					RPCData presence;
-					if (RichPresenceList.ContainsKey(Section)) {
-						presence = RichPresenceList[Section];
-					} else {
-						presence = new RPCData();
-					}
-
-					List<ButtonData> buttons = presence.buttons != null ? presence.buttons : new List<ButtonData>();
-					Assets assets = presence.assetsData != null ? presence.assetsData : new Assets();
-
-					if (key == "details") {
-						presence.details = value;
-					}
-
-					if (key == "state") {
-						presence.state = value;
-					}
-
-					if (key == "hastimestamp") {
-						presence.hasTimestamp = value == "true";
-					}
-
-					if (key.StartsWith("button") && value.Contains("|")) {
-						string text = value.Split('|')[0];
-						string url = value.Split('|')[1];
-						Uri uri;
-						if (Uri.TryCreate(url, UriKind.Absolute, out uri)) {
-							buttons.Add(new ButtonData(text, url));
-						} else {
-							FileSystem.AppendToLogFile($"[DRPC] Line {i}: Invalid Button URL!");
-						}
-					}
-
-					if (key == "largeimagekey") {
-						assets.LargeImageKey = value;
-					}
-
-					if (key == "largeimagetext") {
-						assets.LargeImageText = value;
-					}
-
-					if (key == "smallimagekey") {
-						assets.SmallImageKey = value;
-					}
-
-					if (key == "smallimagetext") {
-						assets.SmallImageText = value;
-					}
-
-					presence.buttons = buttons;
-					presence.assetsData = assets;
-
-					if (RichPresenceList.ContainsKey(Section)) {
-						RichPresenceList[Section] = presence;
-					} else {
-						RichPresenceList.Add(Section, presence);
-					}
-				}
-			}
 		}
 
 		internal string getEntryVersion() {

@@ -85,6 +85,13 @@
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.richTextBox20 = new System.Windows.Forms.RichTextBox();
+            this.richTextBox21 = new System.Windows.Forms.RichTextBox();
+            this.label17 = new System.Windows.Forms.Label();
+            this.addProfileBtn = new System.Windows.Forms.Button();
+            this.removeProfileBtn = new System.Windows.Forms.Button();
+            this.label18 = new System.Windows.Forms.Label();
+            this.buttonPfShortcut = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -96,7 +103,7 @@
             this.richTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBox1.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
             this.richTextBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.richTextBox1.Location = new System.Drawing.Point(69, 277);
+            this.richTextBox1.Location = new System.Drawing.Point(65, 281);
             this.richTextBox1.Name = "richTextBox1";
             this.richTextBox1.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.richTextBox1.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
@@ -114,7 +121,7 @@
             this.labelDetails1.BackColor = System.Drawing.Color.Transparent;
             this.labelDetails1.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.labelDetails1.ForeColor = System.Drawing.Color.Silver;
-            this.labelDetails1.Location = new System.Drawing.Point(18, 281);
+            this.labelDetails1.Location = new System.Drawing.Point(14, 285);
             this.labelDetails1.Name = "labelDetails1";
             this.labelDetails1.Size = new System.Drawing.Size(45, 15);
             this.labelDetails1.TabIndex = 7;
@@ -125,11 +132,11 @@
             this.labelAID.AutoSize = true;
             this.labelAID.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelAID.ForeColor = System.Drawing.SystemColors.Window;
-            this.labelAID.Location = new System.Drawing.Point(16, 173);
+            this.labelAID.Location = new System.Drawing.Point(11, 144);
             this.labelAID.Name = "labelAID";
-            this.labelAID.Size = new System.Drawing.Size(135, 25);
+            this.labelAID.Size = new System.Drawing.Size(140, 25);
             this.labelAID.TabIndex = 8;
-            this.labelAID.Text = "Application ID";
+            this.labelAID.Text = "Application ID:";
             // 
             // label3
             // 
@@ -139,7 +146,7 @@
             this.label3.BackColor = System.Drawing.Color.Transparent;
             this.label3.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.label3.ForeColor = System.Drawing.Color.Silver;
-            this.label3.Location = new System.Drawing.Point(27, 310);
+            this.label3.Location = new System.Drawing.Point(23, 314);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(36, 15);
             this.label3.TabIndex = 26;
@@ -151,7 +158,7 @@
             this.richTextBox6.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBox6.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
             this.richTextBox6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.richTextBox6.Location = new System.Drawing.Point(69, 307);
+            this.richTextBox6.Location = new System.Drawing.Point(65, 311);
             this.richTextBox6.Name = "richTextBox6";
             this.richTextBox6.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.richTextBox6.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
@@ -170,7 +177,7 @@
             this.button15.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button15.Font = new System.Drawing.Font("Segoe UI Semibold", 11F, System.Drawing.FontStyle.Bold);
             this.button15.ForeColor = System.Drawing.Color.White;
-            this.button15.Location = new System.Drawing.Point(661, 540);
+            this.button15.Location = new System.Drawing.Point(820, 547);
             this.button15.Name = "button15";
             this.button15.Size = new System.Drawing.Size(142, 37);
             this.button15.TabIndex = 32;
@@ -184,7 +191,7 @@
             this.appIdTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.appIdTextBox.Font = new System.Drawing.Font("Segoe UI Semibold", 10.25F);
             this.appIdTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.appIdTextBox.Location = new System.Drawing.Point(21, 206);
+            this.appIdTextBox.Location = new System.Drawing.Point(155, 146);
             this.appIdTextBox.Margin = new System.Windows.Forms.Padding(7);
             this.appIdTextBox.MaxLength = 18;
             this.appIdTextBox.Name = "appIdTextBox";
@@ -201,7 +208,7 @@
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.label4.ForeColor = System.Drawing.Color.Silver;
-            this.label4.Location = new System.Drawing.Point(66, 339);
+            this.label4.Location = new System.Drawing.Point(62, 343);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(97, 15);
             this.label4.TabIndex = 35;
@@ -214,7 +221,7 @@
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.label5.ForeColor = System.Drawing.Color.Silver;
-            this.label5.Location = new System.Drawing.Point(170, 339);
+            this.label5.Location = new System.Drawing.Point(166, 343);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(134, 15);
             this.label5.TabIndex = 36;
@@ -226,7 +233,7 @@
             this.richTextBox7.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBox7.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
             this.richTextBox7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.richTextBox7.Location = new System.Drawing.Point(69, 357);
+            this.richTextBox7.Location = new System.Drawing.Point(65, 361);
             this.richTextBox7.Name = "richTextBox7";
             this.richTextBox7.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.richTextBox7.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
@@ -243,7 +250,7 @@
             this.richTextBox8.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBox8.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
             this.richTextBox8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.richTextBox8.Location = new System.Drawing.Point(173, 357);
+            this.richTextBox8.Location = new System.Drawing.Point(169, 361);
             this.richTextBox8.Name = "richTextBox8";
             this.richTextBox8.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.richTextBox8.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
@@ -260,7 +267,7 @@
             this.richTextBox9.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBox9.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
             this.richTextBox9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.richTextBox9.Location = new System.Drawing.Point(173, 402);
+            this.richTextBox9.Location = new System.Drawing.Point(169, 406);
             this.richTextBox9.Name = "richTextBox9";
             this.richTextBox9.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.richTextBox9.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
@@ -277,7 +284,7 @@
             this.richTextBox10.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBox10.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
             this.richTextBox10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.richTextBox10.Location = new System.Drawing.Point(69, 402);
+            this.richTextBox10.Location = new System.Drawing.Point(65, 406);
             this.richTextBox10.Name = "richTextBox10";
             this.richTextBox10.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.richTextBox10.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
@@ -296,7 +303,7 @@
             this.label6.BackColor = System.Drawing.Color.Transparent;
             this.label6.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.label6.ForeColor = System.Drawing.Color.Silver;
-            this.label6.Location = new System.Drawing.Point(170, 384);
+            this.label6.Location = new System.Drawing.Point(166, 388);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(134, 15);
             this.label6.TabIndex = 40;
@@ -309,7 +316,7 @@
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.label7.ForeColor = System.Drawing.Color.Silver;
-            this.label7.Location = new System.Drawing.Point(66, 384);
+            this.label7.Location = new System.Drawing.Point(62, 388);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(97, 15);
             this.label7.TabIndex = 39;
@@ -322,7 +329,7 @@
             this.richTextBox19.DetectUrls = false;
             this.richTextBox19.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
             this.richTextBox19.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.richTextBox19.Location = new System.Drawing.Point(69, 459);
+            this.richTextBox19.Location = new System.Drawing.Point(65, 463);
             this.richTextBox19.Name = "richTextBox19";
             this.richTextBox19.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.richTextBox19.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
@@ -340,7 +347,7 @@
             this.richTextBox22.DetectUrls = false;
             this.richTextBox22.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
             this.richTextBox22.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.richTextBox22.Location = new System.Drawing.Point(69, 504);
+            this.richTextBox22.Location = new System.Drawing.Point(65, 508);
             this.richTextBox22.Name = "richTextBox22";
             this.richTextBox22.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.richTextBox22.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
@@ -358,7 +365,7 @@
             this.label16.AutoSize = true;
             this.label16.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.label16.ForeColor = System.Drawing.Color.Silver;
-            this.label16.Location = new System.Drawing.Point(66, 441);
+            this.label16.Location = new System.Drawing.Point(62, 445);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(114, 15);
             this.label16.TabIndex = 63;
@@ -371,7 +378,7 @@
             this.label19.AutoSize = true;
             this.label19.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.label19.ForeColor = System.Drawing.Color.Silver;
-            this.label19.Location = new System.Drawing.Point(66, 486);
+            this.label19.Location = new System.Drawing.Point(62, 490);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(119, 15);
             this.label19.TabIndex = 65;
@@ -386,7 +393,7 @@
             this.SaveCfg.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.SaveCfg.Font = new System.Drawing.Font("Segoe UI Semibold", 11F, System.Drawing.FontStyle.Bold);
             this.SaveCfg.ForeColor = System.Drawing.Color.White;
-            this.SaveCfg.Location = new System.Drawing.Point(818, 540);
+            this.SaveCfg.Location = new System.Drawing.Point(977, 547);
             this.SaveCfg.Name = "SaveCfg";
             this.SaveCfg.Size = new System.Drawing.Size(142, 37);
             this.SaveCfg.TabIndex = 83;
@@ -400,7 +407,7 @@
             this.checkBox1.BackColor = System.Drawing.Color.Transparent;
             this.checkBox1.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.checkBox1.ForeColor = System.Drawing.Color.White;
-            this.checkBox1.Location = new System.Drawing.Point(82, 251);
+            this.checkBox1.Location = new System.Drawing.Point(78, 255);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(143, 21);
             this.checkBox1.TabIndex = 84;
@@ -429,7 +436,7 @@
             this.richTextBox28.DetectUrls = false;
             this.richTextBox28.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
             this.richTextBox28.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.richTextBox28.Location = new System.Drawing.Point(725, 504);
+            this.richTextBox28.Location = new System.Drawing.Point(857, 513);
             this.richTextBox28.Name = "richTextBox28";
             this.richTextBox28.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.richTextBox28.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
@@ -446,7 +453,7 @@
             this.label25.AutoSize = true;
             this.label25.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.label25.ForeColor = System.Drawing.Color.Silver;
-            this.label25.Location = new System.Drawing.Point(722, 486);
+            this.label25.Location = new System.Drawing.Point(854, 494);
             this.label25.Name = "label25";
             this.label25.Size = new System.Drawing.Size(119, 15);
             this.label25.TabIndex = 81;
@@ -460,7 +467,7 @@
             this.richTextBox30.DetectUrls = false;
             this.richTextBox30.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
             this.richTextBox30.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.richTextBox30.Location = new System.Drawing.Point(725, 459);
+            this.richTextBox30.Location = new System.Drawing.Point(857, 466);
             this.richTextBox30.Name = "richTextBox30";
             this.richTextBox30.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.richTextBox30.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
@@ -477,7 +484,7 @@
             this.label27.AutoSize = true;
             this.label27.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.label27.ForeColor = System.Drawing.Color.Silver;
-            this.label27.Location = new System.Drawing.Point(722, 441);
+            this.label27.Location = new System.Drawing.Point(854, 447);
             this.label27.Name = "label27";
             this.label27.Size = new System.Drawing.Size(114, 15);
             this.label27.TabIndex = 79;
@@ -489,7 +496,7 @@
             this.label14.AutoSize = true;
             this.label14.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.label14.ForeColor = System.Drawing.Color.Silver;
-            this.label14.Location = new System.Drawing.Point(826, 339);
+            this.label14.Location = new System.Drawing.Point(958, 345);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(134, 15);
             this.label14.TabIndex = 52;
@@ -502,7 +509,7 @@
             this.richTextBox17.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBox17.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
             this.richTextBox17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.richTextBox17.Location = new System.Drawing.Point(829, 357);
+            this.richTextBox17.Location = new System.Drawing.Point(961, 363);
             this.richTextBox17.Name = "richTextBox17";
             this.richTextBox17.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.richTextBox17.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
@@ -519,7 +526,7 @@
             this.label12.AutoSize = true;
             this.label12.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.label12.ForeColor = System.Drawing.Color.Silver;
-            this.label12.Location = new System.Drawing.Point(826, 384);
+            this.label12.Location = new System.Drawing.Point(958, 390);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(134, 15);
             this.label12.TabIndex = 56;
@@ -532,7 +539,7 @@
             this.richTextBox15.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBox15.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
             this.richTextBox15.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.richTextBox15.Location = new System.Drawing.Point(829, 402);
+            this.richTextBox15.Location = new System.Drawing.Point(961, 408);
             this.richTextBox15.Name = "richTextBox15";
             this.richTextBox15.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.richTextBox15.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
@@ -550,7 +557,7 @@
             this.richTextBox16.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBox16.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
             this.richTextBox16.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.richTextBox16.Location = new System.Drawing.Point(725, 402);
+            this.richTextBox16.Location = new System.Drawing.Point(857, 408);
             this.richTextBox16.Name = "richTextBox16";
             this.richTextBox16.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.richTextBox16.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
@@ -567,7 +574,7 @@
             this.label13.AutoSize = true;
             this.label13.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.label13.ForeColor = System.Drawing.Color.Silver;
-            this.label13.Location = new System.Drawing.Point(722, 384);
+            this.label13.Location = new System.Drawing.Point(854, 390);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(97, 15);
             this.label13.TabIndex = 55;
@@ -580,7 +587,7 @@
             this.richTextBox18.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBox18.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
             this.richTextBox18.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.richTextBox18.Location = new System.Drawing.Point(725, 357);
+            this.richTextBox18.Location = new System.Drawing.Point(857, 363);
             this.richTextBox18.Name = "richTextBox18";
             this.richTextBox18.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.richTextBox18.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
@@ -597,7 +604,7 @@
             this.label15.AutoSize = true;
             this.label15.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.label15.ForeColor = System.Drawing.Color.Silver;
-            this.label15.Location = new System.Drawing.Point(722, 339);
+            this.label15.Location = new System.Drawing.Point(854, 345);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(97, 15);
             this.label15.TabIndex = 51;
@@ -610,7 +617,7 @@
             this.richTextBox5.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBox5.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
             this.richTextBox5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.richTextBox5.Location = new System.Drawing.Point(725, 307);
+            this.richTextBox5.Location = new System.Drawing.Point(857, 313);
             this.richTextBox5.Name = "richTextBox5";
             this.richTextBox5.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.richTextBox5.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
@@ -627,7 +634,7 @@
             this.richTextBox3.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBox3.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
             this.richTextBox3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.richTextBox3.Location = new System.Drawing.Point(725, 277);
+            this.richTextBox3.Location = new System.Drawing.Point(857, 283);
             this.richTextBox3.Name = "richTextBox3";
             this.richTextBox3.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.richTextBox3.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
@@ -644,7 +651,7 @@
             this.labelDetails3.AutoSize = true;
             this.labelDetails3.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.labelDetails3.ForeColor = System.Drawing.Color.Silver;
-            this.labelDetails3.Location = new System.Drawing.Point(675, 280);
+            this.labelDetails3.Location = new System.Drawing.Point(807, 286);
             this.labelDetails3.Name = "labelDetails3";
             this.labelDetails3.Size = new System.Drawing.Size(45, 15);
             this.labelDetails3.TabIndex = 22;
@@ -657,7 +664,7 @@
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.label2.ForeColor = System.Drawing.Color.Silver;
-            this.label2.Location = new System.Drawing.Point(681, 310);
+            this.label2.Location = new System.Drawing.Point(813, 316);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(36, 15);
             this.label2.TabIndex = 27;
@@ -669,7 +676,7 @@
             this.checkBox3.AutoSize = true;
             this.checkBox3.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.checkBox3.ForeColor = System.Drawing.Color.White;
-            this.checkBox3.Location = new System.Drawing.Point(768, 250);
+            this.checkBox3.Location = new System.Drawing.Point(900, 256);
             this.checkBox3.Name = "checkBox3";
             this.checkBox3.Size = new System.Drawing.Size(143, 21);
             this.checkBox3.TabIndex = 86;
@@ -684,7 +691,7 @@
             this.labelBR.AutoSize = true;
             this.labelBR.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelBR.ForeColor = System.Drawing.SystemColors.Window;
-            this.labelBR.Location = new System.Drawing.Point(673, 247);
+            this.labelBR.Location = new System.Drawing.Point(805, 253);
             this.labelBR.Name = "labelBR";
             this.labelBR.Size = new System.Drawing.Size(89, 25);
             this.labelBR.TabIndex = 1;
@@ -697,7 +704,7 @@
             this.label23.AutoSize = true;
             this.label23.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.label23.ForeColor = System.Drawing.Color.Silver;
-            this.label23.Location = new System.Drawing.Point(389, 441);
+            this.label23.Location = new System.Drawing.Point(448, 447);
             this.label23.Name = "label23";
             this.label23.Size = new System.Drawing.Size(114, 15);
             this.label23.TabIndex = 71;
@@ -710,7 +717,7 @@
             this.richTextBox26.DetectUrls = false;
             this.richTextBox26.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
             this.richTextBox26.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.richTextBox26.Location = new System.Drawing.Point(392, 459);
+            this.richTextBox26.Location = new System.Drawing.Point(451, 465);
             this.richTextBox26.Name = "richTextBox26";
             this.richTextBox26.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.richTextBox26.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
@@ -728,7 +735,7 @@
             this.label21.AutoSize = true;
             this.label21.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.label21.ForeColor = System.Drawing.Color.Silver;
-            this.label21.Location = new System.Drawing.Point(389, 486);
+            this.label21.Location = new System.Drawing.Point(448, 492);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(119, 15);
             this.label21.TabIndex = 73;
@@ -741,7 +748,7 @@
             this.richTextBox24.DetectUrls = false;
             this.richTextBox24.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
             this.richTextBox24.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.richTextBox24.Location = new System.Drawing.Point(392, 504);
+            this.richTextBox24.Location = new System.Drawing.Point(451, 510);
             this.richTextBox24.Name = "richTextBox24";
             this.richTextBox24.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.richTextBox24.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
@@ -758,7 +765,7 @@
             this.richTextBox11.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBox11.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
             this.richTextBox11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.richTextBox11.Location = new System.Drawing.Point(497, 402);
+            this.richTextBox11.Location = new System.Drawing.Point(556, 408);
             this.richTextBox11.Name = "richTextBox11";
             this.richTextBox11.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.richTextBox11.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
@@ -776,7 +783,7 @@
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.label8.ForeColor = System.Drawing.Color.Silver;
-            this.label8.Location = new System.Drawing.Point(494, 384);
+            this.label8.Location = new System.Drawing.Point(553, 390);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(134, 15);
             this.label8.TabIndex = 48;
@@ -788,7 +795,7 @@
             this.richTextBox12.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBox12.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
             this.richTextBox12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.richTextBox12.Location = new System.Drawing.Point(393, 402);
+            this.richTextBox12.Location = new System.Drawing.Point(452, 408);
             this.richTextBox12.Name = "richTextBox12";
             this.richTextBox12.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.richTextBox12.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
@@ -806,7 +813,7 @@
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.label9.ForeColor = System.Drawing.Color.Silver;
-            this.label9.Location = new System.Drawing.Point(390, 384);
+            this.label9.Location = new System.Drawing.Point(449, 390);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(97, 15);
             this.label9.TabIndex = 47;
@@ -818,7 +825,7 @@
             this.richTextBox14.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBox14.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
             this.richTextBox14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.richTextBox14.Location = new System.Drawing.Point(393, 357);
+            this.richTextBox14.Location = new System.Drawing.Point(452, 363);
             this.richTextBox14.Name = "richTextBox14";
             this.richTextBox14.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.richTextBox14.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
@@ -835,7 +842,7 @@
             this.richTextBox13.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBox13.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
             this.richTextBox13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.richTextBox13.Location = new System.Drawing.Point(497, 357);
+            this.richTextBox13.Location = new System.Drawing.Point(556, 363);
             this.richTextBox13.Name = "richTextBox13";
             this.richTextBox13.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.richTextBox13.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
@@ -853,7 +860,7 @@
             this.label10.AutoSize = true;
             this.label10.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.label10.ForeColor = System.Drawing.Color.Silver;
-            this.label10.Location = new System.Drawing.Point(494, 339);
+            this.label10.Location = new System.Drawing.Point(553, 345);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(134, 15);
             this.label10.TabIndex = 44;
@@ -866,7 +873,7 @@
             this.label11.AutoSize = true;
             this.label11.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.label11.ForeColor = System.Drawing.Color.Silver;
-            this.label11.Location = new System.Drawing.Point(390, 339);
+            this.label11.Location = new System.Drawing.Point(449, 345);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(97, 15);
             this.label11.TabIndex = 43;
@@ -874,11 +881,12 @@
             // 
             // labelIG
             // 
-            this.labelIG.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.labelIG.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.labelIG.AutoSize = true;
             this.labelIG.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelIG.ForeColor = System.Drawing.SystemColors.Window;
-            this.labelIG.Location = new System.Drawing.Point(341, 247);
+            this.labelIG.Location = new System.Drawing.Point(401, 252);
             this.labelIG.Name = "labelIG";
             this.labelIG.Size = new System.Drawing.Size(87, 25);
             this.labelIG.TabIndex = 0;
@@ -886,16 +894,17 @@
             // 
             // richTextBox4
             // 
-            this.richTextBox4.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.richTextBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.richTextBox4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(83)))), ((int)(((byte)(90)))));
             this.richTextBox4.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBox4.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
             this.richTextBox4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.richTextBox4.Location = new System.Drawing.Point(392, 307);
+            this.richTextBox4.Location = new System.Drawing.Point(452, 312);
             this.richTextBox4.Name = "richTextBox4";
             this.richTextBox4.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.richTextBox4.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.richTextBox4.Size = new System.Drawing.Size(236, 24);
+            this.richTextBox4.Size = new System.Drawing.Size(236, 0);
             this.richTextBox4.TabIndex = 31;
             this.richTextBox4.Tag = "state;game";
             this.richTextBox4.Text = "";
@@ -903,11 +912,12 @@
             // 
             // label1
             // 
-            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.label1.ForeColor = System.Drawing.Color.Silver;
-            this.label1.Location = new System.Drawing.Point(349, 310);
+            this.label1.Location = new System.Drawing.Point(409, 315);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(36, 15);
             this.label1.TabIndex = 28;
@@ -915,11 +925,12 @@
             // 
             // labelDetails2
             // 
-            this.labelDetails2.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.labelDetails2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.labelDetails2.AutoSize = true;
             this.labelDetails2.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.labelDetails2.ForeColor = System.Drawing.Color.Silver;
-            this.labelDetails2.Location = new System.Drawing.Point(343, 280);
+            this.labelDetails2.Location = new System.Drawing.Point(403, 285);
             this.labelDetails2.Name = "labelDetails2";
             this.labelDetails2.Size = new System.Drawing.Size(45, 15);
             this.labelDetails2.TabIndex = 23;
@@ -927,11 +938,10 @@
             // 
             // checkBox2
             // 
-            this.checkBox2.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.checkBox2.AutoSize = true;
             this.checkBox2.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.checkBox2.ForeColor = System.Drawing.Color.White;
-            this.checkBox2.Location = new System.Drawing.Point(434, 252);
+            this.checkBox2.Location = new System.Drawing.Point(494, 256);
             this.checkBox2.Name = "checkBox2";
             this.checkBox2.Size = new System.Drawing.Size(143, 21);
             this.checkBox2.TabIndex = 85;
@@ -941,16 +951,17 @@
             // 
             // richTextBox2
             // 
-            this.richTextBox2.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.richTextBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.richTextBox2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(83)))), ((int)(((byte)(90)))));
             this.richTextBox2.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBox2.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
             this.richTextBox2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.richTextBox2.Location = new System.Drawing.Point(392, 277);
+            this.richTextBox2.Location = new System.Drawing.Point(452, 282);
             this.richTextBox2.Name = "richTextBox2";
             this.richTextBox2.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.richTextBox2.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.richTextBox2.Size = new System.Drawing.Size(236, 24);
+            this.richTextBox2.Size = new System.Drawing.Size(236, 0);
             this.richTextBox2.TabIndex = 25;
             this.richTextBox2.Tag = "details;game";
             this.richTextBox2.Text = "";
@@ -964,7 +975,7 @@
             this.labelMN.BackColor = System.Drawing.Color.Transparent;
             this.labelMN.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelMN.ForeColor = System.Drawing.SystemColors.Window;
-            this.labelMN.Location = new System.Drawing.Point(16, 247);
+            this.labelMN.Location = new System.Drawing.Point(12, 251);
             this.labelMN.Name = "labelMN";
             this.labelMN.Size = new System.Drawing.Size(62, 25);
             this.labelMN.TabIndex = 2;
@@ -972,8 +983,9 @@
             // 
             // pictureBox3
             // 
+            this.pictureBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
-            this.pictureBox3.Location = new System.Drawing.Point(678, 240);
+            this.pictureBox3.Location = new System.Drawing.Point(811, 245);
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Size = new System.Drawing.Size(281, 5);
             this.pictureBox3.TabIndex = 91;
@@ -983,7 +995,7 @@
             // pictureBox1
             // 
             this.pictureBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
-            this.pictureBox1.Location = new System.Drawing.Point(21, 240);
+            this.pictureBox1.Location = new System.Drawing.Point(19, 245);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(281, 5);
             this.pictureBox1.TabIndex = 92;
@@ -993,81 +1005,176 @@
             // pictureBox2
             // 
             this.pictureBox2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
-            this.pictureBox2.Location = new System.Drawing.Point(346, 240);
+            this.pictureBox2.Location = new System.Drawing.Point(406, 245);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(281, 5);
             this.pictureBox2.TabIndex = 93;
             this.pictureBox2.TabStop = false;
             this.pictureBox2.Tag = "game";
             // 
+            // richTextBox20
+            // 
+            this.richTextBox20.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(83)))), ((int)(((byte)(90)))));
+            this.richTextBox20.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBox20.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
+            this.richTextBox20.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
+            this.richTextBox20.Location = new System.Drawing.Point(453, 282);
+            this.richTextBox20.Name = "richTextBox20";
+            this.richTextBox20.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.richTextBox20.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.richTextBox20.Size = new System.Drawing.Size(235, 24);
+            this.richTextBox20.TabIndex = 94;
+            this.richTextBox20.Tag = "details;game";
+            this.richTextBox20.Text = "";
+            this.richTextBox20.Enter += new System.EventHandler(this.insertableTextSelect);
+            // 
+            // richTextBox21
+            // 
+            this.richTextBox21.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(83)))), ((int)(((byte)(90)))));
+            this.richTextBox21.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBox21.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
+            this.richTextBox21.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
+            this.richTextBox21.Location = new System.Drawing.Point(453, 312);
+            this.richTextBox21.Name = "richTextBox21";
+            this.richTextBox21.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.richTextBox21.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.richTextBox21.Size = new System.Drawing.Size(235, 24);
+            this.richTextBox21.TabIndex = 95;
+            this.richTextBox21.Tag = "state;game";
+            this.richTextBox21.Text = "";
+            this.richTextBox21.Enter += new System.EventHandler(this.insertableTextSelect);
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label17.ForeColor = System.Drawing.SystemColors.Window;
+            this.label17.Location = new System.Drawing.Point(11, 178);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(76, 25);
+            this.label17.TabIndex = 96;
+            this.label17.Text = "Profiles";
+            // 
+            // addProfileBtn
+            // 
+            this.addProfileBtn.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.addProfileBtn.Location = new System.Drawing.Point(93, 182);
+            this.addProfileBtn.Name = "addProfileBtn";
+            this.addProfileBtn.Size = new System.Drawing.Size(23, 23);
+            this.addProfileBtn.TabIndex = 97;
+            this.addProfileBtn.Text = "+";
+            this.addProfileBtn.UseVisualStyleBackColor = true;
+            this.addProfileBtn.Click += new System.EventHandler(this.addProfileBtn_Click);
+            // 
+            // removeProfileBtn
+            // 
+            this.removeProfileBtn.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.removeProfileBtn.Location = new System.Drawing.Point(122, 182);
+            this.removeProfileBtn.Name = "removeProfileBtn";
+            this.removeProfileBtn.Size = new System.Drawing.Size(23, 23);
+            this.removeProfileBtn.TabIndex = 98;
+            this.removeProfileBtn.Text = "-";
+            this.removeProfileBtn.UseVisualStyleBackColor = true;
+            this.removeProfileBtn.Click += new System.EventHandler(this.removeProfileBtn_Click);
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label18.ForeColor = System.Drawing.SystemColors.Window;
+            this.label18.Location = new System.Drawing.Point(349, 146);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(213, 25);
+            this.label18.TabIndex = 99;
+            this.label18.Text = "Switch Profile Shortcut:";
+            // 
+            // buttonPfShortcut
+            // 
+            this.buttonPfShortcut.AutoSize = true;
+            this.buttonPfShortcut.Location = new System.Drawing.Point(568, 145);
+            this.buttonPfShortcut.Name = "buttonPfShortcut";
+            this.buttonPfShortcut.Size = new System.Drawing.Size(75, 28);
+            this.buttonPfShortcut.TabIndex = 100;
+            this.buttonPfShortcut.Text = "button1";
+            this.buttonPfShortcut.UseVisualStyleBackColor = true;
+            this.buttonPfShortcut.Click += new System.EventHandler(this.buttonPfShortcut_Click);
+            this.buttonPfShortcut.KeyDown += new System.Windows.Forms.KeyEventHandler(this.buttonPfShortcut_KeyDown);
+            this.buttonPfShortcut.KeyUp += new System.Windows.Forms.KeyEventHandler(this.buttonPfShortcut_KeyUp);
+            // 
             // ConfigForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(54)))), ((int)(((byte)(57)))), ((int)(((byte)(63)))));
-            this.ClientSize = new System.Drawing.Size(977, 589);
-            this.Controls.Add(this.pictureBox2);
-            this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.pictureBox3);
+            this.ClientSize = new System.Drawing.Size(1136, 596);
+            this.Controls.Add(this.buttonPfShortcut);
+            this.Controls.Add(this.label18);
+            this.Controls.Add(this.removeProfileBtn);
+            this.Controls.Add(this.addProfileBtn);
+            this.Controls.Add(this.label17);
+            this.Controls.Add(this.richTextBox20);
+            this.Controls.Add(this.richTextBox21);
             this.Controls.Add(this.connectionLabel);
-            this.Controls.Add(this.checkBox3);
-            this.Controls.Add(this.checkBox2);
-            this.Controls.Add(this.checkBox1);
-            this.Controls.Add(this.SaveCfg);
-            this.Controls.Add(this.label25);
-            this.Controls.Add(this.label27);
-            this.Controls.Add(this.richTextBox28);
-            this.Controls.Add(this.richTextBox30);
-            this.Controls.Add(this.label21);
-            this.Controls.Add(this.label23);
-            this.Controls.Add(this.richTextBox24);
-            this.Controls.Add(this.richTextBox26);
-            this.Controls.Add(this.label19);
-            this.Controls.Add(this.label16);
-            this.Controls.Add(this.richTextBox22);
-            this.Controls.Add(this.richTextBox19);
-            this.Controls.Add(this.richTextBox15);
-            this.Controls.Add(this.richTextBox16);
-            this.Controls.Add(this.label12);
-            this.Controls.Add(this.label13);
-            this.Controls.Add(this.richTextBox17);
-            this.Controls.Add(this.richTextBox18);
-            this.Controls.Add(this.label14);
-            this.Controls.Add(this.label15);
-            this.Controls.Add(this.richTextBox11);
-            this.Controls.Add(this.richTextBox12);
-            this.Controls.Add(this.label8);
-            this.Controls.Add(this.label9);
-            this.Controls.Add(this.richTextBox13);
-            this.Controls.Add(this.richTextBox14);
-            this.Controls.Add(this.label10);
-            this.Controls.Add(this.label11);
-            this.Controls.Add(this.richTextBox9);
-            this.Controls.Add(this.richTextBox10);
-            this.Controls.Add(this.label6);
-            this.Controls.Add(this.label7);
-            this.Controls.Add(this.richTextBox8);
-            this.Controls.Add(this.richTextBox7);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.appIdTextBox);
-            this.Controls.Add(this.button15);
-            this.Controls.Add(this.richTextBox4);
-            this.Controls.Add(this.richTextBox5);
-            this.Controls.Add(this.richTextBox6);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.richTextBox2);
-            this.Controls.Add(this.richTextBox3);
-            this.Controls.Add(this.labelDetails2);
-            this.Controls.Add(this.labelDetails3);
+            this.Controls.Add(this.pictureBox3);
+            this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.labelAID);
-            this.Controls.Add(this.labelDetails1);
-            this.Controls.Add(this.richTextBox1);
+            this.Controls.Add(this.checkBox3);
+            this.Controls.Add(this.SaveCfg);
+            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.button15);
+            this.Controls.Add(this.label25);
+            this.Controls.Add(this.appIdTextBox);
+            this.Controls.Add(this.checkBox1);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.label27);
+            this.Controls.Add(this.richTextBox14);
             this.Controls.Add(this.labelMN);
-            this.Controls.Add(this.labelBR);
+            this.Controls.Add(this.label11);
+            this.Controls.Add(this.richTextBox28);
+            this.Controls.Add(this.richTextBox13);
+            this.Controls.Add(this.checkBox2);
+            this.Controls.Add(this.richTextBox4);
+            this.Controls.Add(this.richTextBox30);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.richTextBox1);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.richTextBox15);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.labelDetails1);
+            this.Controls.Add(this.richTextBox2);
+            this.Controls.Add(this.richTextBox16);
+            this.Controls.Add(this.richTextBox12);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.labelDetails2);
+            this.Controls.Add(this.label12);
+            this.Controls.Add(this.richTextBox11);
+            this.Controls.Add(this.richTextBox6);
             this.Controls.Add(this.labelIG);
+            this.Controls.Add(this.label13);
+            this.Controls.Add(this.label16);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.richTextBox22);
+            this.Controls.Add(this.richTextBox17);
+            this.Controls.Add(this.label19);
+            this.Controls.Add(this.label21);
+            this.Controls.Add(this.richTextBox19);
+            this.Controls.Add(this.richTextBox18);
+            this.Controls.Add(this.richTextBox9);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.richTextBox10);
+            this.Controls.Add(this.label14);
+            this.Controls.Add(this.labelBR);
+            this.Controls.Add(this.label23);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.label15);
+            this.Controls.Add(this.labelDetails3);
+            this.Controls.Add(this.richTextBox7);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.richTextBox24);
+            this.Controls.Add(this.richTextBox3);
+            this.Controls.Add(this.richTextBox5);
+            this.Controls.Add(this.richTextBox26);
+            this.Controls.Add(this.richTextBox8);
+            this.Controls.Add(this.label2);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -1145,5 +1252,12 @@
         private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.RichTextBox richTextBox20;
+        private System.Windows.Forms.RichTextBox richTextBox21;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Button addProfileBtn;
+        private System.Windows.Forms.Button removeProfileBtn;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Button buttonPfShortcut;
     }
 }

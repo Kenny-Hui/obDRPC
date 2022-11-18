@@ -1,10 +1,10 @@
 using OpenBveApi.Runtime;
 
 namespace obDRPC {
-	/// <summary>
-	/// Informations Default Displaying Plugin (for Testing)
-	/// </summary>
-	public static class StationManager {
+    /// <summary>
+    /// Informations Default Displaying Plugin (for Testing)
+    /// </summary>
+    public static class StationManager {
 
 		private const int STOP_TOLERANCE = 5;
 		private static double DepTime;
