@@ -9,26 +9,15 @@ This is an Input Plugin for OpenBVE that serves the purpose of displaying a Rich
 - ~Settings Window~
 - ~Allow pasting Application ID~
 - ~Ability to generate a config file~
+- ~A tutorial for average users~
+- ~Presets that can be toggled in-game with a keybind~
 - Ensure stability
-- ~A tutorial for your average users~
-- Presets that can be toggled in-game with a keybind
 
 ## Requirements
-- OpenBVE Nightly Build (2022-09-06 and onwards)
+- OpenBVE Nightly Build (2022-10-05 and onwards)
 
-## Setup
-- Download the files provided in the **Release section** or compile the project.  
-Then copy the dll to **<Your OpenBVE Installation/Data/InputDevicePlugins>**
-
-- Launch OpenBVE, Go to Options -> Next Page -> Input Device Plugin, select **Discord RPC** and click "Enable this Input Device Plugin".
-![image](https://user-images.githubusercontent.com/28094366/196678453-816c33c5-3ce9-4b9b-9216-ea2a2a393f11.png)
-
-- Go to https://discord.com/developers/applications/ and create an application by clicking **New Application** button.  
-(The name you chose will be displayed as "Playing [your name]")
-- Copy the numeric ID that's visible below "Application ID".
-![image](https://user-images.githubusercontent.com/28094366/196678999-80779eb8-d469-4318-afa9-045cf89b212b.png)
-
-- Click Config, paste in the Application ID you copied earlier, then fill out the rest of the details.
+## Using it
+See [wiki](https://github.com/Kenny-Hui/obDRPC/wiki)
 
 ## Building
 This project has successfully been compiled with Visual Studio 2022 and MonoDevelop  
