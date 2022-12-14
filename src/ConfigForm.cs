@@ -161,7 +161,7 @@ namespace obDRPC {
                 string tagName = control.Tag == null ? "" : control.Tag.ToString();
 
                 if (tagName == "appId") {
-                    control.Text = Client?.ApplicationID;
+                    control.Text = ConfigManager.appId;
                     continue;
                 }
 
