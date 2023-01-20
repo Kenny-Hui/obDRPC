@@ -1,0 +1,38 @@
+# Automatically build the project and run any configured tests for every push
+# and submitted pull request. This can help catch issues that only occur on
+# certain platforms or Java versions, and provides a first line of defence
+# against bad commits.
+
+name: Build
+on: [ push, pull_request ]
+
+jobs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Set up dependencies
+        run: |
+        sudo apt install gnupg ca-certificates
+        sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+        echo "deb https://download.mono-project.com/repo/ubuntu stable-focal main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
+        sudo apt update
+        sudo apt install nuget
+        sudo apt install mono-complete
+      - name: Obtain OpenBVE
+        run: |
+        xml=$(curl https://vps.bvecornwall.co.uk/OpenBVE/Builds/version.xml)
+        url1=${xml#*<url>}
+        url2=${one%</url>*}
+        curl -L "${url2}" -o ${GITHUB_WORKSPACE}/ob.zip
+        unzip ${GITHUB_WORKSPACE}/ob.zip -d ${GITHUB_WORKSPACE}/ob
+      - name: Build obDRPC
+        run: |
+        cd ${GITHUB_WORKSPACE}
+        nuget restore
+        msbuild ${GITHUB_WORKSPACE}/obDRPC.csproj /p:OpenBveApiPath=${GITHUB_WORKSPACE}/ob/OpenBveApi.dll
+      - name: Capture release artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: Artifacts
+          path: bin/debug/
