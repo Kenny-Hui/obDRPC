@@ -23,7 +23,7 @@ jobs:
           run: |
             xml=$(curl https://vps.bvecornwall.co.uk/OpenBVE/Builds/version.xml)
             url1=${xml#*<url>}
-            url2=${one%</url>*}
+            url2=${url1%</url>*}
             curl -L "${url2}" -o ${GITHUB_WORKSPACE}/ob.zip
             unzip ${GITHUB_WORKSPACE}/ob.zip -d ${GITHUB_WORKSPACE}/ob
         - name: Build obDRPC
