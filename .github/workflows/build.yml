@@ -24,10 +24,9 @@ jobs:
             unzip ${GITHUB_WORKSPACE}/ob.zip -d ${GITHUB_WORKSPACE}/ob
         - name: Build obDRPC
           run: |
-            cd ${GITHUB_WORKSPACE}
-            ls ${GITHUB_WORKSPACE}
+            cd ${GITHUB_WORKSPACE}/src
             nuget restore
-            msbuild ${GITHUB_WORKSPACE}/obDRPC.csproj /p:OpenBveApiPath=${GITHUB_WORKSPACE}/ob/OpenBveApi.dll
+            msbuild obDRPC.csproj /p:OpenBveApiPath=${GITHUB_WORKSPACE}/ob/OpenBveApi.dll
         - name: Capture release artifacts
           uses: actions/upload-artifact@v3
           with:
