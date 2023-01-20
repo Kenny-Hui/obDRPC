@@ -11,11 +11,11 @@ jobs:
         steps:
         - name: Checkout repository
           uses: actions/checkout@v3
-        - name: Set up dependencies
+        - name: Setup dependencies
           run: |
             sudo apt update
             sudo apt install nuget
-        - name: Obtain OpenBVE
+        - name: Download OpenBVE Nightly
           run: |
             xml=$(curl https://vps.bvecornwall.co.uk/OpenBVE/Builds/version.xml)
             url1=${xml#*<url>}
@@ -31,4 +31,4 @@ jobs:
           uses: actions/upload-artifact@v3
           with:
             name: Artifacts
-            path: bin/debug/
+            path: src/bin/debug/
