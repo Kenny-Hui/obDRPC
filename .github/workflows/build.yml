@@ -11,10 +11,6 @@ jobs:
         steps:
         - name: Checkout repository
           uses: actions/checkout@v3
-        - name: Setup dependencies
-          run: |
-            sudo apt update
-            sudo apt install nuget
         - name: Download OpenBVE Nightly
           run: |
             xml=$(curl https://vps.bvecornwall.co.uk/OpenBVE/Builds/version.xml)
