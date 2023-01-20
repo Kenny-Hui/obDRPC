@@ -1,0 +1,37 @@
+# Automatically build the project and run any configured tests for every push
+# and submitted pull request. This can help catch issues that only occur on
+# certain platforms or Java versions, and provides a first line of defence
+# against bad commits.
+
+name: Build
+on: [ push, pull_request, workflow_dispatch ]
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@v3
+        - name: Setup dependencies
+          run: |
+            sudo apt update
+            sudo apt install nuget
+        - name: Download OpenBVE Nightly
+          run: |
+            xml=$(curl https://vps.bvecornwall.co.uk/OpenBVE/Builds/version.xml)
+            url1=${xml#*<url>}
+            url2=${url1%</url>*}
+            curl -L "${url2}" -o ${GITHUB_WORKSPACE}/ob.zip
+            unzip ${GITHUB_WORKSPACE}/ob.zip -d ${GITHUB_WORKSPACE}/ob
+        - name: Build obDRPC
+          run: |
+            cd ${GITHUB_WORKSPACE}/src
+            nuget restore
+            msbuild obDRPC.csproj /p:OpenBveApiPath=${GITHUB_WORKSPACE}/ob/OpenBveApi.dll
+        - name: Capture release artifacts
+          uses: actions/upload-artifact@v3
+          with:
+            name: Artifacts
+            path: |
+              src/bin/debug/OB_DRPC.dll
+              src/bin/debug/OB_DRPC.dll.config
+              src/bin/debug/OB_DRPC.pdb
