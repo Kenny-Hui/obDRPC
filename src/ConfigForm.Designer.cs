@@ -29,6 +29,8 @@
             this.label3 = new System.Windows.Forms.Label();
             this.richTextBox6 = new System.Windows.Forms.RichTextBox();
             this.button15 = new System.Windows.Forms.Button();
+            this.setURL1Menu = new System.Windows.Forms.Button();
+            this.setURL2Menu = new System.Windows.Forms.Button();
             this.appIdTextBox = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
@@ -45,8 +47,10 @@
             this.SaveCfg = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.connectionLabel = new System.Windows.Forms.Label();
+            this.setURL1Boarding = new System.Windows.Forms.Button();
             this.richTextBox28 = new System.Windows.Forms.RichTextBox();
             this.label25 = new System.Windows.Forms.Label();
+            this.setURL2Boarding = new System.Windows.Forms.Button();
             this.richTextBox30 = new System.Windows.Forms.RichTextBox();
             this.label27 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
@@ -64,8 +68,10 @@
             this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.labelBR = new System.Windows.Forms.Label();
             this.label23 = new System.Windows.Forms.Label();
+            this.setURL1InGame = new System.Windows.Forms.Button();
             this.richTextBox26 = new System.Windows.Forms.RichTextBox();
             this.label21 = new System.Windows.Forms.Label();
+            this.setURL2InGame = new System.Windows.Forms.Button();
             this.richTextBox24 = new System.Windows.Forms.RichTextBox();
             this.richTextBox11 = new System.Windows.Forms.RichTextBox();
             this.label8 = new System.Windows.Forms.Label();
@@ -184,6 +190,96 @@
             this.button15.Text = "Discard and Close";
             this.button15.UseVisualStyleBackColor = false;
             this.button15.Click += new System.EventHandler(this.button15_Click);
+            // 
+            // setURL1Menu
+            // 
+            this.setURL1Menu.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.setURL1Menu.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.setURL1Menu.Font = new System.Drawing.Font("Segoe UI", 8.75F);
+            this.setURL1Menu.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.setURL1Menu.Location = new System.Drawing.Point(210, 463);
+            this.setURL1Menu.Name = "setURL1Menu";
+            this.setURL1Menu.Size = new System.Drawing.Size(90, 24);
+            this.setURL1Menu.TabIndex = 32;
+            this.setURL1Menu.Text = "Set URL";
+            this.setURL1Menu.Tag = "btn1url;menu;";
+            this.setURL1Menu.UseVisualStyleBackColor = true;
+            this.setURL1Menu.Click += new System.EventHandler(this.setURLButton_Click);
+            // 
+            // setURL2Menu
+            // 
+            this.setURL2Menu.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.setURL2Menu.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.setURL2Menu.Font = new System.Drawing.Font("Segoe UI", 8.75F);
+            this.setURL2Menu.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.setURL2Menu.Location = new System.Drawing.Point(210, 508);
+            this.setURL2Menu.Name = "setURL2Menu";
+            this.setURL2Menu.Tag = "btn2url;menu;";
+            this.setURL2Menu.Size = new System.Drawing.Size(90, 24);
+            this.setURL2Menu.TabIndex = 32;
+            this.setURL2Menu.Text = "Set URL";
+            this.setURL2Menu.UseVisualStyleBackColor = true;
+            this.setURL2Menu.Click += new System.EventHandler(this.setURLButton_Click);
+            // 
+            // setURL1InGame
+            // 
+            this.setURL1InGame.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.setURL1InGame.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.setURL1InGame.Font = new System.Drawing.Font("Segoe UI", 8.75F);
+            this.setURL1InGame.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.setURL1InGame.Location = new System.Drawing.Point(596, 463);
+            this.setURL1InGame.Name = "setURL1InGame";
+            this.setURL1InGame.Size = new System.Drawing.Size(90, 24);
+            this.setURL1InGame.TabIndex = 32;
+            this.setURL1InGame.Text = "Set URL";
+            this.setURL1InGame.Tag = "btn1url;game;";
+            this.setURL1InGame.UseVisualStyleBackColor = true;
+            this.setURL1InGame.Click += new System.EventHandler(this.setURLButton_Click);
+            // 
+            // setURL2InGame
+            // 
+            this.setURL2InGame.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.setURL2InGame.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.setURL2InGame.Font = new System.Drawing.Font("Segoe UI", 8.75F);
+            this.setURL2InGame.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.setURL2InGame.Location = new System.Drawing.Point(596, 508);
+            this.setURL2InGame.Name = "setURL2InGame";
+            this.setURL2InGame.Size = new System.Drawing.Size(90, 24);
+            this.setURL2InGame.TabIndex = 32;
+            this.setURL2InGame.Text = "Set URL";
+            this.setURL2InGame.Tag = "btn2url;game;";
+            this.setURL2InGame.UseVisualStyleBackColor = true;
+            this.setURL2InGame.Click += new System.EventHandler(this.setURLButton_Click);
+            // 
+            // setURL1Boarding
+            // 
+            this.setURL1Boarding.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.setURL1Boarding.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.setURL1Boarding.Font = new System.Drawing.Font("Segoe UI", 8.75F);
+            this.setURL1Boarding.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.setURL1Boarding.Location = new System.Drawing.Point(1002, 463);
+            this.setURL1Boarding.Name = "setURL1Boarding";
+            this.setURL1Boarding.Size = new System.Drawing.Size(90, 24);
+            this.setURL1Boarding.TabIndex = 32;
+            this.setURL1Boarding.Text = "Set URL";
+            this.setURL1Boarding.Tag = "btn1url;boarding;";
+            this.setURL1Boarding.UseVisualStyleBackColor = true;
+            this.setURL1Boarding.Click += new System.EventHandler(this.setURLButton_Click);
+            // 
+            // setURL2Boarding
+            // 
+            this.setURL2Boarding.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.setURL2Boarding.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.setURL2Boarding.Font = new System.Drawing.Font("Segoe UI", 8.75F);
+            this.setURL2Boarding.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.setURL2Boarding.Location = new System.Drawing.Point(1002, 508);
+            this.setURL2Boarding.Name = "setURL2Boarding";
+            this.setURL2Boarding.Size = new System.Drawing.Size(90, 24);
+            this.setURL2Boarding.TabIndex = 32;
+            this.setURL2Boarding.Text = "Set URL";
+            this.setURL2Boarding.Tag = "btn2url;boarding;";
+            this.setURL2Boarding.UseVisualStyleBackColor = true;
+            this.setURL2Boarding.Click += new System.EventHandler(this.setURLButton_Click);
             // 
             // appIdTextBox
             // 
@@ -333,7 +429,7 @@
             this.richTextBox19.Name = "richTextBox19";
             this.richTextBox19.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.richTextBox19.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-            this.richTextBox19.Size = new System.Drawing.Size(235, 24);
+            this.richTextBox19.Size = new System.Drawing.Size(140, 24);
             this.richTextBox19.TabIndex = 59;
             this.richTextBox19.Tag = "btn1text;menu";
             this.richTextBox19.Text = "";
@@ -351,7 +447,7 @@
             this.richTextBox22.Name = "richTextBox22";
             this.richTextBox22.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.richTextBox22.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-            this.richTextBox22.Size = new System.Drawing.Size(235, 24);
+            this.richTextBox22.Size = new System.Drawing.Size(140, 24);
             this.richTextBox22.TabIndex = 61;
             this.richTextBox22.Tag = "btn2text;menu";
             this.richTextBox22.Text = "";
@@ -436,11 +532,11 @@
             this.richTextBox28.DetectUrls = false;
             this.richTextBox28.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
             this.richTextBox28.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.richTextBox28.Location = new System.Drawing.Point(857, 513);
+            this.richTextBox28.Location = new System.Drawing.Point(857, 508);
             this.richTextBox28.Name = "richTextBox28";
             this.richTextBox28.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.richTextBox28.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-            this.richTextBox28.Size = new System.Drawing.Size(235, 24);
+            this.richTextBox28.Size = new System.Drawing.Size(140, 24);
             this.richTextBox28.TabIndex = 77;
             this.richTextBox28.Tag = "btn2text;boarding";
             this.richTextBox28.Text = "";
@@ -453,7 +549,7 @@
             this.label25.AutoSize = true;
             this.label25.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.label25.ForeColor = System.Drawing.Color.Silver;
-            this.label25.Location = new System.Drawing.Point(854, 494);
+            this.label25.Location = new System.Drawing.Point(854, 488);
             this.label25.Name = "label25";
             this.label25.Size = new System.Drawing.Size(119, 15);
             this.label25.TabIndex = 81;
@@ -467,11 +563,11 @@
             this.richTextBox30.DetectUrls = false;
             this.richTextBox30.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
             this.richTextBox30.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.richTextBox30.Location = new System.Drawing.Point(857, 466);
+            this.richTextBox30.Location = new System.Drawing.Point(857, 463);
             this.richTextBox30.Name = "richTextBox30";
             this.richTextBox30.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.richTextBox30.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-            this.richTextBox30.Size = new System.Drawing.Size(235, 24);
+            this.richTextBox30.Size = new System.Drawing.Size(140, 24);
             this.richTextBox30.TabIndex = 75;
             this.richTextBox30.Tag = "btn1text;boarding";
             this.richTextBox30.Text = "";
@@ -484,7 +580,7 @@
             this.label27.AutoSize = true;
             this.label27.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.label27.ForeColor = System.Drawing.Color.Silver;
-            this.label27.Location = new System.Drawing.Point(854, 447);
+            this.label27.Location = new System.Drawing.Point(854, 444);
             this.label27.Name = "label27";
             this.label27.Size = new System.Drawing.Size(114, 15);
             this.label27.TabIndex = 79;
@@ -676,7 +772,7 @@
             this.checkBox3.AutoSize = true;
             this.checkBox3.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.checkBox3.ForeColor = System.Drawing.Color.White;
-            this.checkBox3.Location = new System.Drawing.Point(900, 256);
+            this.checkBox3.Location = new System.Drawing.Point(910, 256);
             this.checkBox3.Name = "checkBox3";
             this.checkBox3.Size = new System.Drawing.Size(143, 21);
             this.checkBox3.TabIndex = 86;
@@ -704,7 +800,7 @@
             this.label23.AutoSize = true;
             this.label23.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.label23.ForeColor = System.Drawing.Color.Silver;
-            this.label23.Location = new System.Drawing.Point(448, 447);
+            this.label23.Location = new System.Drawing.Point(448, 445);
             this.label23.Name = "label23";
             this.label23.Size = new System.Drawing.Size(114, 15);
             this.label23.TabIndex = 71;
@@ -717,11 +813,11 @@
             this.richTextBox26.DetectUrls = false;
             this.richTextBox26.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
             this.richTextBox26.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.richTextBox26.Location = new System.Drawing.Point(451, 465);
+            this.richTextBox26.Location = new System.Drawing.Point(451, 463);
             this.richTextBox26.Name = "richTextBox26";
             this.richTextBox26.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.richTextBox26.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-            this.richTextBox26.Size = new System.Drawing.Size(235, 24);
+            this.richTextBox26.Size = new System.Drawing.Size(140, 24);
             this.richTextBox26.TabIndex = 67;
             this.richTextBox26.Tag = "btn1text;game";
             this.richTextBox26.Text = "";
@@ -735,7 +831,7 @@
             this.label21.AutoSize = true;
             this.label21.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.label21.ForeColor = System.Drawing.Color.Silver;
-            this.label21.Location = new System.Drawing.Point(448, 492);
+            this.label21.Location = new System.Drawing.Point(448, 490);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(119, 15);
             this.label21.TabIndex = 73;
@@ -748,11 +844,11 @@
             this.richTextBox24.DetectUrls = false;
             this.richTextBox24.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
             this.richTextBox24.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.richTextBox24.Location = new System.Drawing.Point(451, 510);
+            this.richTextBox24.Location = new System.Drawing.Point(451, 508);
             this.richTextBox24.Name = "richTextBox24";
             this.richTextBox24.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.richTextBox24.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-            this.richTextBox24.Size = new System.Drawing.Size(235, 24);
+            this.richTextBox24.Size = new System.Drawing.Size(140, 24);
             this.richTextBox24.TabIndex = 69;
             this.richTextBox24.Tag = "btn2text;game";
             this.richTextBox24.Text = "";
@@ -1091,7 +1187,8 @@
             // buttonPfShortcut
             // 
             this.buttonPfShortcut.AutoSize = true;
-            this.buttonPfShortcut.Location = new System.Drawing.Point(568, 145);
+            this.buttonPfShortcut.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.buttonPfShortcut.Location = new System.Drawing.Point(575, 145);
             this.buttonPfShortcut.Name = "buttonPfShortcut";
             this.buttonPfShortcut.Size = new System.Drawing.Size(75, 28);
             this.buttonPfShortcut.TabIndex = 100;
@@ -1121,6 +1218,12 @@
             this.Controls.Add(this.SaveCfg);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.button15);
+            this.Controls.Add(this.setURL1Menu);
+            this.Controls.Add(this.setURL2Menu);
+            this.Controls.Add(this.setURL1InGame);
+            this.Controls.Add(this.setURL2InGame);
+            this.Controls.Add(this.setURL1Boarding);
+            this.Controls.Add(this.setURL2Boarding);
             this.Controls.Add(this.label25);
             this.Controls.Add(this.appIdTextBox);
             this.Controls.Add(this.checkBox1);
@@ -1205,15 +1308,19 @@
         private System.Windows.Forms.RichTextBox richTextBox10;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Button setURL1Menu;
         private System.Windows.Forms.RichTextBox richTextBox19;
+        private System.Windows.Forms.Button setURL2Menu;
         private System.Windows.Forms.RichTextBox richTextBox22;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.Button SaveCfg;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Label connectionLabel;
+        private System.Windows.Forms.Button setURL1Boarding;
         private System.Windows.Forms.RichTextBox richTextBox28;
         private System.Windows.Forms.Label label25;
+        private System.Windows.Forms.Button setURL2Boarding;
         private System.Windows.Forms.RichTextBox richTextBox30;
         private System.Windows.Forms.Label label27;
         private System.Windows.Forms.Label label14;
@@ -1231,8 +1338,10 @@
         private System.Windows.Forms.CheckBox checkBox3;
         private System.Windows.Forms.Label labelBR;
         private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.Button setURL1InGame;
         private System.Windows.Forms.RichTextBox richTextBox26;
         private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.Button setURL2InGame;
         private System.Windows.Forms.RichTextBox richTextBox24;
         private System.Windows.Forms.RichTextBox richTextBox11;
         private System.Windows.Forms.Label label8;

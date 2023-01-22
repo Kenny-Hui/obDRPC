@@ -213,7 +213,7 @@ namespace obDRPC {
 
                     if (prop == "btn1text") {
                         if (data.buttons != null && data.buttons.Count >= 1) {
-                            control.Text = data.buttons[0].Label + "|" + data.buttons[0].Url;
+                            control.Text = data.buttons[0].Label;
                         } else {
                             control.Text = "";
                         }
@@ -221,7 +221,7 @@ namespace obDRPC {
 
                     if (prop == "btn2text") {
                         if (data.buttons != null && data.buttons.Count >= 2) {
-                            control.Text = data.buttons[1].Label + "|" + data.buttons[0].Url;
+                            control.Text = data.buttons[1].Label;
                         } else {
                             control.Text = "";
                         }
@@ -238,6 +238,28 @@ namespace obDRPC {
 
                     if (prop == "elapsed") {
                         ((CheckBox)control).Checked = profile.PresenceList[category].hasTimestamp;
+                    }
+                }
+
+                if(control.GetType() == typeof(System.Windows.Forms.Button)) {
+                    RPCData data = profile.PresenceList[category];
+                    if (prop == "btn1url")
+                    {
+                        if (data.buttons != null && data.buttons.Count >= 1)
+                        {
+                            string[] ogTag = control.Tag.ToString().Split(';');
+                            ogTag[2] = data.buttons[0].Url;
+                            control.Tag = string.Join(";", ogTag);
+                        }
+                    }
+
+                    if (prop == "btn2url")
+                    {
+                        if(data.buttons.Count > 1) {
+                            string[] ogTag = control.Tag.ToString().Split(';');
+                            ogTag[2] = data.buttons[1].Url;
+                            control.Tag = string.Join(";", ogTag);
+                        }
                     }
                 }
             }
@@ -275,6 +297,13 @@ namespace obDRPC {
             this.Close();
         }
 
+        private void setURLButton_Click(object sender, EventArgs e) {
+            string[] tags = ((Control)sender).Tag?.ToString().Split(';');
+            string newURL = Dialogs.ShowURLDialog(tags[2]);
+            if(newURL != null) tags[2] = newURL;
+            ((Control)sender).Tag = string.Join(";", tags);
+        }
+
         private void appIdTextBox_KeyPress(object sender, KeyPressEventArgs e) {
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar)) {
                 e.Handled = true;
@@ -297,7 +326,7 @@ namespace obDRPC {
                     continue;
                 }
 
-                if (control.GetType() != typeof(TextBox) && control.GetType() != typeof(RichTextBox) && control.GetType() != typeof(CheckBox)) {
+                if (control.GetType() != typeof(TextBox) && control.GetType() != typeof(RichTextBox) && control.GetType() != typeof(CheckBox) && control.GetType() != typeof(System.Windows.Forms.Button)) {
                     continue;
                 }
 
@@ -311,6 +340,32 @@ namespace obDRPC {
                 if (control.GetType() == typeof(CheckBox)) {
                     if (prop == "elapsed") {
                         profile.PresenceList[category].hasTimestamp = ((CheckBox)control).Checked;
+                    }
+                }
+
+                if (control.GetType() == typeof(System.Windows.Forms.Button)) {
+                    if (prop == "btn1url")
+                    {
+                        if (!btn1Data.ContainsKey(category))
+                        {
+                            btn1Data.Add(category, new ButtonData(null, control.Tag.ToString().Split(';')[2]));
+                        }
+                        else
+                        {
+                            btn1Data[category].Url = control.Tag.ToString().Split(';')[2];
+                        }
+                    }
+
+                    if (prop == "btn2url")
+                    {
+                        if (!btn2Data.ContainsKey(category))
+                        {
+                            btn2Data.Add(category, new ButtonData(null, control.Tag.ToString().Split(';')[2]));
+                        }
+                        else
+                        {
+                            btn2Data[category].Url = control.Tag.ToString().Split(';')[2];
+                        }
                     }
                 }
 
@@ -339,13 +394,33 @@ namespace obDRPC {
                         profile.PresenceList[category].AddSmallImageText(control.Text);
                     }
 
-                    if (prop == "btn1text" && control.Text.Contains("|")) {
-                        profile.PresenceList[category].buttons.Add(new ButtonData(control.Text.Split('|')[0], control.Text.Split('|')[1]));
+                    if (prop == "btn1text") {
+                        if(!btn1Data.ContainsKey(category)) {
+                            btn1Data.Add(category, new ButtonData(control.Text, null));
+                        } else {
+                            btn1Data[category].Label = control.Text;
+                        }
                     }
 
-                    if (prop == "btn2text" && control.Text.Contains("|")) {
-                        profile.PresenceList[category].buttons.Add(new ButtonData(control.Text.Split('|')[0], control.Text.Split('|')[1]));
+                    if (prop == "btn2text") {
+                        if (!btn2Data.ContainsKey(category)) {
+                            btn2Data.Add(category, new ButtonData(control.Text, null));
+                        } else {
+                            btn2Data[category].Label = control.Text;
+                        }
                     }
+                }
+            }
+
+            foreach (KeyValuePair<string, ButtonData> entry in btn1Data) {
+                if (entry.Value.isFinished()) {
+                    profile.PresenceList[entry.Key].buttons.Add(entry.Value);
+                }
+            }
+
+            foreach (KeyValuePair<string, ButtonData> entry in btn2Data) {
+                if (entry.Value.isFinished()) {
+                    profile.PresenceList[entry.Key].buttons.Add(entry.Value);
                 }
             }
 
@@ -366,7 +441,7 @@ namespace obDRPC {
             SaveProfile(SelectedProfile);
             ConfigManager.UpdateApplicationId(appIdTextBox.Text);
             ConfigManager.UpdateKeyCombination(ProfileKeysCombination);
-            ConfigManager.UpdateProfileList(ProfileList);
+            ConfigManager.UpdateProfileList(this.ProfileList);
             ConfigManager.SaveConfigToDisk();
             this.Close();
         }

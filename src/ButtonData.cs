@@ -9,5 +9,12 @@ namespace obDRPC {
             Label = label;
             Url = url;
         }
+
+        /// <summary>
+        /// True if the Label and the Url field is filled.
+        /// </summary>
+        public bool isFinished() {
+            return Label != null && Url != null;
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -84,6 +85,60 @@ namespace obDRPC {
 
             if (prompt.ShowDialog() == DialogResult.OK) {
                 return validate(textBox.Text, profileList);
+            } else {
+                return null;
+            }
+        }
+
+        public static string ShowURLDialog(string initialURL)
+        {
+            Form prompt = new Form()
+            {
+                Width = 350,
+                Height = 130,
+                FormBorderStyle = FormBorderStyle.FixedDialog,
+                Text = "Set Button URL",
+                StartPosition = FormStartPosition.CenterScreen,
+                MaximizeBox = false,
+                MinimizeBox = false
+            };
+            string ogURL = initialURL == null ? "" : initialURL;
+            Label textLabel = new Label()
+            {
+                Left = 15,
+                Top = 10,
+                AutoSize = true,
+                Text = "Please enter a valid URL"
+            };
+            TextBox textBox = new TextBox()
+            {
+                Left = 15,
+                Top = 30,
+                Width = 300,
+                Text = ogURL ?? "https://"
+            };
+            Button confirmation = new Button()
+            {
+                Text = "OK",
+                Left = 235,
+                Width = 80,
+                Top = 60,
+                DialogResult = DialogResult.OK
+            };
+            prompt.Controls.Add(textBox);
+            prompt.Controls.Add(confirmation);
+            prompt.Controls.Add(textLabel);
+            prompt.AcceptButton = confirmation;
+
+            if (prompt.ShowDialog() == DialogResult.OK)
+            {
+                Uri uri;
+                if (Uri.TryCreate(textBox.Text, UriKind.Absolute, out uri)) {
+                    return textBox.Text;
+                } else {
+                    MessageBox.Show("Entered URL is not valid.");
+                    return null;
+                }
             } else {
                 return null;
             }
