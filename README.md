@@ -14,7 +14,7 @@ This is an Input Plugin for OpenBVE that serves the purpose of displaying a Rich
 - Ensure stability
 
 ## Requirements
-- OpenBVE Nightly Build (2022-10-05 and onwards)
+- OpenBVE v1.8.4.3+
 
 ## Using it
 See [wiki](https://github.com/Kenny-Hui/obDRPC/wiki)
