@@ -106,6 +106,7 @@ namespace obDRPC {
                         LoadProfile(index);
                     }
                 };
+                btn.Checked = i == SelectedProfile;
                 this.Controls.Add(btn);
             }
         }
