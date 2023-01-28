@@ -1,9 +1,9 @@
 namespace obDRPC {
     /// <summary>
-    /// Informations Default Displaying Plugin (for Testing)
+    /// Wrapper for DiscordRPC.Button
     /// </summary>
     public class ButtonData {
-		public string Label;
+        public string Label;
 		public string Url;
 		public ButtonData(string label, string url) {
             Label = label;
@@ -14,7 +14,7 @@ namespace obDRPC {
         /// True if the Label and the Url field is filled.
         /// </summary>
         public bool isFinished() {
-            return Label != null && Url != null;
+            return !string.IsNullOrEmpty(Label) && !string.IsNullOrEmpty(Url);
         }
     }
 }

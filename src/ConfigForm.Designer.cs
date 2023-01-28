@@ -1279,15 +1279,15 @@
             this.Controls.Add(this.richTextBox8);
             this.Controls.Add(this.label2);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
+            this.MaximizeBox = true;
+            this.MinimizeBox = true;
             this.Name = "ConfigForm";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "OpenBVE Discord RPC Config";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-            this.ResumeLayout(false);
+            this.ResumeLayout(true);
             this.PerformLayout();
 
         }

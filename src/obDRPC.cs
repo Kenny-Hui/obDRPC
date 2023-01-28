@@ -58,17 +58,17 @@ namespace obDRPC {
 			ConfigManager.Initialize(fileSystem);
 			Controls = new InputControl[1];
 			FileSystem = fileSystem;
-			StartTimestamp = Timestamps.Now;
+            selectedProfile = 0;
+            StartTimestamp = Timestamps.Now;
 			LastRPCUpdate = DateTime.UtcNow;
-			ProgramVersion = getEntryVersion();
+			ProgramVersion = GetProgramVersion();
 			CurrentContext = Context.Menu;
 			ConfigManager.LoadConfig();
-			selectedProfile = 0;
 
-			if (!string.IsNullOrEmpty(ConfigManager.appId)) {
-				Client = new DiscordRpcClient(ConfigManager.appId);
+			if (!string.IsNullOrEmpty(ConfigManager.AppId)) {
+				Client = new DiscordRpcClient(ConfigManager.AppId);
 				if (!Client.Initialize()) {
-					FileSystem.AppendToLogFile("[DRPC] Failed to login to Discord, please make sure your Application ID is correct and you have a stable internet connection.");
+					FileSystem.AppendToLogFile("[obDRPC] Failed to login to Discord, please make sure your Application ID is correct and you have a stable internet connection.");
 				}
 
                 UpdatePresence(ConfigManager.ProfileList[selectedProfile].PresenceList["menu"]);
@@ -137,12 +137,8 @@ namespace obDRPC {
 		public void OnUpdateFrame()
 		{
 			KeyboardState keyboardState = Keyboard.GetState();
-			if (OldKeyboardState == null) {
-				OldKeyboardState = keyboardState;
-			}
-
 			bool keyChanged = ConfigManager.KeyCombination.Any(key => OldKeyboardState[key] != keyboardState[key]);
-			bool correctKeyHeld = ConfigManager.KeyCombination.Count > 0 ? ConfigManager.KeyCombination.All(key => keyboardState.IsKeyDown(key)) : false;
+			bool correctKeyHeld = ConfigManager.KeyCombination.Count > 0 && ConfigManager.KeyCombination.All(key => keyboardState.IsKeyDown(key));
 
 			if (keyChanged && correctKeyHeld) {
 				selectedProfile = (selectedProfile + 1) % ConfigManager.ProfileList.Count;
@@ -178,15 +174,15 @@ namespace obDRPC {
 
 			List<Button> buttons = new List<Button>();
 			foreach (ButtonData btnData in data.buttons) {
-				if (string.IsNullOrEmpty(btnData.Label) || string.IsNullOrEmpty(btnData.Url)) continue;
+				if (btnData.isFinished()) {
+                    Button btn = new Button
+                    {
+                        Label = ParsePlaceholders(btnData.Label, MAX_BTN_CHAR),
+                        Url = ParsePlaceholders(btnData.Url, MAX_BTN_CHAR)
+                    };
 
-                Button btn = new Button
-                {
-                    Label = ParsePlaceholders(btnData.Label, MAX_BTN_CHAR),
-                    Url = ParsePlaceholders(btnData.Url, MAX_BTN_CHAR)
-                };
-
-                buttons.Add(btn);
+                    buttons.Add(btn);
+                }
 			}
 
 			if (buttons.Count > 0) {
@@ -196,7 +192,7 @@ namespace obDRPC {
 			Client.SetPresence(presence);
 		}
 
-		internal string getEntryVersion() {
+		internal string GetProgramVersion() {
 			return Assembly.GetEntryAssembly().GetName().Version.ToString();
 		}
 

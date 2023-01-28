@@ -14,6 +14,7 @@ namespace obDRPC {
 		public static double NextStnDist;
 		public static bool Boarding;
 		public static double DwellLeft;
+
 		public static void Update(ElapseData data, DoorStates doorState) {
 			double trainPosition = data.Vehicle.Location;
 			bool trainLeftDoorOpened = doorState == DoorStates.Left || doorState == DoorStates.Both;
@@ -35,6 +36,7 @@ namespace obDRPC {
 						CurrentStation = stn;
 						Boarding = true;
 						if (DepTime == 0) {
+                            // If still have more time than minimum stop time, use departure time.
 							if (stn.DepartureTime - data.TotalTime.Seconds > stn.StopTime) {
 								DepTime = stn.DepartureTime;
 							} else {

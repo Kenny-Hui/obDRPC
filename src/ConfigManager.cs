@@ -6,10 +6,10 @@ using System.IO;
 using System.Xml;
 
 namespace obDRPC {
-    internal class ConfigManager {
+    internal static class ConfigManager {
         private static FileSystem FileSystem;
         private static string OptionsFolder;
-        public static string appId { get; private set; }
+        public static string AppId { get; private set; }
         public static HashSet<Key> KeyCombination { get; private set; }
         public static List<Profile> ProfileList { get; private set; }
         public static void Initialize(FileSystem fs) {
@@ -32,7 +32,7 @@ namespace obDRPC {
                 XmlDocument xmlDoc = new XmlDocument();
                 xmlDoc.Load(configFile);
                 if (xmlDoc.GetElementsByTagName("appId").Count > 0) {
-                    appId = xmlDoc.GetElementsByTagName("appId")[0].InnerText;
+                    AppId = xmlDoc.GetElementsByTagName("appId")[0].InnerText;
                 }
 
                 if (xmlDoc.GetElementsByTagName("profileSwitchKey").Count > 0) {
@@ -114,7 +114,7 @@ namespace obDRPC {
             XmlElement switchKeyElement = xmlDoc.CreateElement("profileSwitchKey");
             XmlElement presenceListElement = xmlDoc.CreateElement("presenceList");
             Dictionary<string, Dictionary<string, string>> presenceName = new Dictionary<string, Dictionary<string, string>>();
-            appIdElement.InnerText = appId;
+            appIdElement.InnerText = AppId;
             switchKeyElement.InnerText = string.Join("+", KeyCombination);
             rootElement.AppendChild(appIdElement);
             rootElement.AppendChild(switchKeyElement);
@@ -225,7 +225,7 @@ namespace obDRPC {
         }
 
         public static void UpdateApplicationId(string id) {
-            appId = id;
+            AppId = id;
         }
 
         public static void UpdateProfileList(List<Profile> profileList) {

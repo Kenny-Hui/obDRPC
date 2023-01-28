@@ -4,34 +4,33 @@ using System.Linq;
 using System.Windows.Forms;
 
 namespace obDRPC {
-    internal class Dialogs {
+    internal static class Dialogs {
         public static string ShowCreateDialog(List<Profile> profileList) {
-            Form prompt = new Form()
-            {
+            Form prompt = new Form {
                 Width = 350,
                 Height = 130,
                 FormBorderStyle = FormBorderStyle.FixedDialog,
                 Text = "Create profile",
-                StartPosition = FormStartPosition.CenterScreen,
-                MaximizeBox = false,
-                MinimizeBox = false
+                StartPosition = FormStartPosition.CenterScreen
             };
-            Label textLabel = new Label() {
+            Label textLabel = new Label {
                 Left = 15,
                 Top = 10,
                 AutoSize = true,
                 Text = "Please enter profile name"
             };
-            TextBox textBox = new TextBox() {
+            TextBox textBox = new TextBox {
                 Left = 15,
                 Top = 30,
+                Anchor = (AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right),
                 Width = 300
             };
-            Button confirmation = new Button() {
+            Button confirmation = new Button {
                 Text = "OK",
                 Left = 235,
                 Width = 80,
                 Top = 60,
+                Anchor = (AnchorStyles.Bottom | AnchorStyles.Right),
                 DialogResult = DialogResult.OK
             };
             prompt.Controls.Add(textBox);
@@ -40,7 +39,7 @@ namespace obDRPC {
             prompt.AcceptButton = confirmation;
 
             if (prompt.ShowDialog() == DialogResult.OK) {
-                return validate(textBox.Text, profileList);
+                return Validate(textBox.Text, profileList);
             } else {
                 return null;
             }
@@ -53,9 +52,7 @@ namespace obDRPC {
                 Height = 130,
                 FormBorderStyle = FormBorderStyle.FixedDialog,
                 Text = $"Rename profile",
-                StartPosition = FormStartPosition.CenterScreen,
-                MaximizeBox = false,
-                MinimizeBox = false
+                StartPosition = FormStartPosition.CenterScreen
             };
             Label textLabel = new Label()
             {
@@ -68,7 +65,8 @@ namespace obDRPC {
             {
                 Left = 15,
                 Top = 30,
-                Width = 300
+                Width = 300,
+                Anchor = (AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right)
             };
             Button confirmation = new Button()
             {
@@ -76,6 +74,7 @@ namespace obDRPC {
                 Left = 235,
                 Width = 80,
                 Top = 60,
+                Anchor = (AnchorStyles.Bottom | AnchorStyles.Right),
                 DialogResult = DialogResult.OK
             };
             prompt.Controls.Add(textBox);
@@ -84,7 +83,7 @@ namespace obDRPC {
             prompt.AcceptButton = confirmation;
 
             if (prompt.ShowDialog() == DialogResult.OK) {
-                return validate(textBox.Text, profileList);
+                return Validate(textBox.Text, profileList);
             } else {
                 return null;
             }
@@ -102,7 +101,7 @@ namespace obDRPC {
                 MaximizeBox = false,
                 MinimizeBox = false
             };
-            string ogURL = initialURL == null ? "" : initialURL;
+            string ogURL = initialURL ?? "";
             Label textLabel = new Label()
             {
                 Left = 15,
@@ -115,6 +114,7 @@ namespace obDRPC {
                 Left = 15,
                 Top = 30,
                 Width = 300,
+                Anchor = (AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right),
                 Text = ogURL ?? "https://"
             };
             Button confirmation = new Button()
@@ -123,6 +123,7 @@ namespace obDRPC {
                 Left = 235,
                 Width = 80,
                 Top = 60,
+                Anchor = (AnchorStyles.Bottom | AnchorStyles.Right),
                 DialogResult = DialogResult.OK
             };
             prompt.Controls.Add(textBox);
@@ -144,7 +145,7 @@ namespace obDRPC {
             }
         }
 
-        private static string validate(string res, List<Profile> profileList) {
+        private static string Validate(string res, List<Profile> profileList) {
             if (string.IsNullOrEmpty(res)) {
                 MessageBox.Show("Profile name should not be empty!");
                 return null;
