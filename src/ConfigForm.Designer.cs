@@ -82,11 +82,9 @@
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.labelIG = new System.Windows.Forms.Label();
-            this.richTextBox4 = new System.Windows.Forms.RichTextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.labelDetails2 = new System.Windows.Forms.Label();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.richTextBox2 = new System.Windows.Forms.RichTextBox();
             this.labelMN = new System.Windows.Forms.Label();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -988,24 +986,6 @@
             this.labelIG.TabIndex = 0;
             this.labelIG.Text = "In-Game";
             // 
-            // richTextBox4
-            // 
-            this.richTextBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.richTextBox4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(83)))), ((int)(((byte)(90)))));
-            this.richTextBox4.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.richTextBox4.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
-            this.richTextBox4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.richTextBox4.Location = new System.Drawing.Point(452, 312);
-            this.richTextBox4.Name = "richTextBox4";
-            this.richTextBox4.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.richTextBox4.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.richTextBox4.Size = new System.Drawing.Size(236, 0);
-            this.richTextBox4.TabIndex = 31;
-            this.richTextBox4.Tag = "state;game";
-            this.richTextBox4.Text = "";
-            this.richTextBox4.Enter += new System.EventHandler(this.insertableTextSelect);
-            // 
             // label1
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -1044,24 +1024,6 @@
             this.checkBox2.Tag = "elapsed;game";
             this.checkBox2.Text = "Show Elapsed Time";
             this.checkBox2.UseVisualStyleBackColor = true;
-            // 
-            // richTextBox2
-            // 
-            this.richTextBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.richTextBox2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(78)))), ((int)(((byte)(83)))), ((int)(((byte)(90)))));
-            this.richTextBox2.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.richTextBox2.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
-            this.richTextBox2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.richTextBox2.Location = new System.Drawing.Point(452, 282);
-            this.richTextBox2.Name = "richTextBox2";
-            this.richTextBox2.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.richTextBox2.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.richTextBox2.Size = new System.Drawing.Size(236, 0);
-            this.richTextBox2.TabIndex = 25;
-            this.richTextBox2.Tag = "details;game";
-            this.richTextBox2.Text = "";
-            this.richTextBox2.Enter += new System.EventHandler(this.insertableTextSelect);
             // 
             // labelMN
             // 
@@ -1121,7 +1083,7 @@
             this.richTextBox20.Size = new System.Drawing.Size(235, 24);
             this.richTextBox20.TabIndex = 94;
             this.richTextBox20.Tag = "details;game";
-            this.richTextBox20.Text = "";
+            this.richTextBox20.Text = "BLA";
             this.richTextBox20.Enter += new System.EventHandler(this.insertableTextSelect);
             // 
             // richTextBox21
@@ -1235,7 +1197,6 @@
             this.Controls.Add(this.richTextBox28);
             this.Controls.Add(this.richTextBox13);
             this.Controls.Add(this.checkBox2);
-            this.Controls.Add(this.richTextBox4);
             this.Controls.Add(this.richTextBox30);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.richTextBox1);
@@ -1243,7 +1204,6 @@
             this.Controls.Add(this.richTextBox15);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.labelDetails1);
-            this.Controls.Add(this.richTextBox2);
             this.Controls.Add(this.richTextBox16);
             this.Controls.Add(this.richTextBox12);
             this.Controls.Add(this.label3);
@@ -1352,11 +1312,9 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label labelIG;
-        private System.Windows.Forms.RichTextBox richTextBox4;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label labelDetails2;
         private System.Windows.Forms.CheckBox checkBox2;
-        private System.Windows.Forms.RichTextBox richTextBox2;
         private System.Windows.Forms.Label labelMN;
         private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.PictureBox pictureBox1;
