@@ -48,7 +48,7 @@ namespace obDRPC {
 
         private void insertPlaceholder(object sender, EventArgs e) {
             string placeholder = ((Control)sender).Tag.ToString().Split(';')[0];
-            if (selectedTextBox != null) {
+            if (selectedTextBox != null && !selectedTextBox.ReadOnly) {
                 selectedTextBox.Text = selectedTextBox.Text.Insert(selectedTextBox.SelectionStart, placeholder);
             }
         }
@@ -68,7 +68,7 @@ namespace obDRPC {
 
             List<Control> toBeRemoved = new List<Control>();
             foreach (Control control in this.Controls) {
-                if (control.Tag != null && control.Tag.ToString().StartsWith("pfBtn")) {
+                if (control.Tag != null && control.Tag.ToString().StartsWith("pfBtn", StringComparison.InvariantCulture)) {
                     toBeRemoved.Add(control);
                 }
             }
@@ -162,7 +162,7 @@ namespace obDRPC {
                 string tagName = control.Tag == null ? "" : control.Tag.ToString();
 
                 if (tagName == "appId") {
-                    control.Text = ConfigManager.appId;
+                    control.Text = ConfigManager.AppId;
                     continue;
                 }
 
@@ -179,6 +179,7 @@ namespace obDRPC {
 
                 if (control.GetType() == typeof(TextBox) || control.GetType() == typeof(RichTextBox)) {
                     if (profile == null) {
+                        ((TextBoxBase)control).Text = "";
                         ((TextBoxBase)control).ReadOnly = true;
                         continue;
                     } else {
@@ -243,7 +244,16 @@ namespace obDRPC {
                 }
 
                 if(control.GetType() == typeof(System.Windows.Forms.Button)) {
+                    if (profile == null)
+                    {
+                        ((System.Windows.Forms.Button)control).Enabled = false;
+                        continue;
+                    } else {
+                        ((System.Windows.Forms.Button)control).Enabled = true;
+                    }
+
                     RPCData data = profile.PresenceList[category];
+
                     if (prop == "btn1url")
                     {
                         if (data.buttons != null && data.buttons.Count >= 1)
@@ -277,14 +287,18 @@ namespace obDRPC {
 
                     string lblType = control.Tag.ToString().Split(';')[1];
 
-                    if (lblType == "menu") {
-                        control.Enabled = true;
-                    } else if (lblType == "boarding" && selectedType != "boarding") {
-                        control.Enabled = false;
-                    } else if (selectedType == "menu" && lblType != "menu") {
+                    if(SelectedProfile >= ProfileList.Count) {
                         control.Enabled = false;
                     } else {
-                        control.Enabled = true;
+                        if (lblType == "menu") {
+                            control.Enabled = true;
+                        } else if (lblType == "boarding" && selectedType != "boarding") {
+                            control.Enabled = false;
+                        } else if (selectedType == "menu" && lblType != "menu") {
+                            control.Enabled = false;
+                        } else {
+                            control.Enabled = true;
+                        }
                     }
                 }
 
