@@ -12,13 +12,13 @@ namespace obDRPC {
 		public static Station CurrentStation;
 		public static Station PreviousStation;
 		public static double NextStnDist;
-		public static bool Boarding;
-		public static double DwellLeft;
+        public static double DwellLeft;
+        public static bool Boarding;
 
 		public static void Update(ElapseData data, DoorStates doorState) {
 			double trainPosition = data.Vehicle.Location;
-			bool trainLeftDoorOpened = doorState == DoorStates.Left || doorState == DoorStates.Both;
-			bool trainRightDoorOpened = doorState == DoorStates.Right || doorState == DoorStates.Both;
+			bool leftDoorOpened = doorState == DoorStates.Left || doorState == DoorStates.Both;
+			bool rightDoorOpened = doorState == DoorStates.Right || doorState == DoorStates.Both;
 
 			for (int i = 0; i < data.Stations.Count; i++) {
 				Station stn = data.Stations[i];
@@ -29,9 +29,9 @@ namespace obDRPC {
 				PreviousStation = i == 0 ? data.Stations[0] : data.Stations[i - 1];
 
 				if (trainPosition > NextStation.DefaultTrackPosition && trainPosition < NextStation.StopPosition + STOP_TOLERANCE && doorState != DoorStates.None) {
-					bool doorOpenedCorrectly = (trainLeftDoorOpened && stn.OpenLeftDoors) || (trainRightDoorOpened && stn.OpenRightDoors) || ((trainLeftDoorOpened && trainRightDoorOpened) && (stn.OpenLeftDoors && stn.OpenRightDoors));
+					bool doorOpenedCorrectSide = (leftDoorOpened && stn.OpenLeftDoors) || (rightDoorOpened && stn.OpenRightDoors) || ((leftDoorOpened && rightDoorOpened) && (stn.OpenLeftDoors && stn.OpenRightDoors));
 					// Assume we are boarding
-					if (doorOpenedCorrectly) {
+					if (doorOpenedCorrectSide) {
 						obDRPC.CurrentContext = Context.Boarding;
 						CurrentStation = stn;
 						Boarding = true;

@@ -8,12 +8,12 @@ namespace obDRPC {
     public class Placeholder {
         public string VariableName;
         public string Description;
-        public Context context;
+        public Context Context;
 
         public Placeholder(string varName, string description, Context context) {
             this.VariableName = varName;
             this.Description = description;
-            this.context = context;
+            this.Context = context;
         }
     }
 
@@ -40,12 +40,14 @@ namespace obDRPC {
         }
 
         public string ParsePlaceholders(string input, string progVersion, ElapseData data, VehicleSpecs specs, DoorStates doorState, Context context, int charLimit) {
-			StringBuilder sb = new StringBuilder(input == null ? "" : input);
+            if (string.IsNullOrEmpty(input)) return "";
+
+			StringBuilder sb = new StringBuilder(input);
 
 			foreach (Placeholder placeholder in placeholderList) {
-				if (placeholder.context != Context.Menu && data == null) continue;
-				if (placeholder.context == Context.Boarding && context != Context.Boarding) continue;
-				if (placeholder.context != Context.Menu && context == Context.Menu) continue;
+				if (placeholder.Context != Context.Menu && data == null) continue;
+				if (placeholder.Context == Context.Boarding && context != Context.Boarding) continue;
+				if (placeholder.Context != Context.Menu && context == Context.Menu) continue;
 
 				switch (placeholder.VariableName) {
 					case "time":

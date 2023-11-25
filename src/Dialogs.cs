@@ -68,6 +68,15 @@ namespace obDRPC {
                 Width = 300,
                 Anchor = (AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right)
             };
+            Button cancel = new Button()
+            {
+                Text = "Cancel",
+                Left = 145,
+                Width = 80,
+                Top = 60,
+                Anchor = (AnchorStyles.Bottom | AnchorStyles.Right),
+                DialogResult = DialogResult.Cancel
+            };
             Button confirmation = new Button()
             {
                 Text = "OK",
@@ -75,12 +84,23 @@ namespace obDRPC {
                 Width = 80,
                 Top = 60,
                 Anchor = (AnchorStyles.Bottom | AnchorStyles.Right),
+                Enabled = false,
                 DialogResult = DialogResult.OK
             };
+
             prompt.Controls.Add(textBox);
+            prompt.Controls.Add(cancel);
             prompt.Controls.Add(confirmation);
             prompt.Controls.Add(textLabel);
             prompt.AcceptButton = confirmation;
+            textBox.Text = profileName;
+            textBox.KeyUp += (sender, e) => { 
+                if(((TextBox)sender).Text == profileName) {
+                    confirmation.Enabled = false;
+                } else {
+                    confirmation.Enabled = true;
+                }
+            };
 
             if (prompt.ShowDialog() == DialogResult.OK) {
                 return Validate(textBox.Text, profileList);

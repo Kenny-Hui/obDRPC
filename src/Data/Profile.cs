@@ -3,23 +3,23 @@
 namespace obDRPC {
     public class Profile {
         public string Name;
-        public Dictionary<string, RPCData> PresenceList;
+        public Dictionary<Context, RPCLayout> Presence;
 
         public Profile(string name) {
             Name = name;
-            PresenceList = new Dictionary<string, RPCData> {
-                { "menu", new RPCData() },
-                { "game", new RPCData() },
-                { "boarding", new RPCData() }
+            Presence = new Dictionary<Context, RPCLayout> {
+                { Context.Menu, new RPCLayout() },
+                { Context.InGame, new RPCLayout() },
+                { Context.Boarding, new RPCLayout() }
             };
         }
 
-        public Profile(string name, RPCData menu, RPCData game, RPCData boarding) {
+        public Profile(string name, RPCLayout menu, RPCLayout game, RPCLayout boarding) {
             Name = name;
-            PresenceList = new Dictionary<string, RPCData> {
-                { "menu", menu },
-                { "game", game },
-                { "boarding", boarding }
+            Presence = new Dictionary<Context, RPCLayout> {
+                { Context.Menu, menu },
+                { Context.InGame, game },
+                { Context.Boarding, boarding }
             };
         }
     }

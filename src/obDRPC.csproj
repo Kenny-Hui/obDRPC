@@ -75,7 +75,7 @@
     <Compile Include="StationManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Data\ButtonData.cs" />
-    <Compile Include="Data\RPCData.cs" />
+    <Compile Include="Data\RPCLayout.cs" />
     <Compile Include="Data\Profile.cs" />
     <Compile Include="Data\Placeholders.cs" />
     <Compile Include="Data\Context.cs" />

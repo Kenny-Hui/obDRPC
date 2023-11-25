@@ -9,28 +9,29 @@ namespace obDRPC {
     internal static class ConfigManager {
         private static FileSystem FileSystem;
         private static string OptionsFolder;
+        private static string ConfigFile;
         public static string AppId { get; private set; }
-        public static HashSet<Key> KeyCombination { get; private set; }
-        public static List<Profile> ProfileList { get; private set; }
+        public static HashSet<Key> ProfileCycleKey { get; private set; }
+        public static List<Profile> Profiles { get; private set; }
         public static void Initialize(FileSystem fs) {
             FileSystem = fs;
-            ProfileList = new List<Profile>();
-            KeyCombination = new HashSet<Key>();
+            Profiles = new List<Profile>();
+            ProfileCycleKey = new HashSet<Key>();
             OptionsFolder = OpenBveApi.Path.CombineDirectory(FileSystem.SettingsFolder, "1.5.0");
+            ConfigFile = OpenBveApi.Path.CombineFile(OptionsFolder, "options_drpc.xml");
         }
 
         public static void LoadConfig() {
-            KeyCombination.Clear();
-            ProfileList.Clear();
+            ProfileCycleKey.Clear();
+            Profiles.Clear();
             if (!Directory.Exists(OptionsFolder)) {
                 Directory.CreateDirectory(OptionsFolder);
             }
 
-            string configFile = OpenBveApi.Path.CombineFile(OptionsFolder, "options_drpc.xml");
-            if (File.Exists(configFile)) {
-                Dictionary<string, RPCData> presenceList = new Dictionary<string, RPCData>();
+            if (File.Exists(ConfigFile)) {
+                Dictionary<string, RPCLayout> presenceList = new Dictionary<string, RPCLayout>();
                 XmlDocument xmlDoc = new XmlDocument();
-                xmlDoc.Load(configFile);
+                xmlDoc.Load(ConfigFile);
                 if (xmlDoc.GetElementsByTagName("appId").Count > 0) {
                     AppId = xmlDoc.GetElementsByTagName("appId")[0].InnerText;
                 }
@@ -43,7 +44,7 @@ namespace obDRPC {
                             string keyStr = value.Split('+')[i].Trim();
                             Key key;
                             if (Enum.TryParse(keyStr, out key)) {
-                                KeyCombination.Add(key);
+                                ProfileCycleKey.Add(key);
                             }
                         }
                     }
@@ -51,15 +52,15 @@ namespace obDRPC {
 
                 if (xmlDoc.GetElementsByTagName("presenceList")[0] != null) {
                     foreach (XmlElement element in xmlDoc.GetElementsByTagName("presenceList")[0].ChildNodes) {
-                        RPCData presence = new RPCData();
+                        RPCLayout presence = new RPCLayout();
                         string id = element.GetAttribute("id");
                         if (id == null) continue;
 
-                        presence.details = element.GetElementsByTagName("details")[0]?.InnerText;
-                        presence.state = element.GetElementsByTagName("state")[0]?.InnerText;
+                        presence.Details = element.GetElementsByTagName("details")[0]?.InnerText;
+                        presence.State = element.GetElementsByTagName("state")[0]?.InnerText;
 
                         if (element.GetElementsByTagName("hasTimestamp")[0]?.InnerText != null) {
-                            presence.hasTimestamp = XmlConvert.ToBoolean(element.GetElementsByTagName("hasTimestamp")[0].InnerText);
+                            presence.HasTimestamp = XmlConvert.ToBoolean(element.GetElementsByTagName("hasTimestamp")[0].InnerText);
                         }
 
                         /* Assets */
@@ -98,10 +99,10 @@ namespace obDRPC {
                         string menu = profile.GetElementsByTagName("menu")[0]?.InnerText;
                         string game = profile.GetElementsByTagName("game")[0]?.InnerText;
                         string boarding = profile.GetElementsByTagName("boarding")[0]?.InnerText;
-                        RPCData menuPresence = menu != null && presenceList.ContainsKey(menu) ? presenceList[menu] : null;
-                        RPCData gamePresence = game != null && presenceList.ContainsKey(game) ? presenceList[game] : null;
-                        RPCData boardingPresence = boarding != null && presenceList.ContainsKey(boarding) ? presenceList[boarding] : null;
-                        ProfileList.Add(new Profile(name, menuPresence, gamePresence, boardingPresence));
+                        RPCLayout menuPresence = menu != null && presenceList.ContainsKey(menu) ? presenceList[menu] : null;
+                        RPCLayout gamePresence = game != null && presenceList.ContainsKey(game) ? presenceList[game] : null;
+                        RPCLayout boardingPresence = boarding != null && presenceList.ContainsKey(boarding) ? presenceList[boarding] : null;
+                        Profiles.Add(new Profile(name, menuPresence, gamePresence, boardingPresence));
                     }
                 }
             }
@@ -115,16 +116,18 @@ namespace obDRPC {
             XmlElement presenceListElement = xmlDoc.CreateElement("presenceList");
             Dictionary<string, Dictionary<string, string>> presenceName = new Dictionary<string, Dictionary<string, string>>();
             appIdElement.InnerText = AppId;
-            switchKeyElement.InnerText = string.Join("+", KeyCombination);
+            switchKeyElement.InnerText = string.Join("+", ProfileCycleKey);
             rootElement.AppendChild(appIdElement);
             rootElement.AppendChild(switchKeyElement);
 
-            foreach (Profile entry in ProfileList) {
+            foreach (Profile entry in Profiles)
+            {
                 Profile profile = entry;
-                foreach (KeyValuePair<string, RPCData> pair in profile.PresenceList) {
-                    string context = pair.Key;
+                foreach (KeyValuePair<Context, RPCLayout> pair in profile.Presence)
+                {
+                    string context = ContextHelper.ToString(pair.Key);
                     string presenceID = context + profile.Name;
-                    RPCData presence = pair.Value;
+                    RPCLayout presence = pair.Value;
                     Dictionary<string, string> contextName = presenceName.ContainsKey(profile.Name) ? presenceName[profile.Name] : new Dictionary<string, string>();
                     contextName.Add(context, presenceID);
                     presenceName[profile.Name] = contextName;
@@ -132,55 +135,63 @@ namespace obDRPC {
                     XmlElement presenceElement = xmlDoc.CreateElement("presence");
                     presenceElement.SetAttribute("id", presenceID);
 
-                    if (presence.details.Length > 0) {
+                    if (!string.IsNullOrEmpty(presence.Details))
+                    {
                         XmlElement detailsElement = xmlDoc.CreateElement("details");
-                        detailsElement.InnerText = presence.details;
+                        detailsElement.InnerText = presence.Details;
                         presenceElement.AppendChild(detailsElement);
                     }
 
-                    if (presence.state.Length > 0) {
+                    if (!string.IsNullOrEmpty(presence.State))
+                    {
                         XmlElement stateElement = xmlDoc.CreateElement("state");
-                        stateElement.InnerText = presence.state;
+                        stateElement.InnerText = presence.State;
                         presenceElement.AppendChild(stateElement);
                     }
 
                     XmlElement hasTimestampElement = xmlDoc.CreateElement("hasTimestamp");
-                    hasTimestampElement.InnerText = presence.hasTimestamp.ToString().ToLowerInvariant();
+                    hasTimestampElement.InnerText = presence.HasTimestamp.ToString().ToLowerInvariant();
                     presenceElement.AppendChild(hasTimestampElement);
 
-                    if (!string.IsNullOrEmpty(presence.assetsData?.LargeImageKey)) {
+                    if (!string.IsNullOrEmpty(presence.AssetsData?.LargeImageKey))
+                    {
                         XmlElement largeImgKeyElement = xmlDoc.CreateElement("largeImageKey");
-                        largeImgKeyElement.InnerText = presence.assetsData.LargeImageKey;
+                        largeImgKeyElement.InnerText = presence.AssetsData.LargeImageKey;
                         presenceElement.AppendChild(largeImgKeyElement);
                     }
 
-                    if (!string.IsNullOrEmpty(presence.assetsData?.LargeImageText)) {
+                    if (!string.IsNullOrEmpty(presence.AssetsData?.LargeImageText))
+                    {
                         XmlElement largeImgTextElement = xmlDoc.CreateElement("largeImageText");
-                        largeImgTextElement.InnerText = presence.assetsData.LargeImageText;
+                        largeImgTextElement.InnerText = presence.AssetsData.LargeImageText;
                         presenceElement.AppendChild(largeImgTextElement);
                     }
 
-                    if (!string.IsNullOrEmpty(presence.assetsData?.LargeImageKey)) {
+                    if (!string.IsNullOrEmpty(presence.AssetsData?.LargeImageKey))
+                    {
                         XmlElement smallImgKeyElement = xmlDoc.CreateElement("smallImageKey");
-                        smallImgKeyElement.InnerText = presence.assetsData.SmallImageKey;
+                        smallImgKeyElement.InnerText = presence.AssetsData.SmallImageKey;
                         presenceElement.AppendChild(smallImgKeyElement);
                     }
 
-                    if (!string.IsNullOrEmpty(presence.assetsData?.LargeImageText)) {
+                    if (!string.IsNullOrEmpty(presence.AssetsData?.LargeImageText))
+                    {
                         XmlElement smallImgTextElement = xmlDoc.CreateElement("smallImageText");
-                        smallImgTextElement.InnerText = presence.assetsData.SmallImageText;
+                        smallImgTextElement.InnerText = presence.AssetsData.SmallImageText;
                         presenceElement.AppendChild(smallImgTextElement);
                     }
 
-                    if (presence.buttons != null) {
-                        for (int i = 0; i < presence.buttons.Count; i++) {
-                            if (presence.buttons[i].Label.Length == 0 || presence.buttons[i].Url.Length == 0) continue;
+                    if (presence.Buttons != null)
+                    {
+                        for (int i = 0; i < presence.Buttons.Count; i++)
+                        {
+                            if (!presence.Buttons[i].IsValid()) continue;
                             XmlElement buttonElement = xmlDoc.CreateElement("button");
                             XmlElement textElement = xmlDoc.CreateElement("text");
                             XmlElement urlElement = xmlDoc.CreateElement("url");
 
-                            textElement.InnerText = presence.buttons[i].Label;
-                            urlElement.InnerText = presence.buttons[i].Url;
+                            textElement.InnerText = presence.Buttons[i].Label;
+                            urlElement.InnerText = presence.Buttons[i].Url;
                             buttonElement.AppendChild(textElement);
                             buttonElement.AppendChild(urlElement);
 
@@ -192,19 +203,22 @@ namespace obDRPC {
                 rootElement.AppendChild(presenceListElement);
             }
 
-            foreach (KeyValuePair<string, Dictionary<string, string>> nameEntry in presenceName) {
+            foreach (KeyValuePair<string, Dictionary<string, string>> nameEntry in presenceName)
+            {
                 XmlElement profileElement = xmlDoc.CreateElement("profile");
                 string profileName = nameEntry.Key;
 
                 profileElement.SetAttribute("name", profileName);
-                foreach (KeyValuePair<string, string> contextEntry in nameEntry.Value) {
+                foreach (KeyValuePair<string, string> contextEntry in nameEntry.Value)
+                {
                     string context = contextEntry.Key;
                     string presenceID = contextEntry.Value;
                     XmlElement contextElement = xmlDoc.CreateElement(context);
                     contextElement.InnerText = presenceID;
                     profileElement.AppendChild(contextElement);
 
-                    if (profileElement.ChildNodes.Count > 0) {
+                    if (profileElement.ChildNodes.Count > 0)
+                    {
                         rootElement.AppendChild(profileElement);
                     }
                 }
@@ -216,7 +230,7 @@ namespace obDRPC {
                 }
 
                 xmlDoc.AppendChild(rootElement);
-                xmlDoc.Save(OpenBveApi.Path.CombineFile(OptionsFolder, "options_drpc.xml"));
+                xmlDoc.Save(ConfigFile);
             } catch (Exception) {
                 return false;
             }
@@ -224,19 +238,19 @@ namespace obDRPC {
             return true;
         }
 
-        public static void UpdateApplicationId(string id) {
+        public static void SetApplicationId(string id) {
             AppId = id;
         }
 
-        public static void UpdateProfileList(List<Profile> profileList) {
-            ProfileList.Clear();
-            ProfileList.AddRange(profileList);
+        public static void SetProfiles(List<Profile> profileList) {
+            Profiles.Clear();
+            Profiles.AddRange(profileList);
         }
 
-        public static void UpdateKeyCombination(HashSet<Key> keyCombo) {
-            KeyCombination.Clear();
+        public static void SetProfileCycleKey(HashSet<Key> keyCombo) {
+            ProfileCycleKey.Clear();
             foreach(Key key in keyCombo) {
-                KeyCombination.Add(key);
+                ProfileCycleKey.Add(key);
             }
         }
     }

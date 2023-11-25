@@ -1,5 +1,5 @@
-# OpenBVE Discord Rich Presence
-This is an Input Plugin for OpenBVE that serves the purpose of displaying a Rich Presence in Discord.  
+# obDRPC (OpenBVE Discord Rich Presence)
+This is an Input Plugin for OpenBVE that serves the purpose of displaying Rich Presence in Discord.  
 
 ![image](https://user-images.githubusercontent.com/28094366/193469301-118309fd-5bb7-47b8-9cb7-6250d8924fef.png)
 
@@ -17,7 +17,7 @@ This is an Input Plugin for OpenBVE that serves the purpose of displaying a Rich
 - OpenBVE v1.8.4.3+
 
 ## Using it
-See [wiki](https://github.com/Kenny-Hui/obDRPC/wiki)
+See [wiki](https://github.com/Kenny-Hui/obDRPC/wiki) on instructions on setting up the Discord RPC.
 
 ## Building
 This project has successfully been compiled with Visual Studio 2022 and MonoDevelop  
@@ -25,4 +25,4 @@ Please change the reference of `OpenBveApi.dll` to the one that comes with your 
 To automatically copy the merged dll to your OpenBVE Installation, set the build variable **OBVE_PATH** to your OpenBVE Installation
 
 ## License
-[Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+This project is licensed under the [MIT License](LICENSE).

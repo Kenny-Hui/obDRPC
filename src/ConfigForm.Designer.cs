@@ -115,7 +115,7 @@
             this.richTextBox1.TabIndex = 6;
             this.richTextBox1.Tag = "details;menu";
             this.richTextBox1.Text = "";
-            this.richTextBox1.Enter += new System.EventHandler(this.insertableTextSelect);
+            this.richTextBox1.Enter += new System.EventHandler(this.InsertableTextSelect);
             // 
             // labelDetails1
             // 
@@ -170,7 +170,7 @@
             this.richTextBox6.TabIndex = 29;
             this.richTextBox6.Tag = "state;menu";
             this.richTextBox6.Text = "";
-            this.richTextBox6.Enter += new System.EventHandler(this.insertableTextSelect);
+            this.richTextBox6.Enter += new System.EventHandler(this.InsertableTextSelect);
             // 
             // button15
             // 
@@ -336,7 +336,7 @@
             this.richTextBox7.Tag = "largeimgkey;menu";
             this.richTextBox7.Text = "";
             this.richTextBox7.WordWrap = false;
-            this.richTextBox7.Enter += new System.EventHandler(this.insertableTextSelect);
+            this.richTextBox7.Enter += new System.EventHandler(this.InsertableTextSelect);
             // 
             // richTextBox8
             // 
@@ -353,7 +353,7 @@
             this.richTextBox8.Tag = "largeimgtext;menu";
             this.richTextBox8.Text = "";
             this.richTextBox8.WordWrap = false;
-            this.richTextBox8.Enter += new System.EventHandler(this.insertableTextSelect);
+            this.richTextBox8.Enter += new System.EventHandler(this.InsertableTextSelect);
             // 
             // richTextBox9
             // 
@@ -370,7 +370,7 @@
             this.richTextBox9.Tag = "smallimgtext;menu";
             this.richTextBox9.Text = "";
             this.richTextBox9.WordWrap = false;
-            this.richTextBox9.Enter += new System.EventHandler(this.insertableTextSelect);
+            this.richTextBox9.Enter += new System.EventHandler(this.InsertableTextSelect);
             // 
             // richTextBox10
             // 
@@ -387,7 +387,7 @@
             this.richTextBox10.Tag = "smallimgkey;menu";
             this.richTextBox10.Text = "";
             this.richTextBox10.WordWrap = false;
-            this.richTextBox10.Enter += new System.EventHandler(this.insertableTextSelect);
+            this.richTextBox10.Enter += new System.EventHandler(this.InsertableTextSelect);
             // 
             // label6
             // 
@@ -432,7 +432,7 @@
             this.richTextBox19.Tag = "btn1text;menu";
             this.richTextBox19.Text = "";
             this.richTextBox19.WordWrap = false;
-            this.richTextBox19.Enter += new System.EventHandler(this.insertableTextSelect);
+            this.richTextBox19.Enter += new System.EventHandler(this.InsertableTextSelect);
             // 
             // richTextBox22
             // 
@@ -450,7 +450,7 @@
             this.richTextBox22.Tag = "btn2text;menu";
             this.richTextBox22.Text = "";
             this.richTextBox22.WordWrap = false;
-            this.richTextBox22.Enter += new System.EventHandler(this.insertableTextSelect);
+            this.richTextBox22.Enter += new System.EventHandler(this.InsertableTextSelect);
             // 
             // label16
             // 
@@ -539,7 +539,7 @@
             this.richTextBox28.Tag = "btn2text;boarding";
             this.richTextBox28.Text = "";
             this.richTextBox28.WordWrap = false;
-            this.richTextBox28.Enter += new System.EventHandler(this.insertableTextSelect);
+            this.richTextBox28.Enter += new System.EventHandler(this.InsertableTextSelect);
             // 
             // label25
             // 
@@ -570,7 +570,7 @@
             this.richTextBox30.Tag = "btn1text;boarding";
             this.richTextBox30.Text = "";
             this.richTextBox30.WordWrap = false;
-            this.richTextBox30.Enter += new System.EventHandler(this.insertableTextSelect);
+            this.richTextBox30.Enter += new System.EventHandler(this.InsertableTextSelect);
             // 
             // label27
             // 
@@ -612,7 +612,7 @@
             this.richTextBox17.Tag = "largeimgtext;boarding";
             this.richTextBox17.Text = "";
             this.richTextBox17.WordWrap = false;
-            this.richTextBox17.Enter += new System.EventHandler(this.insertableTextSelect);
+            this.richTextBox17.Enter += new System.EventHandler(this.InsertableTextSelect);
             // 
             // label12
             // 
@@ -642,7 +642,7 @@
             this.richTextBox15.Tag = "smallimgtext;boarding";
             this.richTextBox15.Text = "";
             this.richTextBox15.WordWrap = false;
-            this.richTextBox15.Enter += new System.EventHandler(this.insertableTextSelect);
+            this.richTextBox15.Enter += new System.EventHandler(this.InsertableTextSelect);
             // 
             // richTextBox16
             // 
@@ -660,7 +660,7 @@
             this.richTextBox16.Tag = "smallimgkey;boarding";
             this.richTextBox16.Text = "";
             this.richTextBox16.WordWrap = false;
-            this.richTextBox16.Enter += new System.EventHandler(this.insertableTextSelect);
+            this.richTextBox16.Enter += new System.EventHandler(this.InsertableTextSelect);
             // 
             // label13
             // 
@@ -690,7 +690,7 @@
             this.richTextBox18.Tag = "largeimgkey;boarding";
             this.richTextBox18.Text = "";
             this.richTextBox18.WordWrap = false;
-            this.richTextBox18.Enter += new System.EventHandler(this.insertableTextSelect);
+            this.richTextBox18.Enter += new System.EventHandler(this.InsertableTextSelect);
             // 
             // label15
             // 
@@ -719,7 +719,7 @@
             this.richTextBox5.TabIndex = 30;
             this.richTextBox5.Tag = "state;boarding";
             this.richTextBox5.Text = "";
-            this.richTextBox5.Enter += new System.EventHandler(this.insertableTextSelect);
+            this.richTextBox5.Enter += new System.EventHandler(this.InsertableTextSelect);
             // 
             // richTextBox3
             // 
@@ -736,7 +736,7 @@
             this.richTextBox3.TabIndex = 24;
             this.richTextBox3.Tag = "details;boarding";
             this.richTextBox3.Text = "";
-            this.richTextBox3.Enter += new System.EventHandler(this.insertableTextSelect);
+            this.richTextBox3.Enter += new System.EventHandler(this.InsertableTextSelect);
             // 
             // labelDetails3
             // 
@@ -789,6 +789,7 @@
             this.labelBR.Name = "labelBR";
             this.labelBR.Size = new System.Drawing.Size(89, 25);
             this.labelBR.TabIndex = 1;
+            this.labelBR.Tag = "contextTitle;boarding";
             this.labelBR.Text = "Boarding";
             // 
             // label23
@@ -820,7 +821,7 @@
             this.richTextBox26.Tag = "btn1text;game";
             this.richTextBox26.Text = "";
             this.richTextBox26.WordWrap = false;
-            this.richTextBox26.Enter += new System.EventHandler(this.insertableTextSelect);
+            this.richTextBox26.Enter += new System.EventHandler(this.InsertableTextSelect);
             // 
             // label21
             // 
@@ -851,7 +852,7 @@
             this.richTextBox24.Tag = "btn2text;game";
             this.richTextBox24.Text = "";
             this.richTextBox24.WordWrap = false;
-            this.richTextBox24.Enter += new System.EventHandler(this.insertableTextSelect);
+            this.richTextBox24.Enter += new System.EventHandler(this.InsertableTextSelect);
             // 
             // richTextBox11
             // 
@@ -868,7 +869,7 @@
             this.richTextBox11.Tag = "smallimgtext;game";
             this.richTextBox11.Text = "";
             this.richTextBox11.WordWrap = false;
-            this.richTextBox11.Enter += new System.EventHandler(this.insertableTextSelect);
+            this.richTextBox11.Enter += new System.EventHandler(this.InsertableTextSelect);
             // 
             // label8
             // 
@@ -898,7 +899,7 @@
             this.richTextBox12.Tag = "smallimgkey;game";
             this.richTextBox12.Text = "";
             this.richTextBox12.WordWrap = false;
-            this.richTextBox12.Enter += new System.EventHandler(this.insertableTextSelect);
+            this.richTextBox12.Enter += new System.EventHandler(this.InsertableTextSelect);
             // 
             // label9
             // 
@@ -928,7 +929,7 @@
             this.richTextBox14.Tag = "largeimgkey;game";
             this.richTextBox14.Text = "";
             this.richTextBox14.WordWrap = false;
-            this.richTextBox14.Enter += new System.EventHandler(this.insertableTextSelect);
+            this.richTextBox14.Enter += new System.EventHandler(this.InsertableTextSelect);
             // 
             // richTextBox13
             // 
@@ -945,7 +946,7 @@
             this.richTextBox13.Tag = "largeimgtext;game";
             this.richTextBox13.Text = "";
             this.richTextBox13.WordWrap = false;
-            this.richTextBox13.Enter += new System.EventHandler(this.insertableTextSelect);
+            this.richTextBox13.Enter += new System.EventHandler(this.InsertableTextSelect);
             // 
             // label10
             // 
@@ -984,6 +985,7 @@
             this.labelIG.Name = "labelIG";
             this.labelIG.Size = new System.Drawing.Size(87, 25);
             this.labelIG.TabIndex = 0;
+            this.labelIG.Tag = "contextTitle;game";
             this.labelIG.Text = "In-Game";
             // 
             // label1
@@ -1037,6 +1039,7 @@
             this.labelMN.Name = "labelMN";
             this.labelMN.Size = new System.Drawing.Size(62, 25);
             this.labelMN.TabIndex = 2;
+            this.labelMN.Tag = "contextTitle;menu";
             this.labelMN.Text = "Menu";
             // 
             // pictureBox3
@@ -1084,7 +1087,7 @@
             this.richTextBox20.TabIndex = 94;
             this.richTextBox20.Tag = "details;game";
             this.richTextBox20.Text = "BLA";
-            this.richTextBox20.Enter += new System.EventHandler(this.insertableTextSelect);
+            this.richTextBox20.Enter += new System.EventHandler(this.InsertableTextSelect);
             // 
             // richTextBox21
             // 
@@ -1100,7 +1103,7 @@
             this.richTextBox21.TabIndex = 95;
             this.richTextBox21.Tag = "state;game";
             this.richTextBox21.Text = "";
-            this.richTextBox21.Enter += new System.EventHandler(this.insertableTextSelect);
+            this.richTextBox21.Enter += new System.EventHandler(this.InsertableTextSelect);
             // 
             // label17
             // 

@@ -1,16 +1,17 @@
-using DiscordRPC;
-using OpenBveApi.FileSystem;
-using OpenBveApi.Interface;
-using OpenBveApi.Runtime;
-using OpenTK.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
+using DiscordRPC;
+using OpenBveApi.FileSystem;
+using OpenBveApi.Interface;
+using OpenBveApi.Runtime;
+using OpenTK.Input;
 using Button = DiscordRPC.Button;
 
-namespace obDRPC {
+namespace obDRPC
+{
     /// <summary>
     /// Informations Default Displaying Plugin (for Testing)
     /// </summary>
@@ -31,19 +32,19 @@ namespace obDRPC {
 		/// </summary>
 		public InputControl[] Controls { get; private set; }
 
-		internal static Context CurrentContext;
-		private string ProgramVersion;
-		private bool IsInGame;
-		private int SpeedLimit = 70;
-		private VehicleSpecs specs;
+		internal static Context CurrentContext = Context.Menu;
+        private int SpeedLimit = 80;
+        private string ProgramVersion;
+		private bool GameStarted;
+		private VehicleSpecs VehicleSpecs;
 		private FileSystem FileSystem;
-		private int selectedProfile;
+		private int SelectedProfileIndex;
 		private Timestamps StartTimestamp;
 		private ElapseData LastElapseData;
 		private DateTime LastRPCUpdate;
 		private Placeholders Placeholder = new Placeholders();
 		private DiscordRpcClient Client;
-		private DoorStates doorState = DoorStates.None;
+		private DoorStates DoorState = DoorStates.None;
 		private KeyboardState OldKeyboardState;
 		private const int MAX_BTN_CHAR = 32;
 		private const int RPC_REFRESH_INTERVAL = 1000;
@@ -55,25 +56,15 @@ namespace obDRPC {
 		/// <returns>Check the plugin loading process is successfully</returns>
 		public bool Load(FileSystem fileSystem)
 		{
-			ConfigManager.Initialize(fileSystem);
 			Controls = new InputControl[1];
 			FileSystem = fileSystem;
-            selectedProfile = 0;
+            SelectedProfileIndex = 0;
             StartTimestamp = Timestamps.Now;
 			LastRPCUpdate = DateTime.UtcNow;
 			ProgramVersion = GetProgramVersion();
-			CurrentContext = Context.Menu;
-			ConfigManager.LoadConfig();
-
-			if (!string.IsNullOrEmpty(ConfigManager.AppId)) {
-				Client = new DiscordRpcClient(ConfigManager.AppId);
-				if (!Client.Initialize()) {
-					FileSystem.AppendToLogFile("[obDRPC] Failed to login to Discord, please make sure your Application ID is correct and you have a stable internet connection.");
-				}
-
-                UpdatePresence(ConfigManager.ProfileList[selectedProfile].PresenceList["menu"]);
-			}
-
+            ConfigManager.Initialize(fileSystem);
+            ConfigManager.LoadConfig();
+            InitRPC();
             return true;
 		}
 
@@ -82,7 +73,7 @@ namespace obDRPC {
 		/// </summary>
 		public void Unload()
 		{
-			IsInGame = false;
+			GameStarted = false;
 			StartTimestamp = Timestamps.Now;
 			Client?.Dispose();
 		}
@@ -92,8 +83,10 @@ namespace obDRPC {
 		/// </summary>
 		/// <param name="owner">The owner of the window</param>
 		public void Config(IWin32Window owner) {
-            using (var form = new ConfigForm(Client, Placeholder)) {
+            using (var form = new ConfigForm(Client, Placeholder, UpdatePresence)) {
                 form.ShowDialog(owner);
+                // Restart RPC after config is changed
+                InitRPC();
             }
         }
 
@@ -112,20 +105,20 @@ namespace obDRPC {
 		/// <param name="data">Data</param>
 		public void SetElapseData(ElapseData data)
 		{
-			if (!IsInGame) {
-				IsInGame = true;
+			if (!GameStarted) {
+				GameStarted = true;
 				CurrentContext = Context.InGame;
 				StartTimestamp = Timestamps.Now;
 			}
 
-			StationManager.Update(data, doorState);
+			StationManager.Update(data, DoorState);
 			LastElapseData = data;
 
-			if (ConfigManager.ProfileList.Count > 0 && (DateTime.UtcNow - LastRPCUpdate).TotalMilliseconds >= RPC_REFRESH_INTERVAL) {
+			if (ConfigManager.Profiles.Count > 0 && (DateTime.UtcNow - LastRPCUpdate).TotalMilliseconds >= RPC_REFRESH_INTERVAL) {
 				if (StationManager.Boarding) {
-					UpdatePresence(ConfigManager.ProfileList[selectedProfile].PresenceList["boarding"]);
+                    UpdatePresence(SelectedProfileIndex, Context.Boarding);
 				} else {
-					UpdatePresence(ConfigManager.ProfileList[selectedProfile].PresenceList["game"]);
+                    UpdatePresence(SelectedProfileIndex, Context.InGame);
 				}
 				LastRPCUpdate = DateTime.UtcNow;
 			}
@@ -137,11 +130,11 @@ namespace obDRPC {
 		public void OnUpdateFrame()
 		{
 			KeyboardState keyboardState = Keyboard.GetState();
-			bool keyChanged = ConfigManager.KeyCombination.Any(key => OldKeyboardState[key] != keyboardState[key]);
-			bool correctKeyHeld = ConfigManager.KeyCombination.Count > 0 && ConfigManager.KeyCombination.All(key => keyboardState.IsKeyDown(key));
+			bool keyChanged = ConfigManager.ProfileCycleKey.Any(key => OldKeyboardState[key] != keyboardState[key]);
+			bool correctKeyHeld = ConfigManager.ProfileCycleKey.Count > 0 && ConfigManager.ProfileCycleKey.All(key => keyboardState.IsKeyDown(key));
 
 			if (keyChanged && correctKeyHeld) {
-				selectedProfile = (selectedProfile + 1) % ConfigManager.ProfileList.Count;
+				SelectedProfileIndex = (SelectedProfileIndex + 1) % ConfigManager.Profiles.Count;
 			}
 			OldKeyboardState = keyboardState;
 		}
@@ -154,27 +147,36 @@ namespace obDRPC {
 		{
 		}
 
-		private void UpdatePresence(RPCData data) {
+        private void UpdatePresence(int profileIndex, Context currentCntext) {
+            if (SelectedProfileIndex >= ConfigManager.Profiles.Count) return;
+
+            Profile profile = ConfigManager.Profiles[SelectedProfileIndex];
+            if(profile != null) {
+                UpdatePresence(profile.Presence[currentCntext]);
+            }
+        }
+
+        private void UpdatePresence(RPCLayout data) {
 			if (data == null || Client == null) {
 				return;
 			}
 			
 			RichPresence presence = new RichPresence();
-            if (data.hasTimestamp) {
+            if (data.HasTimestamp) {
                 presence.Timestamps = StartTimestamp;
             }
 			
-			presence.Details = ParsePlaceholders(data.details, 1024);
-			presence.State = ParsePlaceholders(data.state, 1024);
+			presence.Details = ParsePlaceholders(data.Details, 1024);
+			presence.State = ParsePlaceholders(data.State, 1024);
 			presence.Assets = new Assets();
-			if (!string.IsNullOrEmpty(data.assetsData.LargeImageText)) presence.Assets.LargeImageText = ParsePlaceholders(data.assetsData.LargeImageText, 1024);
-			if (!string.IsNullOrEmpty(data.assetsData.LargeImageKey)) presence.Assets.LargeImageKey = ParsePlaceholders(data.assetsData.LargeImageKey, 1024);
-			if (!string.IsNullOrEmpty(data.assetsData.SmallImageText)) presence.Assets.SmallImageText = ParsePlaceholders(data.assetsData.SmallImageText, 1024);
-			if (!string.IsNullOrEmpty(data.assetsData.SmallImageKey)) presence.Assets.SmallImageKey = ParsePlaceholders(data.assetsData.SmallImageKey, 1024);
+			if (!string.IsNullOrEmpty(data.AssetsData.LargeImageText)) presence.Assets.LargeImageText = ParsePlaceholders(data.AssetsData.LargeImageText, 1024);
+			if (!string.IsNullOrEmpty(data.AssetsData.LargeImageKey)) presence.Assets.LargeImageKey = ParsePlaceholders(data.AssetsData.LargeImageKey, 1024);
+			if (!string.IsNullOrEmpty(data.AssetsData.SmallImageText)) presence.Assets.SmallImageText = ParsePlaceholders(data.AssetsData.SmallImageText, 1024);
+			if (!string.IsNullOrEmpty(data.AssetsData.SmallImageKey)) presence.Assets.SmallImageKey = ParsePlaceholders(data.AssetsData.SmallImageKey, 1024);
 
 			List<Button> buttons = new List<Button>();
-			foreach (ButtonData btnData in data.buttons) {
-				if (btnData.isFinished()) {
+			foreach (ButtonData btnData in data.Buttons) {
+				if (btnData.IsValid()) {
                     Button btn = new Button
                     {
                         Label = ParsePlaceholders(btnData.Label, MAX_BTN_CHAR),
@@ -192,20 +194,38 @@ namespace obDRPC {
 			Client.SetPresence(presence);
 		}
 
-		internal string GetProgramVersion() {
+        private void InitRPC() {
+            if(Client != null && !Client.IsDisposed) {
+                Client.Dispose();
+            }
+
+            if(string.IsNullOrEmpty(ConfigManager.AppId)) {
+                FileSystem.AppendToLogFile("[obDRPC] Cannot start Discord RPC: Application ID must not be empty!");
+                return;
+            }
+
+            Client = new DiscordRpcClient(ConfigManager.AppId);
+            if (!Client.Initialize()) {
+                FileSystem.AppendToLogFile("[obDRPC] Cannot start Discord RPC: Failed to login to Discord, please ensure your Application ID is correct and you have a stable internet connection.");
+            } else {
+                UpdatePresence(SelectedProfileIndex, Context.Menu);
+            }
+        }
+
+        internal string GetProgramVersion() {
 			return Assembly.GetEntryAssembly().GetName().Version.ToString();
 		}
 
         public void SetVehicleSpecs(VehicleSpecs specs) {
-			this.specs = specs;
+			this.VehicleSpecs = specs;
         }
 
 		public string ParsePlaceholders(string input, int maxChar) {
-			return Placeholder.ParsePlaceholders(input, ProgramVersion, LastElapseData, specs, doorState, CurrentContext, maxChar);
+			return Placeholder.ParsePlaceholders(input, ProgramVersion, LastElapseData, VehicleSpecs, DoorState, CurrentContext, maxChar);
 		}
 
         public void DoorChange(DoorStates oldState, DoorStates newState) {
-			doorState = newState;
+			DoorState = newState;
         }
 
         public void SetSignal(SignalData[] data) {
@@ -217,18 +237,5 @@ namespace obDRPC {
 				SpeedLimit = data.Optional;
 			}
 		}
-
-		public static string getContextName(Context context) {
-			switch (context) {
-				case Context.Menu:
-					return "menu";
-				case Context.Boarding:
-					return "boarding";
-				case Context.InGame:
-					return "game";
-				default:
-					return "";
-			}
-		}
-	}
+    }
 }

@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
 [assembly: AssemblyTitle("obDRPC")]
-[assembly: AssemblyDescription("An OpenBVE Input Plugin that display Discord's Rich Presence.")]
+[assembly: AssemblyDescription("An OpenBVE Input Plugin hosting a Discord Rich Presence.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("obDRPC")]

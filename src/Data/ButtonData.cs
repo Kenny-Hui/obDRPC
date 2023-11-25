@@ -13,7 +13,7 @@ namespace obDRPC {
         /// <summary>
         /// True if the Label and the Url field is filled.
         /// </summary>
-        public bool isFinished() {
+        public bool IsValid() {
             return !string.IsNullOrEmpty(Label) && !string.IsNullOrEmpty(Url);
         }
     }
