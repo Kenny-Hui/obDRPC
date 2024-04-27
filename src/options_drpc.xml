@@ -1,0 +1,51 @@
+<data>
+  <appId>787690592292962344</appId>
+  <profileSwitchKey>ControlLeft+PageDown</profileSwitchKey>
+  <presenceList>
+    <presence id="menuMain">
+      <state>In menu</state>
+      <hasTimestamp>true</hasTimestamp>
+      <largeImageKey>obve</largeImageKey>
+      <largeImageText>OpenBVE v{programVersion}</largeImageText>
+      <smallImageKey>
+      </smallImageKey>
+      <smallImageText>
+      </smallImageText>
+      <button>
+        <text>OpenBVE Homepage</text>
+        <url>https://openbve-project.net</url>
+      </button>
+    </presence>
+    <presence id="gameMain">
+      <details>{prevStnName} -&gt; {nextStnName}</details>
+      <state>{speedKmh}km/h</state>
+      <hasTimestamp>true</hasTimestamp>
+      <largeImageKey>obve</largeImageKey>
+      <largeImageText>OpenBVE v{programVersion}</largeImageText>
+      <smallImageKey>
+      </smallImageKey>
+      <smallImageText>
+      </smallImageText>
+      <button>
+        <text>({reverser}/{notch})</text>
+        <url>https://www.example.com</url>
+      </button>
+    </presence>
+    <presence id="boardingMain">
+      <details>At {curStnName}</details>
+      <state>Departing in {curStnDwellLeft}s</state>
+      <hasTimestamp>true</hasTimestamp>
+      <largeImageKey>obve</largeImageKey>
+      <largeImageText>OpenBVE v{programVersion}</largeImageText>
+      <smallImageKey>
+      </smallImageKey>
+      <smallImageText>
+      </smallImageText>
+    </presence>
+  </presenceList>
+  <profile name="Main">
+    <menu>menuMain</menu>
+    <game>gameMain</game>
+    <boarding>boardingMain</boarding>
+  </profile>
+</data>
