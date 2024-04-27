@@ -31,3 +31,4 @@ jobs:
               src/bin/debug/OB_DRPC.dll
               src/bin/debug/OB_DRPC.dll.config
               src/bin/debug/OB_DRPC.pdb
+              src/bin/debug/options_drpc.xml
