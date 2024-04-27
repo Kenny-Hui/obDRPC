@@ -51,7 +51,10 @@ namespace obDRPC {
         private void InsertPlaceholder(object sender, EventArgs e) {
             string placeholder = ((Control)sender).Tag.ToString().Split(';')[0];
             if (SelectedTextBox != null && !SelectedTextBox.ReadOnly) {
+                int newSelection = SelectedTextBox.SelectionStart;
+                newSelection += placeholder.Length;
                 SelectedTextBox.Text = SelectedTextBox.Text.Insert(SelectedTextBox.SelectionStart, placeholder);
+                SelectedTextBox.SelectionStart = newSelection;
             }
         }
 
